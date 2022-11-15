@@ -360,6 +360,31 @@ CREATE TABLE IF NOT EXISTS `primeG`.`TorneiosFav` (
 ENGINE = InnoDB;
 
 
+-- -----------------------------------------------------
+-- Table `primeG`.`Notificacao`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `primeG`.`Notificacao` (
+  `idNotificacao` INT NOT NULL,
+  `Titulo` VARCHAR(45) NULL,
+  `Utilizador_idUtilizador` INT NOT NULL,
+  `Lido` INT NULL,
+  `Torneio_idTorneio` INT NOT NULL,
+  PRIMARY KEY (`idNotificacao`),
+  INDEX `fk_Notificacao_Utilizador1_idx` (`Utilizador_idUtilizador` ASC) VISIBLE,
+  INDEX `fk_Notificacao_Torneio1_idx` (`Torneio_idTorneio` ASC) VISIBLE,
+  CONSTRAINT `fk_Notificacao_Utilizador1`
+    FOREIGN KEY (`Utilizador_idUtilizador`)
+    REFERENCES `primeG`.`Utilizador` (`idUtilizador`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Notificacao_Torneio1`
+    FOREIGN KEY (`Torneio_idTorneio`)
+    REFERENCES `primeG`.`Torneio` (`idTorneio`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
