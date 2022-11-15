@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS `primeG`.`Utilizador` (
   `email` VARCHAR(45) NOT NULL,
   `password` VARCHAR(45) NOT NULL,
   `dataNascimento` DATE NOT NULL,
-  `genero` BINARY(1) NOT NULL,
+  `genero` INT NOT NULL,
   PRIMARY KEY (`idUtilizador`))
 ENGINE = InnoDB;
 
@@ -32,7 +32,7 @@ ENGINE = InnoDB;
 -- Table `primeG`.`Desporto`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `primeG`.`Desporto` (
-  `idDesporto` INT NOT NULL,
+  `idDesporto` INT NOT NULL AUTO_INCREMENT,
   `nomeDesporto` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`idDesporto`))
 ENGINE = InnoDB;
@@ -42,7 +42,7 @@ ENGINE = InnoDB;
 -- Table `primeG`.`Localidade`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `primeG`.`Localidade` (
-  `idLocalidade` INT NOT NULL,
+  `idLocalidade` INT NOT NULL AUTO_INCREMENT,
   `Nome` VARCHAR(45) NULL,
   PRIMARY KEY (`idLocalidade`))
 ENGINE = InnoDB;
@@ -52,7 +52,7 @@ ENGINE = InnoDB;
 -- Table `primeG`.`Espaco`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `primeG`.`Espaco` (
-  `idEspaco` INT NOT NULL,
+  `idEspaco` INT NOT NULL AUTO_INCREMENT,
   `nome` VARCHAR(45) NULL,
   `rua` VARCHAR(45) NULL,
   `contacto` VARCHAR(45) NULL,
@@ -83,12 +83,12 @@ CREATE TABLE IF NOT EXISTS `primeG`.`Torneio` (
   `nomeTorneio` VARCHAR(45) NOT NULL,
   `idOrganizador` INT NOT NULL,
   `idDesporto` INT NOT NULL,
-  `isFederado` BINARY(1) NOT NULL,
+  `isFederado` INT NOT NULL,
   `dataTorneio` DATETIME NOT NULL,
-  `inscricoesAbertas` BINARY(1) NOT NULL,
+  `inscricoesAbertas` INT NOT NULL,
   `escalao` INT NOT NULL,
   `tipoTorneio` VARCHAR(7) NOT NULL,
-  `terminado` BINARY(1) NOT NULL,
+  `terminado` INT NOT NULL,
   `Espaco_idEspaco` INT NOT NULL,
   PRIMARY KEY (`idTorneio`),
   INDEX `fk_Torneio_Utilizador_idx` (`idOrganizador` ASC) VISIBLE,
@@ -141,10 +141,10 @@ ENGINE = InnoDB;
 -- Table `primeG`.`FaseGrupos`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `primeG`.`FaseGrupos` (
-  `idFaseGrupos` INT NOT NULL,
+  `idFaseGrupos` INT NOT NULL AUTO_INCREMENT,
   `numeroGrupos` INT NOT NULL,
   `Torneio_idTorneio` INT NOT NULL,
-  `terminado` BINARY(1) NOT NULL,
+  `terminado` INT NOT NULL,
   PRIMARY KEY (`idFaseGrupos`),
   INDEX `fk_FaseGrupos_Torneio1_idx` (`Torneio_idTorneio` ASC) VISIBLE,
   CONSTRAINT `fk_FaseGrupos_Torneio1`
@@ -159,11 +159,11 @@ ENGINE = InnoDB;
 -- Table `primeG`.`Grupo`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `primeG`.`Grupo` (
-  `idGrupo` INT NOT NULL,
+  `idGrupo` INT NOT NULL AUTO_INCREMENT,
   `faseGrupos_idFaseGrupos` INT NOT NULL,
   `numeroGrupo` INT NOT NULL,
   `classificacaoGrupo` VARCHAR(90) NULL,
-  `terminado` BINARY(1) NOT NULL,
+  `terminado` INT NOT NULL,
   PRIMARY KEY (`idGrupo`),
   INDEX `fk_Grupo_faseGrupos1_idx` (`faseGrupos_idFaseGrupos` ASC) VISIBLE,
   CONSTRAINT `fk_Grupo_faseGrupos1`
@@ -178,10 +178,10 @@ ENGINE = InnoDB;
 -- Table `primeG`.`Eliminatoria`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `primeG`.`Eliminatoria` (
-  `idEliminatoria` INT NOT NULL,
+  `idEliminatoria` INT NOT NULL AUTO_INCREMENT,
   `numeroJogadores` INT NOT NULL,
   `Torneio_idTorneio` INT NOT NULL,
-  `gerado` BINARY(1) NOT NULL,
+  `gerado` INT NOT NULL,
   PRIMARY KEY (`idEliminatoria`),
   INDEX `fk_Eliminatoria_Torneio1_idx` (`Torneio_idTorneio` ASC) VISIBLE,
   CONSTRAINT `fk_Eliminatoria_Torneio1`
@@ -196,11 +196,11 @@ ENGINE = InnoDB;
 -- Table `primeG`.`Etapa`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `primeG`.`Etapa` (
-  `idEtapa` INT NOT NULL,
+  `idEtapa` INT NOT NULL AUTO_INCREMENT,
   `numeroEtapa` INT NOT NULL,
   `nomeEtapa` VARCHAR(45) NOT NULL,
   `Eliminatoria_idEliminatoria` INT NOT NULL,
-  `terminado` BINARY(1) NOT NULL,
+  `terminado` INT NOT NULL,
   PRIMARY KEY (`idEtapa`),
   INDEX `fk_Etapa_Eliminatoria1_idx` (`Eliminatoria_idEliminatoria` ASC) VISIBLE,
   CONSTRAINT `fk_Etapa_Eliminatoria1`
@@ -215,7 +215,7 @@ ENGINE = InnoDB;
 -- Table `primeG`.`Ronda`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `primeG`.`Ronda` (
-  `idRonda` INT NOT NULL,
+  `idRonda` INT NOT NULL AUTO_INCREMENT,
   `numeroRonda` INT NOT NULL,
   `Etapa_idEtapa` INT NOT NULL,
   PRIMARY KEY (`idRonda`),
@@ -232,7 +232,7 @@ ENGINE = InnoDB;
 -- Table `primeG`.`Jogo`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `primeG`.`Jogo` (
-  `idJogo` INT NOT NULL,
+  `idJogo` INT NOT NULL AUTO_INCREMENT,
   `numeroCampo` INT NOT NULL,
   `hora` DATETIME NOT NULL,
   `idOponente1` INT NULL,
@@ -262,8 +262,8 @@ ENGINE = InnoDB;
 -- Table `primeG`.`Equipa`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `primeG`.`Equipa` (
-  `idEquipa` INT NOT NULL,
-  `pendente` BINARY(1) NOT NULL,
+  `idEquipa` INT NOT NULL AUTO_INCREMENT,
+  `pendente` INT NOT NULL,
   `classificacao` INT NULL,
   `ranking` INT NULL,
   `nomeEquipa` VARCHAR(45) NOT NULL,
@@ -364,7 +364,7 @@ ENGINE = InnoDB;
 -- Table `primeG`.`Notificacao`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `primeG`.`Notificacao` (
-  `idNotificacao` INT NOT NULL,
+  `idNotificacao` INT NOT NULL AUTO_INCREMENT,
   `Titulo` VARCHAR(45) NULL,
   `Utilizador_idUtilizador` INT NOT NULL,
   `Lido` INT NULL,
