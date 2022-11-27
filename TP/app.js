@@ -10,7 +10,10 @@ app.listen(port, () => console.log('Listening on port ' + port + '!'));
 
 
 const userRouter = require("./routers/users");
+const torneioRouter = require("./routers/torneio")
 
 app.use("/users",userRouter);
+
+app.use("/torneios",torneioRouter);
 
 
