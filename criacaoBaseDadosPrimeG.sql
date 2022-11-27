@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS `primeG`.`Espaco` (
   `contacto` VARCHAR(45) NULL,
   `Utilizador_idUtilizador` INT NOT NULL,
   `Localidade_idLocalidade` INT NOT NULL,
-  `numeroMesas` INT NOT NULL,
+  `Favorito` INT NULL,
   PRIMARY KEY (`idEspaco`),
   INDEX `fk_Espaco_Utilizador1_idx` (`Utilizador_idUtilizador` ASC) VISIBLE,
   INDEX `fk_Espaco_Localidade1_idx` (`Localidade_idLocalidade` ASC) VISIBLE,
@@ -87,7 +87,7 @@ CREATE TABLE IF NOT EXISTS `primeG`.`Torneio` (
   `dataTorneio` DATETIME NOT NULL,
   `inscricoesAbertas` INT NOT NULL,
   `escalao` INT NOT NULL,
-  `tipoTorneio` VARCHAR(7) NOT NULL,
+  `tipoTorneio` INT NOT NULL,
   `terminado` INT NOT NULL,
   `Espaco_idEspaco` INT NOT NULL,
   PRIMARY KEY (`idTorneio`),
@@ -263,7 +263,6 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `primeG`.`Equipa` (
   `idEquipa` INT NOT NULL AUTO_INCREMENT,
-  `pendente` INT NOT NULL,
   `classificacao` INT NULL,
   `ranking` INT NULL,
   `nomeEquipa` VARCHAR(45) NOT NULL,
@@ -300,6 +299,7 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `primeG`.`Torneio_has_Equipa` (
   `Torneio_idTorneio` INT NOT NULL,
   `Equipa_idEquipa` INT NOT NULL,
+  `pendente` INT NULL,
   PRIMARY KEY (`Torneio_idTorneio`, `Equipa_idEquipa`),
   INDEX `fk_Torneio_has_Equipa_Equipa1_idx` (`Equipa_idEquipa` ASC) VISIBLE,
   INDEX `fk_Torneio_has_Equipa_Torneio1_idx` (`Torneio_idTorneio` ASC) VISIBLE,
@@ -380,6 +380,29 @@ CREATE TABLE IF NOT EXISTS `primeG`.`Notificacao` (
   CONSTRAINT `fk_Notificacao_Torneio1`
     FOREIGN KEY (`Torneio_idTorneio`)
     REFERENCES `primeG`.`Torneio` (`idTorneio`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `primeG`.`Desporto_has_Espaco`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `primeG`.`Desporto_has_Espaco` (
+  `idDesporto` INT NOT NULL,
+  `idEspaco` INT NOT NULL,
+  `numeroMesas` INT NULL,
+  PRIMARY KEY (`idDesporto`, `idEspaco`),
+  INDEX `fk_Desporto_has_Espaco_Espaco1_idx` (`idEspaco` ASC) VISIBLE,
+  INDEX `fk_Desporto_has_Espaco_Desporto1_idx` (`idDesporto` ASC) VISIBLE,
+  CONSTRAINT `fk_Desporto_has_Espaco_Desporto1`
+    FOREIGN KEY (`idDesporto`)
+    REFERENCES `primeG`.`Desporto` (`idDesporto`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Desporto_has_Espaco_Espaco1`
+    FOREIGN KEY (`idEspaco`)
+    REFERENCES `primeG`.`Espaco` (`idEspaco`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
