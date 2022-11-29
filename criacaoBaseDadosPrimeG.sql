@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS `primeG`.`Utilizador` (
   `idUtilizador` INT NOT NULL AUTO_INCREMENT,
   `Nome` VARCHAR(45) NOT NULL,
   `email` VARCHAR(45) NOT NULL,
-  `password` VARCHAR(45) NOT NULL,
+  `password` VARCHAR(60) NOT NULL,
   `dataNascimento` DATE NOT NULL,
   `genero` INT NOT NULL,
   PRIMARY KEY (`idUtilizador`))

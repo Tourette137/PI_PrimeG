@@ -1,4 +1,3 @@
-const { application } = require('express');
 const express = require('express');
 const router = express.Router();
 const data = require('../query.js')
@@ -14,7 +13,7 @@ router.get("/:id/jogos",(req,res) =>{
             getJogosTorneio(parseInt(re[0].terminado),idTorneio,res);
         }
         else {
-            res.send("O torneio não existe");
+            res.status(404).send("O torneio não existe");
         }      
     });
 })
@@ -62,7 +61,7 @@ function getJogosTorneio(terminado,idTorneio,res){
     }
     //torneio está terminado ou por começar
     else {
-        res.send("Não existem jogos a decorrer.");
+        res.status(404).send("Não existem jogos a decorrer.");
     }
 
 }
@@ -73,14 +72,15 @@ function getJogosTorneio(terminado,idTorneio,res){
 router.get("/disponiveis",(req,res) => {
     //0 -> inscricoes abertas
     //1 -> inscricoes fechadas
-    let sql = "select * from torneio as T ";
+    let sql = "select T.idTorneio,T.nomeTorneio,T.isFederado,T.dataTorneio,T.escalao,T.tipoTorneio,D.nomeDesporto,L.Nome from torneio as T " +
+              "join Espaco as E on T.Espaco_idEspaco = E.idEspaco " +
+              "join Localidade as L on E.Localidade_idLocalidade = L.idLocalidade " +
+              "join Desporto as D on T.idDesporto = D.idDesporto "
     
     //Filtro de Localidade 
     if(req.query.localidade != null){
         if(!isNaN(req.query.localidade)){
-            sql += "join Espaco as E on T.Espaco_idEspaco = E.idEspaco " +
-                   "join Localidade as L on E.Localidade_idLocalidade = L.idLocalidade " +
-                   "where T.inscricoesAbertas = 0 and idLocalidade = " + req.query.localidade;
+            sql += " where T.inscricoesAbertas = 0 and idLocalidade = " + req.query.localidade;
                    
         }
         else {sql += " where T.inscricoesAbertas = 0 " }
@@ -92,13 +92,13 @@ router.get("/disponiveis",(req,res) => {
     //Filtro de Federado
     if(req.query.federado != null){
         if(!isNaN(req.query.federado)){
-            sql += " and isFederado = " + req.query.federado;
+            sql += " and T.isFederado = " + req.query.federado;
         }
     }
     //Filtro de Desporto
     if(req.query.desporto != null){
         if(!isNaN(req.query.desporto)){
-            sql += " and idDesporto = " + req.query.desporto;
+            sql += " and T.idDesporto = " + req.query.desporto;
         }
     }
 
@@ -108,10 +108,102 @@ router.get("/disponiveis",(req,res) => {
             res.send(re);
         }
         else {
-            res.send("Não existem torneios disponíveis");
+            res.status(404).send("Não existem torneios disponíveis");
         }
     });
 });
+
+//Listar torneios encerrados
+router.get("/encerrados",(req,res) => {
+    //0 -> inscricoes abertas
+    //1 -> inscricoes fechadas
+    let sql = "select T.idTorneio,T.nomeTorneio,T.isFederado,T.dataTorneio,T.escalao,T.tipoTorneio,D.nomeDesporto,L.Nome from torneio as T " +
+              "join Espaco as E on T.Espaco_idEspaco = E.idEspaco " +
+              "join Localidade as L on E.Localidade_idLocalidade = L.idLocalidade " +
+              "join Desporto as D on T.idDesporto = D.idDesporto "
+    
+    //Filtro de Localidade 
+    if(req.query.localidade != null){
+        if(!isNaN(req.query.localidade)){
+            sql += " where T.terminado = 2 and idLocalidade = " + req.query.localidade;
+                   
+        }
+        else {sql += " where T.terminado = 2 " }
+    }
+    else {
+        sql += " where T.terminado = 2 "
+    }
+
+    //Filtro de Federado
+    if(req.query.federado != null){
+        if(!isNaN(req.query.federado)){
+            sql += " and T.isFederado = " + req.query.federado;
+        }
+    }
+    //Filtro de Desporto
+    if(req.query.desporto != null){
+        if(!isNaN(req.query.desporto)){
+            sql += " and T.idDesporto = " + req.query.desporto;
+        }
+    }
+
+    sql += ";";
+    data.query(sql).then(re => {
+        if(re.length != 0){
+            res.send(re);
+        }
+        else {
+            res.status(404).send("Não existem torneios disponíveis");
+        }
+    });
+});
+
+//Listar torneios a decorrer
+router.get("/aDecorrer",(req,res) => {
+    //0 -> inscricoes abertas
+    //1 -> inscricoes fechadas
+    let sql = "select T.idTorneio,T.nomeTorneio,T.isFederado,T.dataTorneio,T.escalao,T.tipoTorneio,D.nomeDesporto,L.Nome from torneio as T " +
+              "join Espaco as E on T.Espaco_idEspaco = E.idEspaco " +
+              "join Localidade as L on E.Localidade_idLocalidade = L.idLocalidade " +
+              "join Desporto as D on T.idDesporto = D.idDesporto "
+    
+    //Filtro de Localidade 
+    if(req.query.localidade != null){
+        if(!isNaN(req.query.localidade)){
+            sql +=  " where T.terminado = 1 and idLocalidade = " + req.query.localidade;
+                   
+        }
+        else {sql += " where T.terminado = 1 " }
+    }
+    else {
+        sql += " where T.terminado = 1 "
+    }
+
+    //Filtro de Federado
+    if(req.query.federado != null){
+        if(!isNaN(req.query.federado)){
+            sql += " and T.isFederado = " + req.query.federado;
+        }
+    }
+    //Filtro de Desporto
+    if(req.query.desporto != null){
+        if(!isNaN(req.query.desporto)){
+            sql += " and T.idDesporto = " + req.query.desporto;
+        }
+    }
+
+    sql += ";";
+    data.query(sql).then(re => {
+        if(re.length != 0){
+            res.send(re);
+        }
+        else {
+            res.status(404).send("Não existem torneios disponíveis");
+        }
+    });
+});
+
+
 
 
 //Classificação final de um torneio
@@ -124,7 +216,7 @@ router.get("/:id/classificacaofinal", (req,res) => {
             getClassificacaoTorneio(re[0].tipoTorneio,idTorneio,res);
         }
         else {
-            res.send("O torneio não existe");
+            res.status(404).send("O torneio não existe");
         }      
     });
 });
