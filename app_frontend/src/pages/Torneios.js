@@ -1,6 +1,7 @@
 //Página que lista todo o tipo de torneios com os filtros adequados.
 import {useState,useEffect} from 'react';
 import TorneioDisplay from "./TorneioDisplay.jsx";
+import {Link,Route,Routes} from 'react-router-dom';
 
 const API_URL="http://localhost:3000"
 export function Torneios() {
@@ -150,7 +151,7 @@ export function Torneios() {
         <div className="container">
           <ul>
           {torneios.map((torneio) => (
-            <li><TorneioDisplay torneio = {torneio}/></li>
+            <li><Link to={"/torneios/" + torneio.idTorneio}><TorneioDisplay torneio = {torneio}/></Link></li>
           ))}
           </ul>
         </div>
