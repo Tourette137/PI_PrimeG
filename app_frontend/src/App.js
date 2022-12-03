@@ -4,6 +4,8 @@ import {Home} from './pages/Home.js';
 import {Login} from './pages/Login.js';
 import {Registo} from './pages/Registo.js';
 import {Torneio} from './pages/Torneio.js';
+import {Jogos} from './pages/Jogos.js';
+import { Classificacao } from './pages/Classificacao.js';
 import {NotFound} from './pages/NotFound.js';
 
 function App() {
@@ -25,6 +27,8 @@ function App() {
             <Route index element= {<Torneios/>}/>
             <Route path=":id" element = {<Torneio/>}/>
           </Route>
+          <Route path = "/:id/jogos" element = {<Jogos/>}/> 
+          <Route path = "/:id/classificacao" element = {<Classificacao/>}/>
           <Route path="*" element= {<NotFound/>}/>
       </Routes>
     </div>
