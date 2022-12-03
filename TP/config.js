@@ -4,7 +4,7 @@ const config = {
   db:{
     host: 'localhost',
     user: 'root',
-    password: 'root',
+    password: 'fofinha',
     database: 'primeg'
   }
 }

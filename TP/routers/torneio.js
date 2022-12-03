@@ -208,7 +208,7 @@ router.get("/aDecorrer",(req,res) => {
 
 //Classificação final de um torneio
 //Classificao final do grupo + Classificacao das eliminatorias.
-router.get("/:id/classificacaofinal", (req,res) => {
+router.get("/:id/classificacao", (req,res) => {
     const idTorneio = req.params.id;
     let sql = "select tipoTorneio from Torneio where idTorneio = " + idTorneio + ";";
     data.query(sql).then(re => {
@@ -221,10 +221,89 @@ router.get("/:id/classificacaofinal", (req,res) => {
     });
 });
 
-function getClassificacaoTorneio(tipoTorneio, idTorneio, res) {
- 
+/*
+0 - grupo (liga)
+1 - eliminatórias
+2 - ambos
+3 - grupos duas mãos
+4 - eliminatórias duas mãos
+5 - ambos (grupos 2 mãos)
+6 - ambos (elim 2 mãos)
+7 - ambos (ambos 2 mãos)
+*/
 
+function getClassificacaoTorneio(tipoTorneio, idTorneio, res) {
+    switch (tipoTorneio) {
+        case 0: case 3:
+            //classificacao do grupo
+            let sql = "select numeroGrupo,classificacaoGrupo from Grupo as G " +
+                      "join FaseGrupos as FG on G.faseGrupos_idFaseGrupos = FG.idFaseGrupos " +
+                      "join Torneio as T on T.idTorneio = FG.Torneio_idTorneio " +
+                      "where idTorneio = " + idTorneio + ";"
+            data.query(sql).then(re => {
+                re = "Liga" + JSON.stringify(re); 
+                res.send(re);
+            }); 
+            break;
+        case 1: case 4: 
+            let sql1 = "select E.numeroEtapa,R.numeroRonda,Eq.idEquipa,Eq.nomeEquipa,J.resultado from Eliminatoria as El " +
+                       "join Etapa as E on E.Eliminatoria_idEliminatoria=El.idEliminatoria " +
+                       "join Ronda as R on R.Etapa_idEtapa=E.idEtapa " +
+                       "join Jogo as J on J.Ronda_idRonda=R.idRonda " +
+                       "join Torneio as T on T.idTorneio = El.Torneio_idTorneio " + 
+                       "join Torneio_has_Equipa as TE on TE.Torneio_idTorneio=T.idTorneio " +
+                       "join Equipa as Eq on Eq.idEquipa = TE.Equipa_idEquipa " +
+                       "where T.idTorneio = " + idTorneio + " and Eq.idEquipa = J.idOponente1 or Eq.idEquipa = J.idOponente2 ;"
+            data.query(sql1).then(re => {
+                re = "Elim" + JSON.stringify(re);
+                res.send(re);
+            });
+            //ver nº de etapas
+            //ver se a etapa presente está terminada  
+                //se estiver terminada - proxima etapa será a ultima a ser mostrada
+                //caso contrário passamos à seguinte e verificamos novamente
+            //enviar os resultados das várias etapas (rondas)
+
+            break;
+        case 2: case 5: case 6: case 7: 
+            let sql2 = "select numeroGrupo,classificacaoGrupo from Grupo as G " +
+                       "join FaseGrupos as FG on G.faseGrupos_idFaseGrupos = FG.idFaseGrupos " +
+                       "join Torneio as T on T.idTorneio = FG.Torneio_idTorneio " +
+                       "where idTorneio = " + idTorneio + ";"
+                    //ver se a fase de grupos já terminou
+                    //caso não terminado enviar apenas a classificacao de todos os grupos
+                    //caso terminado enviar a classificacao final dos grupos + 
+                    ////ver nº de etapas
+                    //ver se a etapa presente está terminada  
+                    //se estiver terminada - proxima etapa será a ultima a ser mostrada
+                    //caso contrário passamos à seguinte e verificamos novamente
+                    //enviar os resultados das várias etapas (rondas)
+            data.query(sql2).then(re => {
+                getClassElim(idTorneio,re,res);
+            })
+            break;
+        default:
+            console.log("default");
+    }
 }
+
+function getClassElim(idTorneio,re,res){
+    let sql1 = "select E.numeroEtapa,R.numeroRonda,Eq.idEquipa,Eq.nomeEquipa,J.resultado from Eliminatoria as El " +
+                "join Etapa as E on E.Eliminatoria_idEliminatoria=El.idEliminatoria " +
+                "join Ronda as R on R.Etapa_idEtapa=E.idEtapa " +
+                "join Jogo as J on J.Ronda_idRonda=R.idRonda " +
+                "join Torneio as T on T.idTorneio = El.Torneio_idTorneio " + 
+                "join Torneio_has_Equipa as TE on TE.Torneio_idTorneio=T.idTorneio " +
+                "join Equipa as Eq on Eq.idEquipa = TE.Equipa_idEquipa " +
+                "where T.idTorneio = " + idTorneio + " and Eq.idEquipa = J.idOponente1 or Eq.idEquipa = J.idOponente2 ;"
+    data.query(sql1).then(re1 => {
+        re1 = "Elim" + JSON.stringify(re1);
+        re = "Grupo" + JSON.stringify(re);
+        re += re1;
+        res.send(re);
+    });
+}
+
 
 
 
