@@ -35,6 +35,9 @@ function getJogosTorneio(terminado,idTorneio,res){
                                                 "join Eliminatoria as EL on E.Eliminatoria_idEliminatoria = EL.idEliminatoria " +
                                                 "where EL.Torneio_idTorneio = " + idTorneio + " and J.estado = 1 and EL.gerado = 1;";
                     data.query(sql).then(re => {
+                        re.map ((r) => {
+                            r.hora = r.hora.toLocaleString();
+                        })
                         res.send(re);
                     });
                 }
@@ -44,6 +47,9 @@ function getJogosTorneio(terminado,idTorneio,res){
                                                     "join FaseGrupos as FG on G.FaseGrupos_idFaseGrupos = FG.idFaseGrupos " + 
                                                     "where FG.Torneio_idTorneio = " + idTorneio + " and J.estado = 1;";
                     data.query(sql).then(re => {
+                        re.map ((r) => {
+                            r.hora = r.hora.toLocaleString();
+                        })
                         res.send(re);
                     });                               
                 }
@@ -54,6 +60,9 @@ function getJogosTorneio(terminado,idTorneio,res){
                                                 "join Eliminatoria as EL on E.Eliminatoria_idEliminatoria = EL.idEliminatoria " +
                                                 "where EL.Torneio_idTorneio = " + idTorneio + " and J.estado = 1;";
                 data.query(sql).then(re => {
+                    re.map ((r) => {
+                        r.hora = r.hora.toLocaleString();
+                    })
                     res.send(re);
                 });
             }
