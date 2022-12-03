@@ -69,22 +69,21 @@ export function Torneios() {
         }
       }
 
-      //Search inicial dos torneios disponíveis antes de ele selecionar alguma coisa
-      //Faz também um search inicial das localidades
+      //Search inicial das localidades e desportos
       useEffect(() => {
-        searchTorneios(tipo);
         searchLocalidades();
         searchDesportos();
       },[])
 
-      //Search quando ele depois seleciona os encerrados ou os a decorrer
+      //Search dos torneios inicialmente e depois do tipo ser alterado.
       useEffect(() => {
+        console.log("entrei aqui");
         searchTorneios(tipo);
       },[tipo,localidade,desporto,federado]);
 
       //Para mudar o tipo de torneio para o que ele selecionar no form.
       const handleTipo = event => {
-        setTipo(event.target.value);
+          setTipo(event.target.value);
       };
 
       //Para mudar a localidade na qual ele está a procurar
@@ -111,9 +110,9 @@ export function Torneios() {
         <h1>Torneios disponíveis </h1>
 
         <div onChange={handleTipo}>
-            <input type="radio" value="disponiveis" name="torneios" checked={("disponiveis"==tipo) ? "checked" : ""} /> Disponíves
-            <input type="radio" value="encerrados" name="torneios" checked={("encerrados"==tipo) ? "checked" : ""}/> Encerrados
-            <input type="radio" value="aDecorrer" name="torneios" checked={("aDecorrer"==tipo) ? "checked" : ""}/> A Decorrer
+            <input type="radio" value="disponiveis" name="torneios" checked={("disponiveis"===tipo) ? "checked" : ""} /> Disponíves
+            <input type="radio" value="encerrados" name="torneios" checked={("encerrados"===tipo) ? "checked" : ""}/> Encerrados
+            <input type="radio" value="aDecorrer" name="torneios" checked={("aDecorrer"===tipo) ? "checked" : ""}/> A Decorrer
         </div>
         <br/>
         <br/>

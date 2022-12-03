@@ -23,7 +23,7 @@ const TorneioDisplay = ({torneio}) => {
             </div>
 
             <div>
-                <p>Tipo do Torneio: Meter os if's depois de definirmos os tipos em int's</p>
+                <p>Tipo do Torneio: {torneio.tipoTorneio}</p>
             </div>
 
             <div>

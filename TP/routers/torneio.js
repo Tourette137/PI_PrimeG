@@ -105,6 +105,28 @@ router.get("/disponiveis",(req,res) => {
     sql += ";";
     data.query(sql).then(re => {
         if(re.length != 0){
+            re.map((r) => {
+                r.dataTorneio = r.dataTorneio.toLocaleDateString();
+                switch (r.tipoTorneio) {
+                    case 0: r.tipoTorneio = "Liga"
+                        break;
+                    case 1: r.tipoTorneio = "Torneio de Eliminatórias"
+                        break;
+                    case 2: r.tipoTorneio = "Torneio com fase de grupos e eliminatórias";
+                        break;
+                    case 3: r.tipoTorneio = "Liga com duas mãos";
+                        break;
+                    case 4: r.tipotorneio = "Torneio de Eliminatórias com duas mãos";
+                        break;
+                    case 5: r.tipoTorneio = "Torneio com fase de grupos com duas mãos e eliminatórias";
+                        break;
+                    case 6: r.tipoTorneio = "Torneio com fase de grupos e eliminatórias com duas mãos";
+                        break;
+                    case 7: r.tipoTorneio = "Torneio com fase de grupos e eliminatórias, ambos com duas mãos";
+                        break;
+                    default: console.log("default");
+                }
+            })
             res.send(re);
         }
         else {
@@ -150,6 +172,28 @@ router.get("/encerrados",(req,res) => {
     sql += ";";
     data.query(sql).then(re => {
         if(re.length != 0){
+            re.map((r) => {
+                r.dataTorneio = r.dataTorneio.toLocaleDateString();
+                switch (r.tipoTorneio) {
+                    case 0: r.tipoTorneio = "Liga"
+                        break;
+                    case 1: r.tipoTorneio = "Torneio de Eliminatórias"
+                        break;
+                    case 2: r.tipoTorneio = "Torneio com fase de grupos e eliminatórias";
+                        break;
+                    case 3: r.tipoTorneio = "Liga com duas mãos";
+                        break;
+                    case 4: r.tipotorneio = "Torneio de Eliminatórias com duas mãos";
+                        break;
+                    case 5: r.tipoTorneio = "Torneio com fase de grupos com duas mãos e eliminatórias";
+                        break;
+                    case 6: r.tipoTorneio = "Torneio com fase de grupos e eliminatórias com duas mãos";
+                        break;
+                    case 7: r.tipoTorneio = "Torneio com fase de grupos e eliminatórias, ambos com duas mãos";
+                        break;
+                    default: console.log("default");
+                }
+            })
             res.send(re);
         }
         else {
@@ -195,6 +239,28 @@ router.get("/aDecorrer",(req,res) => {
     sql += ";";
     data.query(sql).then(re => {
         if(re.length != 0){
+            re.map((r) => {
+                r.dataTorneio = r.dataTorneio.toLocaleDateString();
+                switch (r.tipoTorneio) {
+                    case 0: r.tipoTorneio = "Liga"
+                        break;
+                    case 1: r.tipoTorneio = "Torneio de Eliminatórias"
+                        break;
+                    case 2: r.tipoTorneio = "Torneio com fase de grupos e eliminatórias";
+                        break;
+                    case 3: r.tipoTorneio = "Liga com duas mãos";
+                        break;
+                    case 4: r.tipotorneio = "Torneio de Eliminatórias com duas mãos";
+                        break;
+                    case 5: r.tipoTorneio = "Torneio com fase de grupos com duas mãos e eliminatórias";
+                        break;
+                    case 6: r.tipoTorneio = "Torneio com fase de grupos e eliminatórias com duas mãos";
+                        break;
+                    case 7: r.tipoTorneio = "Torneio com fase de grupos e eliminatórias, ambos com duas mãos";
+                        break;
+                    default: console.log("default");
+                }
+            })
             res.send(re);
         }
         else {
@@ -255,7 +321,31 @@ function getClassificacaoTorneio(tipoTorneio, idTorneio, res) {
                        "join Equipa as Eq on Eq.idEquipa = TE.Equipa_idEquipa " +
                        "where T.idTorneio = " + idTorneio + " and Eq.idEquipa = J.idOponente1 or Eq.idEquipa = J.idOponente2 ;"
             data.query(sql1).then(re => {
-                re = "Elim" + JSON.stringify(re);
+                let aux = []
+                let resultado = []
+                let aux2 = {}
+                re.map((r) => {
+                    if (!(aux.includes((r.numeroEtapa,r.numeroRonda)))) {
+                        aux.push(r.numeroEtapa,r.numeroRonda);
+                        aux2 = {"numeroEtapa": r.numeroEtapa,
+                                "numeroRonda": r.numeroRonda,
+                                "idEquipa1" : r.idEquipa,
+                                "nomeEquipa1" : r.nomeEquipa,
+                                "resultado" : r.resultado
+                                }
+                        resultado.push(aux2);
+                    }
+                    else {
+                        for (var i = 0; i <resultado.length; i++) {
+                            if (resultado[i].numeroEtapa === r.numeroEtapa && resultado[i].numeroRonda === r.numeroRonda) {
+                              resultado[i].idEquipa2 = r.idEquipa;
+                              resultado[i].nomeEquipa2 = r.nomeEquipa;  
+                              break;
+                            }
+                          }
+                    }
+                    re = "Elim" + JSON.stringify(resultado); 
+                })
                 res.send(re);
             });
             //ver nº de etapas
@@ -297,14 +387,36 @@ function getClassElim(idTorneio,re,res){
                 "join Equipa as Eq on Eq.idEquipa = TE.Equipa_idEquipa " +
                 "where T.idTorneio = " + idTorneio + " and Eq.idEquipa = J.idOponente1 or Eq.idEquipa = J.idOponente2 ;"
     data.query(sql1).then(re1 => {
-        re1 = "Elim" + JSON.stringify(re1);
-        re = "Grupo" + JSON.stringify(re);
+        let aux = []
+        let resultado = []
+        let aux2 = {}
+        re1.map((r) => {
+        if (!(aux.includes((r.numeroEtapa,r.numeroRonda)))) {
+            aux.push(r.numeroEtapa,r.numeroRonda);
+            aux2 = {"numeroEtapa": r.numeroEtapa,
+                    "numeroRonda": r.numeroRonda,
+                    "idEquipa1" : r.idEquipa,
+                    "nomeEquipa1" : r.nomeEquipa,
+                    "resultado" : r.resultado
+                    }
+            resultado.push(aux2);
+        }
+        else {
+            for (var i = 0; i <resultado.length; i++) {
+                if (resultado[i].numeroEtapa === r.numeroEtapa && resultado[i].numeroRonda === r.numeroRonda) {
+                    resultado[i].idEquipa2 = r.idEquipa;
+                    resultado[i].nomeEquipa2 = r.nomeEquipa;  
+                break;
+                }
+            }
+        }
+        re1 =JSON.stringify(resultado); 
+        })
+        re = "Ambos" + JSON.stringify(re);
         re += re1;
         res.send(re);
     });
 }
-
-
 
 
 module.exports = router
