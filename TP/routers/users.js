@@ -3,6 +3,8 @@ const express= require('express');
 const router = express.Router();
 const data = require('../query.js');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const isAuth = require('./auth');
 
 
 //Imprimir todos os utilizadores
@@ -42,8 +44,6 @@ router.post("/registo", (req, res) => {
 })
 
 
-
-
 //Login de um Utilizador
 router.post("/login", (req, res) => {
 
@@ -55,7 +55,11 @@ router.post("/login", (req, res) => {
                 res.status(503).jsonp("User não existe!")
             } else {
                 if (await bcrypt.compare(req.body.password, re[0].password)) {
-                    res.send("Está Logado!")
+                    const user = {
+                        "id" : re[0].idUtilizador,
+                        "email" : re[0].email
+                    }
+                    res.jsonp({user, token: jwt.sign(user, 'PRIVATEKEY')})
                 } else {
                     res.status(501).jsonp("Password incorreta!")
                 }

@@ -1,4 +1,6 @@
 import {Link,Route,Routes} from 'react-router-dom';
+import PrivateRoutes from './utils/PrivateRoutes'
+
 import {Torneios} from './pages/Torneios.js';
 import {Home} from './pages/Home.js';
 import {Login} from './pages/Login.js';
@@ -7,8 +9,10 @@ import {Torneio} from './pages/Torneio.js';
 import {Jogos} from './pages/Jogos.js';
 import { Classificacao } from './pages/Classificacao.js';
 import {NotFound} from './pages/NotFound.js';
+import {Perfil} from './pages/Perfil.js';
 
 function App() {
+
   return (
     <div className='App'>
       <nav>
@@ -17,6 +21,7 @@ function App() {
           <li><Link to="/login">Login</Link></li>
           <li><Link to="/registo">Registo</Link></li>
           <li><Link to="/torneios">Torneios</Link></li>
+          <li><Link to="/perfil">Perfil Utilizador</Link></li>
         </ul>
       </nav>
       <Routes>
@@ -29,7 +34,12 @@ function App() {
           </Route>
           <Route path = "/:id/jogos" element = {<Jogos/>}/> 
           <Route path = "/:id/classificacao" element = {<Classificacao/>}/>
-          <Route path="*" element= {<NotFound/>}/>
+          <Route path = "*" element= {<NotFound/>}/>
+
+          {/*A partir daqui, dentro do PrivateRoutes ficam as rotas privadas*/}
+          <Route element={<PrivateRoutes />}>
+                <Route element={<Perfil/>} path="/perfil" exact/>
+          </Route>
       </Routes>
     </div>
   );

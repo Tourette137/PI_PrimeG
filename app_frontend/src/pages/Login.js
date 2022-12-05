@@ -1,5 +1,5 @@
 import {useRef} from 'react';
-import {useNavigate } from 'react-router-dom'
+import {useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const API_URL="http://localhost:3000"
@@ -22,6 +22,7 @@ export function Login() {
         axios.post(`${API_URL}/users/login`, bodyMessage)
             .then(response => {
                 console.log(response)
+                localStorage.setItem("token", JSON.stringify(response.data.token))
                 navigate("/")
             })
             .catch(e => console.log(e))
