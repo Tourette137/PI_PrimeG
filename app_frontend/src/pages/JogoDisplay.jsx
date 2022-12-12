@@ -45,25 +45,27 @@ const JogoDisplay = ({jogo}) => {
         nomeEquipa2 = equipa.nomeEquipa
     )
 
-    var aux = jogo.resultado.split("|");
     let resultadofinal = "";
-    aux.forEach(element => {
-        var aux2 = element.split("-");
-        if (resultadofinal === ""){
-            resultadofinal += nomeEquipa1;
-            resultadofinal += " ";
-            resultadofinal += aux2[1];
-        }
-        else {
-            resultadofinal += " - ";
-            resultadofinal += aux2[1];
-            resultadofinal += " ";
-            resultadofinal += nomeEquipa2;
-        }     
-    });
+    if (jogo.resultado != null) {
+        var aux = jogo.resultado.split("|");
+        aux.forEach(element => {
+            var aux2 = element.split("-");
+            if (resultadofinal === ""){
+                resultadofinal += nomeEquipa1;
+                resultadofinal += " ";
+                resultadofinal += aux2[1];
+            }
+            else {
+                resultadofinal += " - ";
+                resultadofinal += aux2[1];
+                resultadofinal += " ";
+                resultadofinal += nomeEquipa2;
+            }     
+        });
+    }
 
     let isGroup = ""
-    if(jogo.idGrupo!==""){
+    if(jogo.Grupo_idGrupo===null || typeof jogo.Grupo_idGrupo === undefined){
         isGroup = false;
     }
     else {
@@ -73,8 +75,8 @@ const JogoDisplay = ({jogo}) => {
         <div className="jogo">
             <div>
             {isGroup 
-                ? <p>Grupo: {jogo.Grupo_idGrupo}</p>
-                : <p>Eliminatória: {jogo.Ronda_idRonda}</p>
+                ? <p>Grupo: {jogo.numeroGrupo}</p>
+                : <p>Eliminatória: {jogo.nomeEtapa}</p>
             }
             </div>
             <div>

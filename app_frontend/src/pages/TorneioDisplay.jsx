@@ -23,7 +23,7 @@ const TorneioDisplay = ({torneio}) => {
             </div>
 
             <div>
-                <p>Tipo do Torneio: {torneio.tipoTorneio}</p>
+                <p>Tipo do Torneio: {torneio.nometipoTorneio}</p>
             </div>
 
             <div>

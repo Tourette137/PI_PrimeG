@@ -3,20 +3,152 @@ const router = express.Router();
 const data = require('../query.js')
 
 
-//lista de jogos a decorrer de um torneio
-router.get("/:id/jogos",(req,res) =>{
+//0 - por começar
+//1 - a decorrer
+//2 - encerrado
+router.get("/:id/jogosEncerrados", (req,res) => {
     const idTorneio = parseInt(req.params.id);
-    //Ver se o torneio já terminou
-    let sql = "select terminado from Torneio where idTorneio = " + idTorneio + ";";
+    const filtro = req.query.filtro;
+    //tirar apenas os jogos encerrados do torneio
+    let sql = "select tipoTorneio from Torneio where idTorneio = " + idTorneio + ";"
     data.query(sql).then(re => {
         if(re.length!=0){
-            getJogosTorneio(parseInt(re[0].terminado),idTorneio,res);
+            getJogosEstadoTorneio(parseInt(re[0].tipoTorneio),2,idTorneio,filtro,res);
+        }
+        else {
+            res.status(404).send("O torneio não existe");
+        }
+    });
+});
+
+router.get("/:id/jogosPorComecar", (req,res) => {
+    const idTorneio = parseInt(req.params.id);
+    const filtro = req.query.filtro;
+
+    //tirar apenas os jogos por começar do torneio
+    let sql = "select tipoTorneio from Torneio where idTorneio = " + idTorneio + ";"
+    data.query(sql).then(re => {
+        if(re.length!=0){
+            getJogosEstadoTorneio(parseInt(re[0].tipoTorneio),0,idTorneio,filtro,res);
+        }
+        else {
+            res.status(404).send("O torneio não existe");
+        }
+    });
+});
+
+//lista de jogos a decorrer de um torneio
+router.get("/:id/jogosaDecorrer",(req,res) =>{
+    const idTorneio = parseInt(req.params.id);
+    const filtro = req.query.filtro;
+
+    let sql = "select tipoTorneio from Torneio where idTorneio = " + idTorneio + ";";
+    data.query(sql).then(re => {
+        if(re.length!=0){
+            getJogosEstadoTorneio(parseInt(re[0].tipoTorneio),1,idTorneio,filtro,res);
         }
         else {
             res.status(404).send("O torneio não existe");
         }      
     });
 })
+
+function getJogosEstadoTorneio (tipoTorneio, estado, idTorneio, filtro, res){
+    let sql = "";
+    switch(tipoTorneio) {
+        case 0: case 3: //enviar os jogos dos torneio que só possuem grupos
+            if(filtro != null && filtro === "Eliminatorias"){
+                break;
+            }
+            else {
+                sql = "select * from Jogo as J join Grupo as G on J.Grupo_idGrupo = G.idGrupo " +
+                        "join FaseGrupos as FG on G.FaseGrupos_idFaseGrupos = FG.idFaseGrupos " + 
+                        "where FG.Torneio_idTorneio = " + idTorneio + " and J.estado = " + estado + ";";
+
+                data.query(sql).then(re => {
+                    res.send(re);
+                });
+            }
+            break;
+        case 1: case 4: //enviar os jogos dos torneio que só têm eliminatórias
+            if(filtro != null && filtro === "FaseGrupos"){
+                break;
+            }
+            else {
+                sql = "select * from Jogo as J join Ronda as R on J.Ronda_idRonda = R.idRonda " +
+                      "join Etapa as E on R.Etapa_idEtapa = E.idEtapa " + 
+                      "join Eliminatoria as EL on E.Eliminatoria_idEliminatoria = EL.idEliminatoria " +
+                      "where EL.Torneio_idTorneio = " + idTorneio + " and J.estado = " + estado + ";";
+                data.query(sql).then(re => {
+                    res.send(re);
+                });
+            }
+            break;
+        case 2: case 5: case 6: case 7: //enviar os jogos dos torneios que têm grupos e eliminatórias
+            if(filtro != null){
+                if (filtro === "FaseGrupos") {
+                    sql = "select *, T.tipoTorneio from Jogo as J join Grupo as G on J.Grupo_idGrupo = G.idGrupo " +
+                          "join FaseGrupos as FG on G.FaseGrupos_idFaseGrupos = FG.idFaseGrupos " + 
+                          "join Torneio as T on T.idTorneio = FG.Torneio_idTorneio " +
+                          "where T.idTorneio = " + idTorneio + " and J.estado = " + estado + ";";
+                    data.query(sql).then(re => {
+                        res.send(re);
+                    })
+                    break;
+                }
+                else if(filtro === "Eliminatorias") {
+                    sql = "select *, T.tipoTorneio from Jogo as J join Ronda as R on J.Ronda_idRonda = R.idRonda " +
+                          "join Etapa as E on R.Etapa_idEtapa = E.idEtapa " + 
+                          "join Eliminatoria as EL on E.Eliminatoria_idEliminatoria = EL.idEliminatoria " +
+                          "join Torneio as T on T.idTorneio = EL.Torneio_idTorneio " +
+                          "where T.idTorneio = " + idTorneio + " and J.estado = " + estado + ";";
+                    data.query(sql).then(re => {
+                        res.send(re);
+                    })
+                    break;
+                }
+                else {
+                    sql = "select *, T.tipoTorneio from Jogo as J join Grupo as G on J.Grupo_idGrupo = G.idGrupo " +
+                          "join FaseGrupos as FG on G.FaseGrupos_idFaseGrupos = FG.idFaseGrupos " + 
+                          "join Torneio as T on T.idTorneio = FG.Torneio_idTorneio " +
+                          "where T.idTorneio = " + idTorneio + " and J.estado = " + estado + ";";
+
+                    data.query(sql).then(re => {
+                        let sql1 = "select *, T.tipoTorneio from Jogo as J join Ronda as R on J.Ronda_idRonda = R.idRonda " +
+                                    "join Etapa as E on R.Etapa_idEtapa = E.idEtapa " + 
+                                    "join Eliminatoria as EL on E.Eliminatoria_idEliminatoria = EL.idEliminatoria " +
+                                    "join Torneio as T on T.idTorneio = EL.Torneio_idTorneio " +
+                                    "where T.idTorneio = " + idTorneio + " and J.estado = " + estado + ";";
+                        data.query(sql1).then(re1 => {
+                            var result = re.concat(re1);
+                            res.send(JSON.stringify(result));
+                        })
+                    });
+                }
+            }
+            else {
+                sql = "select *, T.tipoTorneio from Jogo as J join Grupo as G on J.Grupo_idGrupo = G.idGrupo " +
+                "join FaseGrupos as FG on G.FaseGrupos_idFaseGrupos = FG.idFaseGrupos " + 
+                "join Torneio as T on T.idTorneio = FG.Torneio_idTorneio " +
+                "where T.idTorneio = " + idTorneio + " and J.estado = " + estado + ";";
+
+                data.query(sql).then(re => {
+                    let sql1 = "select *,T.tipoTorneio from Jogo as J join Ronda as R on J.Ronda_idRonda = R.idRonda " +
+                                "join Etapa as E on R.Etapa_idEtapa = E.idEtapa " + 
+                                "join Eliminatoria as EL on E.Eliminatoria_idEliminatoria = EL.idEliminatoria " +
+                                "join Torneio as T on T.idTorneio = EL.Torneio_idTorneio " +
+                                "where T.idTorneio = " + idTorneio + " and J.estado = " + estado + ";";
+                    data.query(sql1).then(re1 => {
+                        var result = re.concat(re1);
+                        res.send(JSON.stringify(result));
+                    })
+                });
+            }
+            break;    
+        default:
+            console.log("default");
+    } 
+}
 
 //funcao utilizada para obter os jogos a decorrer de um dado torneio
 function getJogosTorneio(terminado,idTorneio,res){
@@ -251,21 +383,21 @@ router.get("/aDecorrer",(req,res) => {
             re.map((r) => {
                 r.dataTorneio = r.dataTorneio.toLocaleDateString();
                 switch (r.tipoTorneio) {
-                    case 0: r.tipoTorneio = "Liga"
+                    case 0: r.nometipoTorneio = "Liga"
                         break;
-                    case 1: r.tipoTorneio = "Torneio de Eliminatórias"
+                    case 1: r.nometipoTorneio = "Torneio de Eliminatórias"
                         break;
-                    case 2: r.tipoTorneio = "Torneio com fase de grupos e eliminatórias";
+                    case 2: r.nometipoTorneio = "Torneio com fase de grupos e eliminatórias";
                         break;
-                    case 3: r.tipoTorneio = "Liga com duas mãos";
+                    case 3: r.nometipoTorneio = "Liga com duas mãos";
                         break;
-                    case 4: r.tipotorneio = "Torneio de Eliminatórias com duas mãos";
+                    case 4: r.nometipotorneio = "Torneio de Eliminatórias com duas mãos";
                         break;
-                    case 5: r.tipoTorneio = "Torneio com fase de grupos com duas mãos e eliminatórias";
+                    case 5: r.nometipoTorneio = "Torneio com fase de grupos com duas mãos e eliminatórias";
                         break;
-                    case 6: r.tipoTorneio = "Torneio com fase de grupos e eliminatórias com duas mãos";
+                    case 6: r.nometipoTorneio = "Torneio com fase de grupos e eliminatórias com duas mãos";
                         break;
-                    case 7: r.tipoTorneio = "Torneio com fase de grupos e eliminatórias, ambos com duas mãos";
+                    case 7: r.nometipoTorneio = "Torneio com fase de grupos e eliminatórias, ambos com duas mãos";
                         break;
                     default: console.log("default");
                 }
@@ -279,24 +411,7 @@ router.get("/aDecorrer",(req,res) => {
 });
 
 
-
-
-//Classificação final de um torneio
-//Classificao final do grupo + Classificacao das eliminatorias.
-router.get("/:id/classificacao", (req,res) => {
-    const idTorneio = req.params.id;
-    let sql = "select tipoTorneio from Torneio where idTorneio = " + idTorneio + ";";
-    data.query(sql).then(re => {
-        if(re.length!=0){
-            getClassificacaoTorneio(re[0].tipoTorneio,idTorneio,res);
-        }
-        else {
-            res.status(404).send("O torneio não existe");
-        }      
-    });
-});
-
-/*
+/* Tipo do torneio
 0 - grupo (liga)
 1 - eliminatórias
 2 - ambos
@@ -307,125 +422,149 @@ router.get("/:id/classificacao", (req,res) => {
 7 - ambos (ambos 2 mãos)
 */
 
-function getClassificacaoTorneio(tipoTorneio, idTorneio, res) {
-    switch (tipoTorneio) {
-        case 0: case 3:
-            //classificacao do grupo
-            let sql = "select numeroGrupo,classificacaoGrupo from Grupo as G " +
-                      "join FaseGrupos as FG on G.faseGrupos_idFaseGrupos = FG.idFaseGrupos " +
-                      "join Torneio as T on T.idTorneio = FG.Torneio_idTorneio " +
-                      "where idTorneio = " + idTorneio + ";"
-            data.query(sql).then(re => {
-                re = "Liga" + JSON.stringify(re); 
-                res.send(re);
-            }); 
-            break;
-        case 1: case 4: 
-            let sql1 = "select E.numeroEtapa,R.numeroRonda,Eq.idEquipa,Eq.nomeEquipa,J.resultado from Eliminatoria as El " +
-                       "join Etapa as E on E.Eliminatoria_idEliminatoria=El.idEliminatoria " +
-                       "join Ronda as R on R.Etapa_idEtapa=E.idEtapa " +
-                       "join Jogo as J on J.Ronda_idRonda=R.idRonda " +
-                       "join Torneio as T on T.idTorneio = El.Torneio_idTorneio " + 
-                       "join Torneio_has_Equipa as TE on TE.Torneio_idTorneio=T.idTorneio " +
-                       "join Equipa as Eq on Eq.idEquipa = TE.Equipa_idEquipa " +
-                       "where T.idTorneio = " + idTorneio + " and Eq.idEquipa = J.idOponente1 or Eq.idEquipa = J.idOponente2 ;"
-            data.query(sql1).then(re => {
-                let aux = []
-                let resultado = []
-                let aux2 = {}
-                re.map((r) => {
-                    if (!(aux.includes((r.numeroEtapa,r.numeroRonda)))) {
-                        aux.push(r.numeroEtapa,r.numeroRonda);
-                        aux2 = {"numeroEtapa": r.numeroEtapa,
-                                "numeroRonda": r.numeroRonda,
-                                "idEquipa1" : r.idEquipa,
-                                "nomeEquipa1" : r.nomeEquipa,
-                                "resultado" : r.resultado
-                                }
-                        resultado.push(aux2);
-                    }
-                    else {
-                        for (var i = 0; i <resultado.length; i++) {
-                            if (resultado[i].numeroEtapa === r.numeroEtapa && resultado[i].numeroRonda === r.numeroRonda) {
-                              resultado[i].idEquipa2 = r.idEquipa;
-                              resultado[i].nomeEquipa2 = r.nomeEquipa;  
-                              break;
-                            }
-                          }
-                    }
-                    re = "Elim" + JSON.stringify(resultado); 
-                })
-                res.send(re);
-            });
-            //ver nº de etapas
-            //ver se a etapa presente está terminada  
-                //se estiver terminada - proxima etapa será a ultima a ser mostrada
-                //caso contrário passamos à seguinte e verificamos novamente
-            //enviar os resultados das várias etapas (rondas)
-
-            break;
-        case 2: case 5: case 6: case 7: 
-            let sql2 = "select numeroGrupo,classificacaoGrupo from Grupo as G " +
-                       "join FaseGrupos as FG on G.faseGrupos_idFaseGrupos = FG.idFaseGrupos " +
-                       "join Torneio as T on T.idTorneio = FG.Torneio_idTorneio " +
-                       "where idTorneio = " + idTorneio + ";"
-                    //ver se a fase de grupos já terminou
-                    //caso não terminado enviar apenas a classificacao de todos os grupos
-                    //caso terminado enviar a classificacao final dos grupos + 
-                    ////ver nº de etapas
-                    //ver se a etapa presente está terminada  
-                    //se estiver terminada - proxima etapa será a ultima a ser mostrada
-                    //caso contrário passamos à seguinte e verificamos novamente
-                    //enviar os resultados das várias etapas (rondas)
-            data.query(sql2).then(re => {
-                getClassElim(idTorneio,re,res);
-            })
-            break;
-        default:
-            console.log("default");
-    }
-}
-
-function getClassElim(idTorneio,re,res){
-    let sql1 = "select E.numeroEtapa,R.numeroRonda,Eq.idEquipa,Eq.nomeEquipa,J.resultado from Eliminatoria as El " +
-                "join Etapa as E on E.Eliminatoria_idEliminatoria=El.idEliminatoria " +
-                "join Ronda as R on R.Etapa_idEtapa=E.idEtapa " +
-                "join Jogo as J on J.Ronda_idRonda=R.idRonda " +
-                "join Torneio as T on T.idTorneio = El.Torneio_idTorneio " + 
-                "join Torneio_has_Equipa as TE on TE.Torneio_idTorneio=T.idTorneio " +
-                "join Equipa as Eq on Eq.idEquipa = TE.Equipa_idEquipa " +
-                "where T.idTorneio = " + idTorneio + " and Eq.idEquipa = J.idOponente1 or Eq.idEquipa = J.idOponente2 ;"
-    data.query(sql1).then(re1 => {
-        let aux = []
-        let resultado = []
-        let aux2 = {}
-        re1.map((r) => {
-        if (!(aux.includes((r.numeroEtapa,r.numeroRonda)))) {
-            aux.push(r.numeroEtapa,r.numeroRonda);
-            aux2 = {"numeroEtapa": r.numeroEtapa,
-                    "numeroRonda": r.numeroRonda,
-                    "idEquipa1" : r.idEquipa,
-                    "nomeEquipa1" : r.nomeEquipa,
-                    "resultado" : r.resultado
-                    }
-            resultado.push(aux2);
-        }
-        else {
-            for (var i = 0; i <resultado.length; i++) {
-                if (resultado[i].numeroEtapa === r.numeroEtapa && resultado[i].numeroRonda === r.numeroRonda) {
-                    resultado[i].idEquipa2 = r.idEquipa;
-                    resultado[i].nomeEquipa2 = r.nomeEquipa;  
-                break;
-                }
+//Classificação dos grupos de um torneio.
+router.get("/:id/classificacao/grupos", (req,res) => {
+    const idTorneio = req.params.id;
+    let sql = "select tipoTorneio from Torneio where idTorneio = " + idTorneio + ";";
+    data.query(sql).then(re => {
+        if(re.length!=0){
+            if (re[0].tipoTorneio !== 1 && re[0].tipoTorneio !== 4) {
+                getClassificacaoGrupo(idTorneio,res);
+            }
+            else{
+                res.status(400).send("O torneio não contém grupos.")
             }
         }
-        re1 =JSON.stringify(resultado); 
-        })
-        re = "Ambos" + JSON.stringify(re);
-        re += re1;
-        res.send(re);
+        else {
+            res.status(404).send("O torneio não existe.");
+        }      
     });
+});
+
+function getClassificacaoGrupo(idTorneio,res) {
+    let sql = "select numeroGrupo,classificacaoGrupo from Grupo as G " +
+              "join FaseGrupos as FG on G.faseGrupos_idFaseGrupos = FG.idFaseGrupos " +
+              "join Torneio as T on T.idTorneio = FG.Torneio_idTorneio " +
+              "where idTorneio = " + idTorneio + ";"
+    data.query(sql).then(re => {
+        let aux1 = []
+        re.map((r) => {
+            let aux2 = `${r.classificacaoGrupo}`.split('|');
+            console.log(aux2);
+            for (var i = 0; i< aux2.length; i++) {
+                aux1.push(aux2[i]);
+            }
+            r.classificacaoGrupo = aux1;
+            aux1 = {}
+        })
+        res.send(re);
+    }); 
 }
 
+
+//Classificacao das eliminatórias de um torneio
+router.get("/:id/classificacao/eliminatorias", (req,res) => {
+    const idTorneio = req.params.id;
+    let sql = "select tipoTorneio from Torneio where idTorneio = " + idTorneio + ";";
+    data.query(sql).then(re => {
+        if(re.length!=0){
+            if (re[0].tipoTorneio !== 0 && re[0].tipoTorneio !== 3) {
+                getClassificacaoElim(idTorneio,res);
+            }
+            else{
+                res.status(400).send("O torneio não contém eliminatórias.")
+            }
+        }
+        else {
+            res.status(404).send("O torneio não existe.");
+        }      
+    });
+});
+
+
+function getClassificacaoElim(idTorneio,res) {
+    let sql = "select E.numeroEtapa,R.numeroRonda,Eq.idEquipa,Eq.nomeEquipa,J.resultado from Eliminatoria as El " +
+               "join Etapa as E on E.Eliminatoria_idEliminatoria=El.idEliminatoria " +
+               "join Ronda as R on R.Etapa_idEtapa=E.idEtapa " +
+               "join Jogo as J on J.Ronda_idRonda=R.idRonda " +
+               "join Torneio as T on T.idTorneio = El.Torneio_idTorneio " + 
+               "join Torneio_has_Equipa as TE on TE.Torneio_idTorneio=T.idTorneio " +
+               "join Equipa as Eq on Eq.idEquipa = TE.Equipa_idEquipa " +
+               "where T.idTorneio = " + idTorneio + " and Eq.idEquipa = J.idOponente1 or Eq.idEquipa = J.idOponente2 ;"
+    data.query(sql).then(re => {
+        if (re.length != 0) {
+            let aux = []
+            let resultado = []
+            let aux2 = {}
+            re.map((r) => {
+            if (!(aux.includes((r.numeroEtapa,r.numeroRonda)))) {
+                aux.push(r.numeroEtapa,r.numeroRonda);
+                aux2 = {"numeroEtapa": r.numeroEtapa,
+                        "numeroRonda": r.numeroRonda,
+                        "idEquipa1" : r.idEquipa,
+                        "nomeEquipa1" : r.nomeEquipa,
+                        "resultado" : r.resultado
+                }
+                resultado.push(aux2);
+            }
+            else {
+                for (var i = 0; i <resultado.length; i++) {
+                    if (resultado[i].numeroEtapa === r.numeroEtapa && resultado[i].numeroRonda === r.numeroRonda) {
+                        resultado[i].idEquipa2 = r.idEquipa;
+                        resultado[i].nomeEquipa2 = r.nomeEquipa;  
+                        break;
+                    }
+                }
+            }
+            re =resultado; 
+            })
+            res.send(re);
+        }
+        else {
+            res.status(404).send("A eliminatória não foi encontrada!")
+        }
+    }) 
+}
+
+//Get de um torneio
+router.get("/:id", (req,res) => {
+    const idTorneio = req.params.id;
+    let sql = "select T.idTorneio,T.nomeTorneio,T.isFederado,T.dataTorneio,T.escalao,T.tipoTorneio,D.nomeDesporto,L.Nome from torneio as T " +
+              "join Espaco as E on T.Espaco_idEspaco = E.idEspaco " +
+              "join Localidade as L on E.Localidade_idLocalidade = L.idLocalidade " +
+              "join Desporto as D on T.idDesporto = D.idDesporto " +
+              "where T.idTorneio = " + idTorneio + " ;"
+    data.query(sql).then(re => {
+        if (re.length != 0) {
+            re.map((r) => {
+                r.dataTorneio = r.dataTorneio.toLocaleDateString();
+                switch (r.tipoTorneio) {
+                    case 0: r.nometipoTorneio = "Liga"
+                        break;
+                    case 1: r.nometipoTorneio = "Torneio de Eliminatórias"
+                        break;
+                    case 2: r.nometipoTorneio = "Torneio com fase de grupos e eliminatórias";
+                        break;
+                    case 3: r.nometipoTorneio = "Liga com duas mãos";
+                        break;
+                    case 4: r.nometipotorneio = "Torneio de Eliminatórias com duas mãos";
+                        break;
+                    case 5: r.nometipoTorneio = "Torneio com fase de grupos com duas mãos e eliminatórias";
+                        break;
+                    case 6: r.nometipoTorneio = "Torneio com fase de grupos e eliminatórias com duas mãos";
+                        break;
+                    case 7: r.nometipoTorneio = "Torneio com fase de grupos e eliminatórias, ambos com duas mãos";
+                        break;
+                    default: console.log("default"); 
+                }
+            })
+            res.send(re[0]);
+
+        }
+        else {
+            res.status(404).send("O Torneio não existe!");
+        }
+    })
+})
 
 module.exports = router
