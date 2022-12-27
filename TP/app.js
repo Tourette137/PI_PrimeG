@@ -18,6 +18,7 @@ const torneioRouter = require("./routers/torneio");
 const localidadeRouter = require("./routers/localidade.js");
 const desportoRouter = require("./routers/desporto.js");
 const equipaRouter = require("./routers/equipa.js");
+const espacoRouter = require("./routers/espaco.js")
 
 app.use("/users",userRouter);
 
@@ -28,3 +29,5 @@ app.use("/localidades",localidadeRouter);
 app.use("/desportos",desportoRouter);
 
 app.use("/equipa",equipaRouter);
+
+app.use("/espacos",espacoRouter);

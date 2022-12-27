@@ -2,6 +2,7 @@
 import {useState,useEffect} from 'react';
 import TorneioDisplay from "./TorneioDisplay.jsx";
 import {Link,Route,Routes} from 'react-router-dom';
+import {useNavigate } from 'react-router-dom';
 
 const API_URL="http://localhost:3000"
 export function Torneios() {
@@ -14,7 +15,7 @@ export function Torneios() {
     const [tipo,setTipo] = useState("disponiveis");
     const [localidades,setLocalidades] = useState([]);
     const [desportos,setDesportos] = useState([]);
-
+    const navigate = useNavigate();
 
     // Vai buscar os torneios que pretendemos mostrar
     const searchTorneios = async (tipo) => {
@@ -46,7 +47,7 @@ export function Torneios() {
         }
       }
 
-      // Vai à API buscar as localidades existentes para que possa escolher sobre essa.
+      // Vai à API buscar as localidades existentes para que possa escolher uma delas.
       const searchLocalidades = async () => {
         const response = await fetch (`${API_URL}/localidades`);
         if (response.status === 200) {
@@ -82,27 +83,34 @@ export function Torneios() {
       },[tipo,localidade,desporto,federado]);
 
       //Para mudar o tipo de torneio para o que ele selecionar no form.
-      const handleTipo = event => {
+      const handleTipo = async(event) => {
           setTipo(event.target.value);
       };
 
       //Para mudar a localidade na qual ele está a procurar
-      const handleLocalidade = event => {
+      const handleLocalidade = async(event) => {
         if (event.target.value === "Todas") setLocalidade("");
         else setLocalidade(event.target.value);
       };
 
       //Para mudar o desporto no qual ele está a procurar
-      const handleDesporto = event => {
+      const handleDesporto = async(event) => {
         if (event.target.value === "Todos") setDesporto("");
         else setDesporto(event.target.value);
       };
 
       //Para mudar o filtro de federado
-      const handleFederado = event => {
+      const handleFederado = async(event) => {
         if (event.target.value === "indiferente") setFederado("");
         else setFederado(event.target.value);
       };
+
+      //Para redirecionar para a página de registo
+
+      const handleRegisto = async (e) => {
+        e.preventDefault()
+        navigate("/torneios/registo")
+    }
 
     return(
         <>
@@ -160,6 +168,10 @@ export function Torneios() {
             <h2>Não existem torneios!</h2>
         </div>
      )}
+
+     <footer> 
+          <button onClick ={handleRegisto}>Registe aqui o seu torneio</button>
+     </footer>
 
         </>
     )

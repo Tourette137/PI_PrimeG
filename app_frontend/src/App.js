@@ -10,6 +10,7 @@ import {Jogos} from './pages/Jogos.js';
 import { Classificacao } from './pages/Classificacao.js';
 import {NotFound} from './pages/NotFound.js';
 import {Perfil} from './pages/Perfil.js';
+import {RegistoTorneio} from './pages/RegistoTorneio.js';
 
 function App() {
 
@@ -39,6 +40,9 @@ function App() {
           {/*A partir daqui, dentro do PrivateRoutes ficam as rotas privadas*/}
           <Route element={<PrivateRoutes />}>
                 <Route element={<Perfil/>} path="/perfil" exact/>
+          </Route>
+          <Route element={<PrivateRoutes />}>
+                <Route element = {<RegistoTorneio/>} path="/torneios/registo" exact/>
           </Route>
       </Routes>
     </div>

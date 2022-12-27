@@ -8,13 +8,14 @@ async function isAuth(req, res, next) {
     return res.sendStatus(401);
   }
 
-  const [, token] = authorization.split(' ');
-
+  const [, token] = await authorization.split(" ");
   try {
-    await promisify(jwt.verify)(token, 'PRIVATEKEY');
-
-    return next();
-  } catch (err) {
+    var decoded =jwt.verify(token, 'PRIVATEKEY')
+    req.userId = decoded.id
+    next();
+  }
+   catch (err) {
+    console.log(err)
     return res.sendStatus(401);
   }
 }

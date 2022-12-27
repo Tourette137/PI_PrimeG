@@ -1,4 +1,4 @@
-import {useParams} from 'react-router-dom'
+import {useParams,useSearchParams} from 'react-router-dom'
 import {useState,useEffect} from 'react';
 import JogoDisplay from "./JogoDisplay.jsx";
 //import {Link,Route,Routes} from 'react-router-dom';
@@ -6,10 +6,13 @@ import JogoDisplay from "./JogoDisplay.jsx";
 const API_URL="http://localhost:3000/torneios"
 
 export function Jogos() {
-    const {id} = useParams()
+    const {id} = useParams();
     const [jogos,setJogos] = useState([]);
     const [tipo,setTipo] = useState("jogosaDecorrer");
     const [filtro,setFiltro] = useState("");
+    let [searchParams, setSearchParams] = useSearchParams();
+
+    let tipoTorneio = searchParams.get("t");
 
     const searchJogos = async (tipo) => {
         let pedido = API_URL + "/" + id + "/" + tipo;
@@ -45,19 +48,10 @@ export function Jogos() {
       };
 
     let showOptions = false;
-    console.log(jogos[0]);
-    if (jogos.length !== 0) {
-        if(jogos[0].tipoTorneio === 2 || jogos[0].tipoTorneio === 5 || jogos[0].tipoTorneio === 6 || jogos[0].tipoTorneio === 7) {
-            showOptions = true;
-        }
+    if(tipoTorneio == 2 || tipoTorneio == 5 || tipoTorneio == 6 || tipoTorneio == 7) {
+        showOptions = true;
     }
-
-    /*jogos.map((jogo) => {
-        if(jogo.tipoTorneio === 2 || jogo.tipoTorneio === 5 || jogo.tipoTorneio === 6 || jogo.tipoTorneio === 7) {
-            showOptions = true;
-        }
-    });*/
-
+    console.log(tipoTorneio);
     return(
         <>
         <h1>Jogos do Torneio</h1>
@@ -79,12 +73,7 @@ export function Jogos() {
                     <option value="Eliminatorias">Eliminatórias</option>                    
                 </select>
               </form>
-            : <form>
-                <label>Filtro: </label>
-                <select onChange={handleFiltro}>
-                    <option defaultValue="Todos">Todos</option>                   
-                </select>
-              </form>
+            : <div></div>
         }
         
 
@@ -107,3 +96,4 @@ export function Jogos() {
         </>
     )
 }
+

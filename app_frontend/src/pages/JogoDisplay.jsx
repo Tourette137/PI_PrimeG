@@ -64,6 +64,7 @@ const JogoDisplay = ({jogo}) => {
         });
     }
 
+    
     let isGroup = ""
     if(jogo.Grupo_idGrupo===null || typeof jogo.Grupo_idGrupo === undefined){
         isGroup = false;

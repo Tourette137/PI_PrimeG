@@ -22,7 +22,7 @@ export function Login() {
         axios.post(`${API_URL}/users/login`, bodyMessage)
             .then(response => {
                 console.log(response)
-                localStorage.setItem("token", JSON.stringify(response.data.token))
+                localStorage.setItem("token", response.data.token)
                 navigate("/")
             })
             .catch(e => console.log(e))

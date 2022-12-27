@@ -34,6 +34,10 @@ const TorneioDisplay = ({torneio}) => {
                 <p>Localidade: {torneio.Nome}</p>
             </div>
 
+            <div>
+                <p>Elementos por equipa: {torneio.tamEquipa}</p>
+            </div>
+
         </div>
     )
 }
