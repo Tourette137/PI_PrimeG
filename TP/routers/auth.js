@@ -9,13 +9,23 @@ async function isAuth(req, res, next) {
   }
 
   const [, token] = await authorization.split(" ");
+
   try {
-    var decoded =jwt.verify(token, 'PRIVATEKEY')
-    console.log(decoded)
-    req.userId = decoded.id
-    next();
+
+    jwt.verify(token, 'PRIVATEKEY', (err, user) => {
+
+      if (err) {
+        return res.sendStatus(401)
+      }
+      else {
+        req.userId = user.id
+
+        return next()
+      }
+    }) 
+
   }
-   catch (err) {
+  catch (err) {
     console.log(err)
     return res.sendStatus(401);
   }

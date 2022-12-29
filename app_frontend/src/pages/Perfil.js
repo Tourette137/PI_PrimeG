@@ -1,4 +1,4 @@
-import {useNavigate } from 'react-router-dom';
+import {useNavigate,Link,Route,Routes} from 'react-router-dom';
 
 export function Perfil() {
 
@@ -17,6 +17,9 @@ export function Perfil() {
             <h1>PERFIL UTILIZADOR</h1>
 
             <button onClick={handleTerminarSessao}>Logout</button>
+
+            <button><Link to="/perfil/inscrito">Torneios Inscrito</Link></button>
+            <button><Link to="/perfil/favoritos">Torneios Favoritos</Link></button>
         </>
     )
 }

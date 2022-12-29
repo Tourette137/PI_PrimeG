@@ -69,4 +69,63 @@ router.post("/login", (req, res) => {
 })
 
 
+// Listar torneios em que o user esta inscrito 
+router.get("/torneiosInscrito", isAuth, (req, res) => {
+
+    let sql =  `Select * from Torneio as T
+                Join Torneio_has_Equipa as TE on TE.Torneio_idTorneio = T.idTorneio
+                Join Equipa_has_Utilizador as EU on TE.Equipa_idEquipa = EU.Equipa_idEquipa
+                Where EU.Utilizador_idUtilizador = "${req.userId}";`
+
+    data.query(sql)
+        .then( async re => {
+            if(re.length == 0) {
+                res.status(503).jsonp("Não está inscrito em nenhum torneio")
+            } else {
+                res.send(re);
+            }
+        })
+        .catch(e => { res.status(502).jsonp({ error: e }) })
+    
+})
+
+// Listar favoritos
+router.get("/torneiosFavoritos", isAuth, (req, res) => {
+
+    let sql =  `Select * from Torneio as T
+                Join TorneiosFav as TF on TF.Torneio_idTorneio = T.idTorneio
+                Where TF.Utilizador_idUtilizador = "${req.userId}";`
+
+    data.query(sql)
+        .then( async re => {
+            if(re.length == 0) {
+                res.status(503).jsonp("Não tem nenhum torneio Favorito")
+            } else {
+                res.send(re);
+            }
+        })
+        .catch(e => { res.status(502).jsonp({ error: e }) })
+    
+})
+
+//Listar Perfil de Utilizador
+
+// Listar histórico Torneios Utilizador
+
+// Listar histórico Jogos Utilizador
+
+// Listar Dados DO USER
+
+// Editar Perfil Utilizador
+
+// Inscrição num torneio por parte do User
+
+// Adicionar favoritos (local, desporto, torneio)
+
+// Upload de imagens
+
+// Notificações
+
+
+
 module.exports = router

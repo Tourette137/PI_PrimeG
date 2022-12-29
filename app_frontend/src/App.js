@@ -7,10 +7,12 @@ import {Login} from './pages/Login.js';
 import {Registo} from './pages/Registo.js';
 import {Torneio} from './pages/Torneio.js';
 import {Jogos} from './pages/Jogos.js';
-import { Classificacao } from './pages/Classificacao.js';
+import {Classificacao } from './pages/Classificacao.js';
 import {NotFound} from './pages/NotFound.js';
 import {Perfil} from './pages/Perfil.js';
 import {RegistoTorneio} from './pages/RegistoTorneio.js';
+import {PerfilInscrito} from './pages/PerfilInscrito.js';
+import {PerfilFavoritos} from './pages/PerfilFavoritos.js';
 
 function App() {
 
@@ -39,9 +41,9 @@ function App() {
 
           {/*A partir daqui, dentro do PrivateRoutes ficam as rotas privadas*/}
           <Route element={<PrivateRoutes />}>
-                <Route element={<Perfil/>} path="/perfil" exact/>
-          </Route>
-          <Route element={<PrivateRoutes />}>
+                <Route element = {<Perfil/>} path="/perfil" exact/>
+                <Route element = {<PerfilInscrito/>} path="/perfil/inscrito" exact/>
+                <Route element = {<PerfilFavoritos/>} path="/perfil/favoritos" exact/>
                 <Route element = {<RegistoTorneio/>} path="/torneios/registo" exact/>
           </Route>
       </Routes>
