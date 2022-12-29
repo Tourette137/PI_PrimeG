@@ -1,14 +1,14 @@
-import TorneioDisplay from "./TorneioDisplay.jsx";
+import JogoDisplay from "./JogoDisplay.jsx";
 import {useNavigate, Link,Route,Routes} from 'react-router-dom';
 import {useState,useEffect} from 'react';
 import axios from 'axios';
 
 const API_URL="http://localhost:3000"
 
-export function PerfilFavoritos() {
+export function PerfilHistoricoJogos() {
 
     const navigate = useNavigate();
-    const [torneios, setTorneios] = useState([]);
+    const [jogos, setJogos] = useState([]);
 
     // Handler para voltar ao Perfil
     const handlebackToProfile = async (e) => {
@@ -16,38 +16,38 @@ export function PerfilFavoritos() {
         navigate("/perfil")
     }
 
-    // Vai a API buscar os torneios favoritos do Utilizador
-    const torneiosInscrito = async () => {
+    // Vai a API buscar os torneios inscritos do Utilizador
+    const jogosHistorico = async () => {
 
         const headers = { "authorization": "Bearer " + localStorage.getItem("token") }
 
-        axios.get(`${API_URL}/users/torneiosFavoritos`, {headers: headers})
+        axios.get(`${API_URL}/users/jogosHistorico`, {headers: headers})
                 .then(response => {
-                    setTorneios(response.data)
+                    setJogos(response.data)
                 })
                 .catch(e => console.log(e))
       }
 
     // Use Effect inicial
     useEffect(() => {
-        torneiosInscrito();
+        jogosHistorico();
       },[])
 
 
     return(
         <>
             <h1>Só entra aqui se tiver o token / estiver logado.</h1>
-            <h1>TORNEIOS FAVORITOS</h1>
+            <h1>HISTÓRICO DE JOGOS</h1>
 
             {
-                torneios?.length > 0 ?
+                jogos?.length > 0 ?
                 (
                 <div className="container">
-                    {torneios.map((torneio) => <li><Link to={"/torneios/" + torneio.idTorneio}><TorneioDisplay torneio = {torneio}/></Link></li>) }
+                    {jogos.map((jogo) => <li><JogoDisplay jogo = {jogo}/></li>) }
                 </div>
                 ) : (
                 <div className="empty">
-                    <h2>Nao Tem Torneios</h2>
+                    <h2>Nao Tem Histórico de Jogos</h2>
                 </div>
                 )
             }

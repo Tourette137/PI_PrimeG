@@ -13,6 +13,9 @@ import {Perfil} from './pages/Perfil.js';
 import {RegistoTorneio} from './pages/RegistoTorneio.js';
 import {PerfilInscrito} from './pages/PerfilInscrito.js';
 import {PerfilFavoritos} from './pages/PerfilFavoritos.js';
+import {PerfilHistorico} from './pages/PerfilHistorico.js';
+import {PerfilHistoricoJogos} from './pages/PerfilHistoricoJogos.js';
+import {PerfilNotificacoes} from './pages/PerfilNotificacoes.js';
 
 function App() {
 
@@ -44,6 +47,9 @@ function App() {
                 <Route element = {<Perfil/>} path="/perfil" exact/>
                 <Route element = {<PerfilInscrito/>} path="/perfil/inscrito" exact/>
                 <Route element = {<PerfilFavoritos/>} path="/perfil/favoritos" exact/>
+                <Route element = {<PerfilHistorico/>} path="/perfil/historico" exact/>
+                <Route element = {<PerfilHistoricoJogos/>} path="/perfil/historicoJogos" exact/>
+                <Route element = {<PerfilNotificacoes/>} path="/perfil/notificacoes" exact/>
                 <Route element = {<RegistoTorneio/>} path="/torneios/registo" exact/>
           </Route>
       </Routes>

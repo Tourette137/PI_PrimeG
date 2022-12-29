@@ -8,21 +8,18 @@ const API_URL="http://localhost:3000"
 export function PerfilInscrito() {
 
     const navigate = useNavigate();
+    const [torneios, setTorneios] = useState([]);
 
+    // Handler para voltar ao Perfil
     const handlebackToProfile = async (e) => {
         e.preventDefault()
-
         navigate("/perfil")
     }
 
-    const [torneios, setTorneios] = useState([]);
-
-    // Vai à API buscar as localidades existentes para que possa escolher uma delas.
+    // Vai a API buscar os torneios inscritos do Utilizador
     const torneiosInscrito = async () => {
 
-        const headers = {
-            "authorization": "Bearer " + localStorage.getItem("token")
-        }
+        const headers = { "authorization": "Bearer " + localStorage.getItem("token") }
 
         axios.get(`${API_URL}/users/torneiosInscrito`, {headers: headers})
                 .then(response => {
@@ -31,10 +28,11 @@ export function PerfilInscrito() {
                 .catch(e => console.log(e))
       }
 
-    
+    // Use Effect inicial
     useEffect(() => {
         torneiosInscrito();
       },[])
+
 
     return(
         <>

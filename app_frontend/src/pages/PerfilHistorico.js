@@ -5,7 +5,7 @@ import axios from 'axios';
 
 const API_URL="http://localhost:3000"
 
-export function PerfilFavoritos() {
+export function PerfilHistorico() {
 
     const navigate = useNavigate();
     const [torneios, setTorneios] = useState([]);
@@ -16,12 +16,12 @@ export function PerfilFavoritos() {
         navigate("/perfil")
     }
 
-    // Vai a API buscar os torneios favoritos do Utilizador
-    const torneiosInscrito = async () => {
+    // Vai a API buscar os torneios inscritos do Utilizador
+    const torneiosHistorico = async () => {
 
         const headers = { "authorization": "Bearer " + localStorage.getItem("token") }
 
-        axios.get(`${API_URL}/users/torneiosFavoritos`, {headers: headers})
+        axios.get(`${API_URL}/users/torneiosHistorico`, {headers: headers})
                 .then(response => {
                     setTorneios(response.data)
                 })
@@ -30,14 +30,14 @@ export function PerfilFavoritos() {
 
     // Use Effect inicial
     useEffect(() => {
-        torneiosInscrito();
+        torneiosHistorico();
       },[])
 
 
     return(
         <>
             <h1>Só entra aqui se tiver o token / estiver logado.</h1>
-            <h1>TORNEIOS FAVORITOS</h1>
+            <h1>HISTÓRICO DE TORNEIOS</h1>
 
             {
                 torneios?.length > 0 ?
