@@ -4,8 +4,9 @@ const config = {
   db:{
     host: 'localhost',
     user: 'root',
-    password: 'root',
-    database: 'primeg'
+    password: 'fofinha',
+    database: 'primeg',
+    multipleStatements: true
   }
 }
 

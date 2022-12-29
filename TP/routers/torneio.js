@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const data = require('../query.js')
 const isAuth = require('./auth');
+const gerarGrupos = require('../algoritmos.js')
 
 
 //0 - por começar
@@ -576,6 +577,7 @@ router.get("/:id", (req,res) => {
 
 //Inicializo com inscricoesAbertas a 1 (inscrições abertas) e com terminado a 0
 router.post("/registo",isAuth,(req,res) => {
+    console.log(req.body.dataTorneio)
     let sql = `Insert into torneio (nomeTorneio, idOrganizador, idDesporto, isFederado, dataTorneio,inscricoesAbertas,escalao,tipoTorneio,terminado,Espaco_idEspaco,tamEquipa) 
                     values ("${req.body.nomeTorneio}",${req.userId}, ${req.body.idDesporto}, ${req.body.isFederado}, "${req.body.dataTorneio}", 1, ${req.body.escalao}, ${req.body.tipoTorneio}, 0, ${req.body.Espaco_idEspaco},${req.body.tamEquipa})`
         data.query(sql)
@@ -595,11 +597,193 @@ router.post("/registo",isAuth,(req,res) => {
 })
 
 
-router.post("/gestao/inscricao",isAuth,(req,res) => {
-    // do token vou buscar o user
-    // verificar se o utilizador q fez pedido é o q criou o torneio
-    // aceitar/rejeitar inscrição
+// aceitar/rejeitar inscrições
+// pendente a 0 => tá pendente
+// pendente a 1 => aceita a inscrição
+// pendente a 2 => rejeita inscrição
+router.post("/:id/gestao/gerirInscricao",isAuth,(req,res) => {
+    var idTorneio = req.params.id;
+    let sql = `Select idOrganizador from Torneio where idTorneio = ${idTorneio}`
+    data.query(sql).then(re => {
+        if (re.length != 0) {
+            if (re[0].idOrganizador == req.userId) {
+                var idEquipa = req.body.idEquipa;
+                var pendente = req.body.pendente;
+                let sql2 = "update Torneio_has_Equipa " +
+                            "set pendente = " + pendente +
+                            " where Torneio_idTorneio = " + idTorneio +" and Equipa_idEquipa = " + idEquipa + ";"
+                data.query(sql2).then(re => {
+                    if(re != 0){
+                        res.send("Resposta à inscrição registada com sucesso");
+                    }
+                    else {
+                        res.status(404).send("Erro");
+                    }
+                });
+            }
+            else {
+                res.status(501).send("O utilizador não é o organizador deste torneio")
+            }
+        }
+        else {
+            res.status(404).send("O Torneio não existe")
+        }
+    })
 })
+
+// Na página de inscritos do torneio (aqueles que já foram aceites) do frontend
+//                                              quando enviarmos do backend as inscrições, enviamos também o tipo de Torneio
+// No frontend, dependendo do tipo podes ver duas coisas:
+//          se for só eliminatórias, só mandas o pedido ao BE se tiver pelo menos 2 inscritos.
+//          se tiver só grupos, só mandas o pedido ao BE se tiver no mínimo 3 inscritos.
+//          se tiver grupos + eliminatórias, tem de ter 3 
+
+
+// Fechar inscrições
+  router.post("/:id/gestao/fecharInscricoes",isAuth,(req,res) => {
+    var idTorneio = req.params.id;
+    let sql = `Select idOrganizador from Torneio where idTorneio = ${idTorneio}`
+    data.query(sql).then(re => {
+        if (re.length != 0) {
+            if (re[0].idOrganizador == req.userId) {
+
+                let sql1 = "update torneio " +
+                        "set inscricoesAbertas = 0 " +
+                        "where idTorneio = " + idTorneio +";"
+                data.query(sql1).then(re => {
+                    if(re != 0){
+                        res.send("Inscrições fechadas");
+                    }
+                    else {
+                        res.status(404).send("Erro");
+                    }
+                });
+            }
+            else {
+                res.status(501).send("O utilizador não é o organizador deste torneio")
+            }
+        }
+        else {
+            res.status(404).send("O Torneio não existe")
+        }
+
+    })
+})
+
+
+
+/*Pedido vai vir com:
+        Groupsize
+        Intervalo (entre jogos)
+        Duracao (de cada jogo)
+
+        no body
+*/
+
+//Ver no frontend o tipo, porque se o tipo for de grupos, precisamos de perguntar de quantos elementos é cada grupo, no sorteio
+//                        se o tipo for grupos + eliminatórias, precisamos de perguntar quantos passam de cada grupo (quando ele fechar o grupo)        
+//                        ver a situação dos grupos com duas mãos (acho que o 4 n tem algoritmo de duas mãos)
+
+
+//Verificar se o número de grupos que ele indica é possível => númeroinscritos/tamGrupos >2
+//Verificar se o número de pessoas que passam por grupo é possível
+
+// Gera a fase de grupos 
+router.post("/:id/gestao/criarFaseGrupos",isAuth,(req,res) => {
+    var idTorneio = req.params.id;
+    let sql = `Select idOrganizador,inscricoesAbertas from Torneio where idTorneio = ${idTorneio}`
+    data.query(sql).then(re => {
+        if (re.length != 0) {
+            if (re[0].idOrganizador == req.userId && re[0].inscricoesAbertas == 0) {
+                var sql1 = `update torneio set terminado = 1 where idTorneio = ${idTorneio};`
+                data.query(sql1).then(re=>{
+                    var groupSize = req.body.groupSize
+                    var intervalo = req.body.intervalo
+                    var duracao = req.body.duracao
+                    //var maos = req.body(maos)
+                    //var federado = req.body(federado)
+                    // Ainda falta
+                    var sql2 = "select E.idEquipa, E.nomeEquipa, E.ranking,T.dataTorneio,DE.numeroMesas from Equipa as E"+
+                                " inner join Torneio_has_Equipa as TH on E.idEquipa = TH.Equipa_idEquipa"+
+                                            " inner join Torneio as T on TH.Torneio_idTorneio = T.idTorneio"+
+                                " join Espaco as Es on T.Espaco_idEspaco = Es.idEspaco "+
+                                " join Desporto_has_Espaco as DE on (DE.idEspaco = Es.idEspaco and T.idDesporto = DE.idDesporto)" +
+                                " where T.idTorneio = "+ idTorneio + " and TH.pendente = 1;"
+                    data.query(sql2).then(inscritos => {
+                        if (inscritos.length != 0) {
+                            let numeroCampos = inscritos[0].numeroMesas
+                            let dataTorneio = `${(inscritos[0].dataTorneio).toLocaleDateString()}`
+                            let aux = dataTorneio.split("/")
+                            dataTorneio = `${aux[2]}-${aux[1]}-${aux[0]}`
+
+                            let horaInicial = parseInt(`${(inscritos[0].dataTorneio).getHours()}`)
+                            let minutosInicial =parseInt(`${(inscritos[0].dataTorneio).getMinutes()}`)
+                            inscritos.map(x => {delete x['dataTorneio']
+                                                delete x['numeroMesas']
+                                            })
+                            let campos = []
+                            for (let i= 0;i< numeroCampos;i++) {
+                                campos[i] = i+1
+                            }
+
+                            gerarGrupos(idTorneio,groupSize,inscritos,dataTorneio,horaInicial,minutosInicial,intervalo,duracao,campos)
+                            res.send("Torneio gerado")
+                            }
+                    else {
+                        res.status(404).send("O Torneio não tem inscritos para se realizar o sorteio")
+                    }
+                    })
+                
+                })
+                .catch(e => { res.status(400).jsonp({ error: e }) })
+
+            }
+            else {
+                if (re[0].inscricoesAbertas == 0) {
+                    res.status(501).send("O utilizador não é o organizador deste torneio")
+                }
+                else {
+                    res.status(502).send("O Torneio ainda tem inscrições abertas")
+                }
+            }
+        }
+        else {
+            res.status(404).send("O Torneio não existe")
+        }
+    })
+})
+
+router.post("/:id/gestao/:idJogo/atualizarResultado",(req,res) => {
+    var idJogo = parseInt(req.body.idJogo);
+    var resultado = req.body.resultado;
+    let sql = "update Jogo " +
+              "set resultado = " + resultado +
+              " where idJogo = " + idJogo + ";"
+    data.query(sql).then(re => {
+        if(re != 0){
+            res.send(re);
+        }
+        else {
+            res.status(404).send("Erro");
+        }
+    });
+})
+
+router.post("/:id/gestao/:idJogo/comecarJogo",(req,res) => {
+    var idJogo = parseInt(req.body.idJogo);
+    let sql = "update Jogo " +
+              "set estado = 1 " +
+              " where idJogo = " + idJogo + ";"
+    data.query(sql).then(re => {
+        if(re != 0){
+            res.send(re);
+        }
+        else {
+            res.status(404).send("Erro");
+        }
+    });
+})
+﻿
 
 
 module.exports = router

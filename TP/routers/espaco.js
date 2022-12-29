@@ -42,4 +42,45 @@ router.post("/registoNFavorito",isAuth,(req,res) => {
     })
 })
 
+// Registar o espaço como favorito
+router.post("/registarEspaco",(req,res) => {
+    const nome = req.body.nome;
+    const rua = req.body.rua;
+    const contacto = req.body.contacto;
+    const idUtilizador = req.body.idUtilizador;
+    const idLocalidade = req.body.idLocalidade;
+
+    let sql = "select nome from espaco where nome = " + nome + ";";
+    data.query(sql).then(re => {
+        if(re.length != 0){
+            res.status(404).send("Espaço já existe!");
+        }
+        else {
+            sql = "insert into espaco (nome,rua,contacto,Utilizador_idUtilizador,Localidade_idLocalidade,Favorito)"+
+                  "values (" + nome + "," + rua + "," + contacto + "," + idUtilizador + "," + idLocalidade + ",1);"
+            data.query(sql).then(re => {
+                if(re != 0){
+                  res.send(re);
+                }
+                else {
+                  res.status(404).send("Espaços já existente");
+                }
+            }
+    )}
+    });
+})
+
+router.get("/espacoByLocal/:idLocalidade",(req,res) => {
+    var localidade = req.params.idLocalidade;
+    let sql = "select * from espaco where Localidade_idLocalidade = "+ localidade +";";
+    data.query(sql).then(re => {
+        if(re.length != 0){
+            res.send(re);
+        }
+        else {
+            res.status(404).send("Não existem espaços disponíveis");
+        }
+    });
+})
+
 module.exports = router
