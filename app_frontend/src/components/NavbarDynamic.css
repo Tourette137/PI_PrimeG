@@ -50,6 +50,7 @@
     height: 2px;
     background: linear-gradient(90deg, #ff5500, #f8b028);
     transition: 0.3s ;
+    opacity: 0.7;
 }
 
 .nav__logo:hover::before {
@@ -111,13 +112,12 @@
     }
 
     .nav__logo img {
-        height: 1.75rem;
-        padding: 0;
-        transition: .3s;
+        height: 1.6rem;
+        margin-bottom: -0.9rem;
     }
 
-    .nav__logo img:hover {
-        height: 1.8rem;
+    .nav__logo::before {
+        margin-bottom: 0.3rem;
     }
 
     .nav__menu {
@@ -129,7 +129,7 @@
         padding: 2rem 1.5rem 4rem;
         box-shadow: 0 -1px 4px rgba(0, 0, 0, 0.15);
         border-radius: 1.5rem 1.5rem 0 0;
-        transition: .5s;
+        transition: .3s;
     }
 
     .show-menu {
