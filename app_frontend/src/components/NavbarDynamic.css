@@ -134,6 +134,7 @@
 
     .show-menu {
         bottom: 0;
+        transition: .3s;
     }
 
     .nav__menu ul {
@@ -142,7 +143,7 @@
 
     .nav__list {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(2, 1fr);
         gap: 2rem;
     }
 

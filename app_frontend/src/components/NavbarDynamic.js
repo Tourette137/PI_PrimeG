@@ -43,12 +43,17 @@ export function NavbarDynamic() {
                             )
                         }
                         </>
-
-                        <li className="nav__item">
-                            <Link to="/" className="nav__link">
-                                <i className="uil uil-at nav__icon"></i>About Us
-                            </Link>
-                        </li>
+                        
+                        {
+                            /*
+                            <li className="nav__item">
+                                <Link to="/" className="nav__link">
+                                    <i className="uil uil-at nav__icon"></i>About Us
+                                </Link>
+                            </li>
+                            */
+                        }
+                        
 
                         <li className="nav__item">
                             <Link to="/torneios" className="nav__link">
