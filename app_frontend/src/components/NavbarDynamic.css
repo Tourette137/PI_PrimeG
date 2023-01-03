@@ -25,14 +25,35 @@
     font-weight: var(--font-medium);
 }
 
-.nav__logo img {
+.nav__logo{
+    position: relative;
     height: 2.25rem;
     padding: 0;
     transition: .3s;
 }
 
-.nav__logo img:hover {
-    height: 2.4rem;
+.nav__logo img{
+    height: 2.25rem;
+}
+
+.nav__logo:hover {
+    height: 2.25rem;
+    opacity: 0.7;
+}
+
+.nav__logo::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #ff5500, #f8b028);
+    transition: 0.3s ;
+}
+
+.nav__logo:hover::before {
+    width: 100%;
 }
 
 .nav__list {
@@ -63,7 +84,7 @@
     bottom: 0;
     width: 0;
     height: 2px;
-    background-color: #ff5500;
+    background: linear-gradient(90deg, #ff5500, #f8b028);
     transition: 0.3s ;
 }
 

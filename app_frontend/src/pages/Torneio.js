@@ -4,6 +4,7 @@ import {useParams} from 'react-router-dom'
 import {useState,useEffect} from 'react';
 import TorneioDisplay from "./TorneioDisplay.jsx";
 import {Link} from 'react-router-dom';
+import {NavbarDynamic} from '../components/NavbarDynamic.js';
 
 const API_URL="http://localhost:3000"
 
@@ -30,6 +31,7 @@ export function Torneio() {
     
     return(
         <>
+        <NavbarDynamic/>
             <h1>Página do torneio {id}</h1>
             <li><Link to={"/" + id + "/jogos?t=" + torneio.tipoTorneio}>Jogos</Link></li>
             {torneio.terminado != 0 

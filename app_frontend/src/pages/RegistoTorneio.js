@@ -1,6 +1,7 @@
 import {useRef, useState,useEffect} from 'react';
 import {useNavigate } from 'react-router-dom'
 import axios from 'axios';
+import {NavbarDynamic} from '../components/NavbarDynamic.js';
 
 const API_URL="http://localhost:3000"
 
@@ -161,6 +162,7 @@ export function RegistoTorneio() {
     
     return (
         <>
+        <NavbarDynamic/>
         <h1>Registo de Torneio</h1>
         <form onSubmit={handleRegisto}>
             <div>

@@ -1,6 +1,7 @@
 import {useRef} from 'react';
 import {useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
+import {NavbarDynamic} from '../components/NavbarDynamic.js';
 
 const API_URL="http://localhost:3000"
 
@@ -32,6 +33,7 @@ export function Login() {
     
     return (
         <>
+        <NavbarDynamic/>
         <h1>LOGIN</h1>
         <form onSubmit={handleLogin}>
             <div>

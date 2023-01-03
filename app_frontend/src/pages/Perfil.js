@@ -2,6 +2,7 @@ import {useNavigate,Link,Route,Routes} from 'react-router-dom';
 import {useState,useEffect} from 'react';
 import axios from 'axios';
 import PerfilDisplay from "./PerfilDisplay.jsx";
+import {NavbarDynamic} from '../components/NavbarDynamic.js';
 
 const API_URL="http://localhost:3000"
 
@@ -67,6 +68,7 @@ export function Perfil() {
 
     return(
         <>
+        <NavbarDynamic/>
             <h1>Só entra aqui se tiver o token / estiver logado.</h1>
             <h1>PERFIL UTILIZADOR</h1>
 

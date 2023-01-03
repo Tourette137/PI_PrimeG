@@ -1,6 +1,7 @@
 import {useParams,useSearchParams} from 'react-router-dom'
 import {useState,useEffect} from 'react';
 import JogoDisplay from "./JogoDisplay.jsx";
+import {NavbarDynamic} from '../components/NavbarDynamic.js';
 //import {Link,Route,Routes} from 'react-router-dom';
 
 const API_URL="http://localhost:3000/torneios"
@@ -54,6 +55,7 @@ export function Jogos() {
     console.log(tipoTorneio);
     return(
         <>
+        <NavbarDynamic/>
         <h1>Jogos do Torneio</h1>
         <div onChange={handleTipo}>
             <input type="radio" value="jogosPorComecar" name="jogos" checked={("jogosPorComecar"===tipo) ? "checked" : ""} /> Por Começar

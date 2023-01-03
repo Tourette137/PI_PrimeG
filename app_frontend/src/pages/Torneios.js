@@ -3,6 +3,7 @@ import {useState,useEffect} from 'react';
 import TorneioDisplay from "./TorneioDisplay.jsx";
 import {Link,Route,Routes} from 'react-router-dom';
 import {useNavigate } from 'react-router-dom';
+import {NavbarDynamic} from '../components/NavbarDynamic.js';
 
 const API_URL="http://localhost:3000"
 export function Torneios() {
@@ -114,6 +115,7 @@ export function Torneios() {
 
     return(
         <>
+        <NavbarDynamic/>
        {/*Aqui seleciona o tipo de torneio que quer mostrar.*/}
         <h1>Torneios disponíveis </h1>
 

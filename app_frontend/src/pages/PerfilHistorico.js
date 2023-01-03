@@ -2,6 +2,7 @@ import TorneioDisplay from "./TorneioDisplay.jsx";
 import {useNavigate, Link,Route,Routes} from 'react-router-dom';
 import {useState,useEffect} from 'react';
 import axios from 'axios';
+import {NavbarDynamic} from '../components/NavbarDynamic.js';
 
 const API_URL="http://localhost:3000"
 
@@ -36,6 +37,7 @@ export function PerfilHistorico() {
 
     return(
         <>
+        <NavbarDynamic/>
             <h1>Só entra aqui se tiver o token / estiver logado.</h1>
             <h1>HISTÓRICO DE TORNEIOS</h1>
 
