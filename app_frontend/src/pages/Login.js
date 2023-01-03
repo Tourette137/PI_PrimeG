@@ -1,5 +1,5 @@
 import {useRef} from 'react';
-import {useNavigate } from 'react-router-dom';
+import {useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 
 const API_URL="http://localhost:3000"
@@ -40,6 +40,7 @@ export function Login() {
             </div>
             <button>Login</button>
         </form>
+        <button><Link to="/registo">Registe-se</Link></button>
         </>
     )
         

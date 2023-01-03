@@ -17,19 +17,16 @@ import {PerfilHistorico} from './pages/PerfilHistorico.js';
 import {PerfilHistoricoJogos} from './pages/PerfilHistoricoJogos.js';
 import {PerfilNotificacoes} from './pages/PerfilNotificacoes.js';
 
+import {NavbarDynamic} from './components/NavbarDynamic.js';
+
+import './App.css'
+
 function App() {
 
   return (
-    <div className='App'>
-      <nav>
-        <ul>
-          <li><Link to="/">Home</Link></li>
-          <li><Link to="/login">Login</Link></li>
-          <li><Link to="/registo">Registo</Link></li>
-          <li><Link to="/torneios">Torneios</Link></li>
-          <li><Link to="/perfil">Perfil Utilizador</Link></li>
-        </ul>
-      </nav>
+    <>
+      <NavbarDynamic/>
+      
       <Routes>
           <Route path="/" element= {<Home/>}/>
           <Route path="/login" element= {<Login/>}/>
@@ -53,7 +50,11 @@ function App() {
                 <Route element = {<RegistoTorneio/>} path="/torneios/registo" exact/>
           </Route>
       </Routes>
-    </div>
+
+      
+    </>
+    
+    
   );
 }
 
