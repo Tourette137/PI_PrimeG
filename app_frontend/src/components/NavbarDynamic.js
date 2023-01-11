@@ -13,20 +13,20 @@ export function NavbarDynamic() {
         setLoggedIn()
     },[])
 
-    const homeComponent = 
+    const homeComponent =
         <li className="nav__item">
             <Link to="/" className="nav__link">
                 <i className="uil uil-estate nav__icon"></i>Home
             </Link>
         </li>
-    
+
     return(
         <header className="header">
             <nav className="nav container">
                 <Link to="/" className="nav__logo">
                     <img src={logotipo} alt="MATCHUP"></img>
                 </Link>
-                
+
                 <div className= {showMenu ? "nav__menu show-menu" : "nav__menu"}>
                     <ul className='nav__list grid'>
 
@@ -43,7 +43,7 @@ export function NavbarDynamic() {
                             )
                         }
                         </>
-                        
+
                         {
                             /*
                             <li className="nav__item">
@@ -53,7 +53,7 @@ export function NavbarDynamic() {
                             </li>
                             */
                         }
-                        
+
 
                         <li className="nav__item">
                             <Link to="/torneios" className="nav__link">
@@ -62,7 +62,7 @@ export function NavbarDynamic() {
                         </li>
 
                         <li className="nav__item">
-                            <Link to="/" className="nav__link">
+                            <Link to="/espacos" className="nav__link">
                                 <i className="uil uil-location-pin-alt nav__icon"></i>Espaços
                             </Link>
                         </li>

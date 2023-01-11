@@ -2,6 +2,8 @@ import {Link,Route,Routes} from 'react-router-dom';
 import PrivateRoutes from './utils/PrivateRoutes'
 
 import {Torneios} from './pages/Torneios.js';
+import {Espacos} from './pages/Espacos.js';
+import {Espaco} from './pages/Espaco.js';
 import {Home} from './pages/Home.js';
 import {Login} from './pages/Login.js';
 import {Registo} from './pages/Registo.js';
@@ -11,6 +13,7 @@ import {Classificacao } from './pages/Classificacao.js';
 import {NotFound} from './pages/NotFound.js';
 import {Perfil} from './pages/Perfil.js';
 import {RegistoTorneio} from './pages/RegistoTorneio.js';
+import {RegistoEspaco} from './pages/RegistoEspaco.js';
 import {PerfilInscrito} from './pages/PerfilInscrito.js';
 import {PerfilFavoritos} from './pages/PerfilFavoritos.js';
 import {PerfilHistorico} from './pages/PerfilHistorico.js';
@@ -26,7 +29,7 @@ function App() {
   return (
     <>
       <NavbarDynamic/>
-      
+
       <Routes>
           <Route path="/" element= {<Home/>}/>
           <Route path="/login" element= {<Login/>}/>
@@ -35,7 +38,11 @@ function App() {
             <Route index element= {<Torneios/>}/>
             <Route path=":id" element = {<Torneio/>}/>
           </Route>
-          <Route path = "/:id/jogos" element = {<Jogos/>}/> 
+          <Route path="/espacos">
+            <Route index element= {<Espacos/>}/>
+            <Route path=":id" element = {<Espaco/>}/>
+          </Route>
+          <Route path = "/:id/jogos" element = {<Jogos/>}/>
           <Route path = "/:id/classificacao" element = {<Classificacao/>}/>
           <Route path = "*" element= {<NotFound/>}/>
 
@@ -48,13 +55,14 @@ function App() {
                 <Route element = {<PerfilHistoricoJogos/>} path="/perfil/historicoJogos" exact/>
                 <Route element = {<PerfilNotificacoes/>} path="/perfil/notificacoes" exact/>
                 <Route element = {<RegistoTorneio/>} path="/torneios/registo" exact/>
+                <Route element = {<RegistoEspaco/>} path="/espacos/registo" exact/>
           </Route>
       </Routes>
 
-      
+
     </>
-    
-    
+
+
   );
 }
 
