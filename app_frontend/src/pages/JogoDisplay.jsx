@@ -63,6 +63,12 @@ const JogoDisplay = ({jogo}) => {
             }     
         });
     }
+    else {
+        resultadofinal += nomeEquipa1;
+        resultadofinal += " ";
+        resultadofinal += " - ";
+        resultadofinal += " ";
+        resultadofinal += nomeEquipa2;}
 
     
     let isGroup = ""

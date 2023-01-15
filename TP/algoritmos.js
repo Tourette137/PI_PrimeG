@@ -246,7 +246,7 @@ function grupoJImpar(teams,jogos) {
                   jornadas = grupoJImpar(playerIds,grupos3[i])
                 }
                 sql6 += updateJornadasGrupos(jornadas,grupos3[i],grupos2[i].nParticipantes,1)
-                if(grupos3mao2[0].length > 0) {
+                if(grupos3mao2[0][0].length > 0) {
                   sql6 += updateJornadasGrupos(jornadas,grupos3mao2[i],grupos2[i].nParticipantes,2)
                 }
               }
@@ -308,7 +308,6 @@ function grupoJImpar(teams,jogos) {
     var total = inscritos.length
     console.log(groupSize)
     var gruposLen = Math.floor( total / groupSize);
-    console.log(gruposLen)
     var extra = total % groupSize,grupos = [],gruposSize = []
   
     for (var i=0; i < gruposLen; i++)
@@ -322,6 +321,7 @@ function grupoJImpar(teams,jogos) {
   
     for(var i=0; i < extra;i++)
       grupos[gruposLen - 1 - i] += 1
+    
   
     var faseGrupos = {numeroGrupos:gruposLen,torneioID:tid,terminado:0}
     var idFase_Grupos = 0 // get id na bd
@@ -437,12 +437,19 @@ function grupoJImpar(teams,jogos) {
     return c
   }
 
+  //Assume que recebe resultado do tipo 3-0 ou assim (TEMOS DE MUDAR UM BOCADO)
+  function getVencedor(resultado,idOponente1,idOponente2) {
+    let sp2 = resultado.split('|')
+    let sp = sp2[0].split('-')
+    return (parseInt(sp[0]) > parseInt(sp[1])) ? idOponente1 : ((parseInt(sp[0]) < parseInt(sp[1])) ? idOponente2 : -1)
+  }
+
 
   function tempoProximaEtapa(horas,minutos,sizeEtapa,nMesas,duracao,intervalo){
     var rounds = Math.ceil(sizeEtapa/nMesas);
     var min = rounds * duracao + intervalo;
     var min2 = ((min+minutos)>60) ? (min+minutos)%60 : min+minutos
-    horas += Math.floor(min/60)
+    horas += Math.floor((min+minutos)/60)
     return [horas,min2]
   }
 
@@ -754,7 +761,7 @@ function sortear(jogadores,idsJogos){
     }
   }
   
-  function equipasFromGrupos(nApuradosGrupo,idTorneio){
+  function equipasFromGrupos(nApuradosGrupo,idTorneio,tipoSorteio){
     var sql = data.getApuradosFromGrupos(idTorneio)
     data.query(sql).then(rank => {
       console.log(rank);
@@ -762,7 +769,8 @@ function sortear(jogadores,idsJogos){
       for (var i = 0; i < rank.length; i++) {
         apuradosGrupo(nApuradosGrupo,rank[i].classificacaoGrupo,rank[i].numeroGrupo,apurados)
       }
-      sortearElim(apurados,idTorneio)
+      console.log(apurados)
+      sortearElim(apurados,idTorneio,tipoSorteio)
     })
   }
 
@@ -770,5 +778,7 @@ function sortear(jogadores,idsJogos){
     gerarGrupos,
     gerarEliminatorias,
     sortearElim,
-    equipasFromGrupos
+    equipasFromGrupos,
+    getVencedor,
+    atualizaClassificacao
   }

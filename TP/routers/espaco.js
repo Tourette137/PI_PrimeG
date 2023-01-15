@@ -118,7 +118,7 @@ router.post("/registoNFavorito",isAuth,(req,res) => {
                 res.send(re[0])
             }
             else {
-                res.status(404).send("Espaco não encotrado")
+                res.status(404).send("Espaco não encontrado")
             }
         })
     })
