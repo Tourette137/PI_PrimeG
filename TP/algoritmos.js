@@ -476,7 +476,7 @@ function grupoJImpar(teams,jogos) {
   }
 
   function listaToString(lista,tipo){
-    let s = str(tipo)+':'
+    let s = `${tipo}`+':'
     if(tipo == 1){
       for (var i = 0; i < lista.length; i++) {
         s += lista[i].nome+'-'+lista[i].id+'-'+lista[i].pontos+'-'+lista[i].vitorias+'-'+
@@ -774,11 +774,60 @@ function sortear(jogadores,idsJogos){
     })
   }
 
+
+  function calculaVencedor2Maos(res1,res2,id1,id2){
+    let sp = res1.split('|')
+    let vencedor = -1;
+  
+    if(sp.length > 1){
+      let pontosGanhos1 = 0, pontosGanhos2 = 0, setsGanhos1 = 0,setsGanhos2 = 0;
+  
+      for (var r = 0; r < 2; r++){
+        if(r == 1)
+          sp = res2.split('|')
+        for (var i = 0; i < sp.length; i++){
+          if (r == 0) {
+            let sp2 = sp[i].split('-')
+            let vencedor = (parseInt(sp2[0]) > parseInt(sp2[1])) ? 1 : 2
+            pontosGanhos1 += parseInt(sp2[0])
+            pontosGanhos2 += parseInt(sp2[1])
+          }
+          else {
+            let sp2 = sp[i].split('-')
+            let vencedor = (parseInt(sp2[1]) > parseInt(sp2[0])) ? 1 : 2
+            pontosGanhos1 += parseInt(sp2[1])
+            pontosGanhos2 += parseInt(sp2[0])
+          }
+          if(vencedor == 1)
+            setsGanhos1++
+          else {
+            setsGanhos2++
+          }
+        }
+      }
+  
+      vencedor = (setsGanhos1 > setsGanhos2) ? id1 :
+                  ((setsGanhos2 > setsGanhos1) ? id2 :
+                  ((pontosGanhos1 > pontosGanhos2) ? id1 : id2))
+    }
+     else {
+      let sp2 = res1.split('-')
+      let golos1 = parseInt(sp2[0]);
+      let golos2 = parseInt(sp2[1]);
+      sp2 = res2.split('-')
+      golos1 += parseInt(sp2[1]);
+      golos2 += parseInt(sp2[0]);
+      vencedor = (golos1 > golos2) ? id1 : id2
+    }
+    return vencedor
+  }
+
   module.exports = {
     gerarGrupos,
     gerarEliminatorias,
     sortearElim,
     equipasFromGrupos,
     getVencedor,
-    atualizaClassificacao
+    atualizaClassificacao,
+    calculaVencedor2Maos
   }

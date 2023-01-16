@@ -835,7 +835,7 @@ router.post("/:idTorneio/gestao/criarEliminatoriasFromGrupos",isAuth,(req,res) =
     var duracao = req.body.duracao 
     var intervalo = req.body.intervalo 
     var nApurados = req.body.nApurados // número de apurados por grupo
-    var data = req.body.data // A data em que a fase eliminatória começa
+    var dataT = req.body.data // A data em que a fase eliminatória começa
 
     let sql = `Select Torneio.idOrganizador,Torneio.tipoTorneio,FG.terminado,FG.numeroGrupos from Torneio join
                 fasegrupos as FG on FG.Torneio_idTorneio = Torneio.idTorneio where Torneio.idTorneio = ${idTorneio};`
@@ -845,19 +845,24 @@ router.post("/:idTorneio/gestao/criarEliminatoriasFromGrupos",isAuth,(req,res) =
             if (re[0].idOrganizador == req.userId && re[0].terminado == 1 && verificaElimComGrupos(re[0].tipoTorneio) == 1) {
                 var mao = parseInt(getMaos(re[0].tipoTorneio,"eliminatorias"));
                 var size = nApurados * re[0].numeroGrupos
-                var sql2 =  "select DE.numeroMesas from Torneio as T"+
+                var sql2 =  "select DE.numeroMesas,T.dataTorneio from Torneio as T"+
                             " join Espaco as Es on T.Espaco_idEspaco = Es.idEspaco "+
                             " join Desporto_has_Espaco as DE on (DE.idEspaco = Es.idEspaco and T.idDesporto = DE.idDesporto)" +
                             " where T.idTorneio = "+ idTorneio + ";"
                 data.query(sql2).then(i => {
                     if(i.length!=0){
                         let numeroCampos = i[0].numeroMesas
-                        let dataTorneio = `${(data).toLocaleDateString()}`
+                        //let dataTorneio = `${(dataT).toLocaleDateString()}`
+                        let dataTorneio = `${(i[0].dataTorneio).toLocaleDateString()}`
                         let aux = dataTorneio.split("/")
                         dataTorneio = `${aux[2]}-${aux[1]}-${aux[0]}`
 
-                        let hora= parseInt(`${(data).getHours()}`)
-                        let minutos =parseInt(`${(data).getMinutes()}`)
+                        //let hora= parseInt(`${(dataT).getHours()}`)
+                    
+                        let hora= parseInt(`${(i[0].dataTorneio).getHours()}`)
+
+                        //let minutos =parseInt(`${(dataT).getMinutes()}`)
+                        let minutos =parseInt(`${(i[0].dataTorneio).getMinutes()}`)
                         let campos = []
                         for (let i= 0;i< numeroCampos;i++) {
                             campos[i] = i+1
@@ -891,7 +896,39 @@ router.post("/:idTorneio/gestao/criarEliminatoriasFromGrupos",isAuth,(req,res) =
     })
 })
 
-
+//Temos de ver se a eliminatória já existe sequer
+router.post("/:idTorneio/gestao/sortearEliminatoriasFromGrupos",isAuth,(req,res) => {
+    var idTorneio = req.params.idTorneio
+    var nApuradosGrupo = req.body.nApuradosGrupo
+    var tipoSorteio = req.body.tipoSorteio
+    let sql = `Select T.idOrganizador,T.tipoTorneio, E.gerado from Torneio as T join Eliminatoria as E on E.Torneio_idTorneio = T.idTorneio 
+                where idTorneio = ${idTorneio};`
+    data.query(sql).then(re => {
+        if (re.length != 0) {
+            if (re[0].idOrganizador == req.userId && re[0].gerado == 0 && verificaElimComGrupos(re[0].tipoTorneio) == 1) {
+                algoritmos.equipasFromGrupos(nApuradosGrupo,idTorneio,tipoSorteio)
+                res.status(200).send("broke")
+            }
+            else {
+                if (re[0].gerado == 1) {
+                    res.status(502).send("A fase eliminatória já foi sorteada")
+                }
+                else {
+                    if(verificaElimComGrupos(re[0].tipoTorneio) == 0) {
+                        console.log(re[0].tipoTorneio)
+                        res.status(501).send("O torneio não é de eliminatórias e de grupos")
+                    }
+                    else {
+                        res.status(501).send("O utilizador não é o organizador deste torneio")
+                    }
+                }
+            }
+        }
+        else {
+            res.status(404).send("O Torneio não existe ou a eliminatória ainda não foi criada")
+        }
+    })
+})
 
 
 //Basicamente vamos ver se ele já fechou o sorteio (se gerado = 1 e se já tiver fechado n vai poder sortear)
@@ -932,39 +969,7 @@ router.post("/:idTorneio/gestao/sortearEliminatorias",isAuth,(req,res) => {
 
 
 
-//Temos de ver se a eliminatória já existe sequer
 
-router.post("/:idTorneio/gestao/sortearEliminatoriasFromGrupos",isAuth,(req,res) => {
-    var idTorneio = req.params.idTorneio
-    var nApuradosGrupo = req.body.nApuradosGrupo
-    var tipoSorteio = req.body.tipoSorteio
-    let sql = `Select T.idOrganizador, E.gerado from Torneio as T join Eliminatoria as E on E.Torneio_idTorneio = T.idTorneio 
-                where idTorneio = ${idTorneio};`
-    data.query(sql).then(re => {
-        if (re.length != 0) {
-            if (re[0].idOrganizador == req.userId && re[0].gerado == 0 && verificaElimComGrupos(re[0].tipoTorneio) == 1) {
-                algoritmos.equipasFromGrupos(nApuradosGrupo,idTorneio,tipoSorteio)
-                res.status(200).send("broke")
-            }
-            else {
-                if (re[0].gerado == 1) {
-                    res.status(502).send("A fase eliminatória já foi sorteada")
-                }
-                else {
-                    if(verificaElimComGrupos(re[0].tipoTorneio) == 0) {
-                        res.status(501).send("O torneio não é só de eliminatórias")
-                    }
-                    else {
-                        res.status(501).send("O utilizador não é o organizador deste torneio")
-                    }
-                }
-            }
-        }
-        else {
-            res.status(404).send("O Torneio não existe ou a eliminatória ainda não foi criada")
-        }
-    })
-})
 
 
 //Fechar sorteio eliminatorias
@@ -1192,9 +1197,9 @@ router.post("/:id/gestao/:idJogo/fecharResultado",isAuth,(req,res) => {
                             if(jogo[0].Grupo_idGrupo != null){
                             //atualizar classificação da fase de grupos
                             var sql2 = data.getClassificacaoGrupo(jogo[0].Grupo_idGrupo)
-                            data.query(sql2).then(res => {
+                            data.query(sql2).then(res1 => {
                                 //Atualizamos a classificação do grupo
-                                var newCl = algoritmos.atualizaClassificacao(res[0].classificacaoGrupo,jogo[0].idOponente1,jogo[0].idOponente2,resultado)
+                                var newCl = algoritmos.atualizaClassificacao(res1[0].classificacaoGrupo,jogo[0].idOponente1,jogo[0].idOponente2,resultado)
                                 
 
 
@@ -1202,20 +1207,27 @@ router.post("/:id/gestao/:idJogo/fecharResultado",isAuth,(req,res) => {
                                 data.query(sql3).then(sel => {
                                      //sel tem os jogos que ainda não estão terminados
                                     if (sel.length != 0) {
+                                        console.log("1")
                                         var terminado = (sel[0].count == 0) ? 1 : 0
                                         var sql4 = data.updateClassificacaoGrupo(newCl,jogo[0].Grupo_idGrupo,terminado)
                                         data.query(sql4).then(result => {
                                             if (result.length != 0) {
+                                                console.log("2")
                                                 if (terminado == 1) {
+                                                    console.log("3")
                                                     // Se o grupo terminou precisamos de ver se a fase de grupos terminou
                                                     let sql5 = `select faseGrupos_idFaseGrupos from grupo where idGrupo = ${jogo[0].Grupo_idGrupo};`
                                                     data.query(sql5).then( re1 => {
                                                         if (re1.length != 0) {
+                                                            console.log("4")
                                                             let sql6 = `Select count(*) as count from Grupo where terminado = 0 and faseGrupos_idFaseGrupos = ${re1[0].faseGrupos_idFaseGrupos};`
                                                             data.query(sql6).then(re2 => {
+                                                                console.log("5")
                                                                 if (re2.length != 0) {
+                                                                    console.log("6")
                                                                     let fgTerminado = (re2[0].count == 0)? 1 : 0
                                                                     if (fgTerminado == 1) {
+                                                                        console.log("7")
                                                                         let sql7 = `update fasegrupos set terminado = 1 where idFaseGrupos = ${re1[0].faseGrupos_idFaseGrupos};`
                                                                         data.query(sql7).then(re3 => {
                                                                             if (re3.length != 0) {
@@ -1253,6 +1265,9 @@ router.post("/:id/gestao/:idJogo/fecharResultado",isAuth,(req,res) => {
                                                         }
                                                     })
                                                 }
+                                                else {
+                                                    res.send("Jogo inserido com sucesso")
+                                                }
                                             }
                                             else {
                                                 res.status(404).send("Não foi possível atualizar o grupo")
@@ -1273,20 +1288,21 @@ router.post("/:id/gestao/:idJogo/fecharResultado",isAuth,(req,res) => {
                             else {
                                 var idEtapa = jogo[0].idEtapa
                                 var ronda = jogo[0].ronda
-                                var newR = Math.floor(ronda/2)
+                                var newR = (ronda == 1)?  1 : Math.floor(ronda/2)
 
                                 let sql3 = `Select numeroEtapa from Etapa where idEtapa = ${idEtapa}`
                                 data.query(sql3).then(re3 => {
                                     if (re3.length != 0 ) {
                                         if (re[0].tipoTorneio == 1 || re[0].tipoTorneio == 2 || re[0].tipoTorneio == 5) {
                                             if (re3[0].numeroEtapa == 1){
-                                                sqlFecharTorneio = `update Torneio set terminado = 2 where idTorneio = ${idTorneio};`
+                                                sqlFecharEtapa = `update etapa set terminado = 1 where idEtapa = ${idEtapa};`
+                                                sqlFecharTorneio = sqlFecharEtapa + " " +`update Torneio set terminado = 2 where idTorneio = ${idTorneio};`
                                                 data.query(sqlFecharTorneio).then(re5 => {
                                                     if (re5.length != 0) {
-                                                        res.send("Jogo atualizado e Torneio finalizado")
+                                                        res.send("Jogo atualizado e Etapa e Torneio finalizados")
                                                     }
                                                     else {
-                                                        res.status(404).send("Falhou a fechar o torneio")
+                                                        res.status(404).send("Falhou a fechar a etapa ou o torneio")
                                                     }
                                                 })
                                             }
@@ -1294,17 +1310,37 @@ router.post("/:id/gestao/:idJogo/fecharResultado",isAuth,(req,res) => {
                                                 var sql2 = data.getJogoEtapaSeguinte(idEtapa)
                                                 data.query(sql2).then(idJogo => {
                                                     if (idJogo.length != 0) {
-                                                        var indiceJogo = []
+                                                        var indiceJogo = 0
                                                         for (var i = 0; i<idJogo.length;i++) {
                                                             if (idJogo[i].ronda == newR) {
                                                                 indiceJogo = i;
                                                             }
                                                         }
-                                                        var sql4 = (ronda % 2 == 0) ? data.updateJogoO1(vencedor,idJogo[indiceJogo].idJogo) :  data.updateJogoO2(vencedor,idJogo[indiceJogo].idJogo);
+                                                        var sql4 = (ronda % 2 == 0) ? data.updateJogoO2(vencedor,idJogo[indiceJogo].idJogo) :  data.updateJogoO1(vencedor,idJogo[indiceJogo].idJogo);
                                                         data.query(sql4).then(re4 => {
                                                             if(re4.length != 0) {
-                                                                // Fazer a cena de se a etapa acabou ou não
-                                                                res.send("Jogo atualizado")
+                                                                var sql5 = `select count(*) as count from Jogo Where idEtapa = ${idEtapa} and (estado = 0 or estado = 1);`
+                                                                data.query(sql5).then(re5 => {
+                                                                    if (re5.length != 0) {
+                                                                        if (re5[0].count == 0) {
+                                                                            var sql6 = `update Etapa set terminado = 1 where idEtapa = ${idEtapa};`
+                                                                            data.query(sql6).then(re6 => {
+                                                                                if (re6.length != 0) {
+                                                                                    res.send("Jogo atualizado e etapa finalizada")
+                                                                                }
+                                                                                else {
+                                                                                    res.status(404).send("Erro a terminar a etapa")
+                                                                                }
+                                                                            })
+                                                                        }
+                                                                        else {
+                                                                            res.send("Jogo atualizado")
+                                                                        }
+                                                                    }
+                                                                    else{
+                                                                        res.status(404).send("Não encontrou a etapa")
+                                                                    }
+                                                                })
                                                             }
                                                             else {
                                                                 res.status(404).send("Erro a meter a equipa na próxima etapa")
@@ -1318,8 +1354,104 @@ router.post("/:id/gestao/:idJogo/fecharResultado",isAuth,(req,res) => {
                                             }
                                         }
 
-                                        //Aqui tem um else para se tiver 2 mãos
 
+                                        //Eliminatórias para 2 mãos
+
+                                        else {
+                                            if (re[0].tipoTorneio == 4 || re[0].tipoTorneio == 6 || re[0].tipoTorneio == 7) {
+                                                if (re3[0].numeroEtapa == 1){
+                                                    sqlFecharEtapa = `update etapa set terminado = 1 where idEtapa = ${idEtapa};`
+                                                    sqlFecharTorneio = sqlFecharEtapa + " " +`update Torneio set terminado = 2 where idTorneio = ${idTorneio};`
+                                                    data.query(sqlFecharTorneio).then(re5 => {
+                                                        if (re5.length != 0) {
+                                                            res.send("Jogo atualizado e Etapa e Torneio finalizados")
+                                                        }
+                                                        else {
+                                                            res.status(404).send("Falhou a fechar a etapa ou o torneio")
+                                                        }
+                                                    })
+                                                }
+                                                else {
+                                                    if (jogo[0].mao ==2) {
+                                                        console.log("aqui?")
+                                                        var sql2 = data.getJogoEtapaSeguinte(idEtapa)
+                                                        data.query(sql2).then(idJogo => {
+                                                            if (idJogo.length != 0) {
+                                                                console.log(newR)
+                                                                var indiceJogo = []
+                                                                for (var i = 0; i<idJogo.length;i++) {
+                                                                    if (idJogo[i].ronda == newR) {
+                                                                        indiceJogo.push(i);
+                                                                    }
+                                                                }
+                                                                console.log(indiceJogo)
+
+                                                                let sql10 = `Select resultado,idOponente1,idOponente2,estado from Jogo where idEtapa =${jogo[0].idEtapa} and ronda = ${jogo[0].ronda} and mao = 1;`
+                                                                data.query(sql10).then(re4 => {
+                                                                    if (re4.length != 0) {
+                                                                        if (re4[0].estado == 2) {
+                                                                            let vencedortotal = algoritmos.calculaVencedor2Maos(re4[0].resultado,resultado,re4[0].idOponente1,re4[0].idOponente2)
+                                                                            var sql4 = (ronda % 2 == 0) ? (data.updateJogoO2(vencedortotal,idJogo[indiceJogo[0]].idJogo) + data.updateJogoO1(vencedortotal,idJogo[indiceJogo[1]].idJogo)) : (data.updateJogoO1(vencedortotal,idJogo[indiceJogo[0]].idJogo) + data.updateJogoO2(vencedortotal,idJogo[indiceJogo[1]].idJogo))
+                                                                            data.query(sql4).then(re4 => {
+                                                                                if(re4.length != 0) {
+                                                                                    var sql5 = `select count(*) as count from Jogo Where idEtapa = ${idEtapa} and (estado = 0 or estado = 1);`
+                                                                                    data.query(sql5).then(re5 => {
+                                                                                        if (re5.length != 0) {
+                                                                                            if (re5[0].count == 0) {
+                                                                                                var sql6 = `update Etapa set terminado = 1 where idEtapa = ${idEtapa};`
+                                                                                                data.query(sql6).then(re6 => {
+                                                                                                    if (re6.length != 0) {
+                                                                                                        res.send("Jogo atualizado e etapa finalizada")
+                                                                                                    }
+                                                                                                    else {
+                                                                                                        res.status(404).send("Erro a terminar a etapa")
+                                                                                                    }
+                                                                                                })
+                                                                                            }
+                                                                                            else {
+                                                                                                res.send("Jogo atualizado")
+                                                                                            }
+                                                                                        }
+                                                                                        else{
+                                                                                            res.status(404).send("Não encontrou a etapa")
+                                                                                        }
+                                                                                    })
+                                                                                }
+                                                                                else {
+                                                                                    res.status(404).send("Erro a meter a equipa na próxima etapa")
+                                                                                }
+                                                                            }) 
+                                                                        }
+                                                                        else{
+                                                                            res.status(404).send("A primeira mão ainda não terminou")
+                                                                        }
+                                                                    }
+                                                                    else {
+                                                                        res.status(404).send("Não encontrou a primeira mão")
+                                                                    }
+                                                                })
+                                                            }
+                                                            else {
+                                                                res.status(404).send("Não foi encontrada a etapa seguinte")
+                                                            }
+                                                        })
+
+
+
+
+
+                                                    }
+                                                    else {
+                                                        res.send("Jogo atualizado com sucesso")
+                                                    }
+                                                }
+
+                                            }
+                                            else {
+                                                res.status(404).send("O torneio não é de eliminatórias")
+                                            }
+
+                                        }
 
                                     }
                                     else {

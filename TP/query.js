@@ -76,7 +76,7 @@ function updateFecharJogo(resultado,idJogo,vencedor){
 
 //Provavelmente vai ser necessário dar a mão
 function getJogo(idJogo){
-  return "select Grupo_idGrupo, idEtapa,idOponente1,idOponente2,ronda from Jogo Where idJogo = "+idJogo+";"
+  return "select Grupo_idGrupo, idEtapa,idOponente1,idOponente2,ronda,mao from Jogo Where idJogo = "+idJogo+";"
 }
 
 function getClassificacaoGrupo(idGrupo){
@@ -85,16 +85,16 @@ function getClassificacaoGrupo(idGrupo){
 
 function updateClassificacaoGrupo(classificacao,idGrupo,terminado){
   return "update Grupo " +
-            "set classificacaoGrupo = '" + classificacao + " , terminado = "+ terminado +
+            "set classificacaoGrupo = '" + classificacao + "' , terminado = "+ terminado +
             " where idGrupo = " + idGrupo + ";"
 }
 
 function getJogosAbertos(idGrupo){
-  return "select count(*) as count from Jogo Where Grupo_idGrupo = "+idGrupo+" and (terminado = 0 or terminado = 1);"
+  return "select count(*) as count from Jogo Where Grupo_idGrupo = "+idGrupo+" and (estado = 0 or estado = 1);"
 }
 
 function getJogoEtapaSeguinte(idEtapa){
-  return "select j.idJogo,j.ronda from jogo as j where j.idEtapa = (select idEtapa from Etapa as et "+
+  return "select j.idJogo,j.ronda,j.mao from jogo as j where j.idEtapa = (select idEtapa from Etapa as et "+
           "where et.Eliminatoria_idEliminatoria = (select Eliminatoria_idEliminatoria from Etapa as E where E.idEtapa = "+idEtapa+") "+
           "and et.numeroEtapa = ((select numeroEtapa from Etapa as E where E.idEtapa = "+idEtapa+")-1));"
 }
