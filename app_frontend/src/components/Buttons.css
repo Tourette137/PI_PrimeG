@@ -1,0 +1,55 @@
+.butoesAcceptBack button {
+    background: none;
+    padding: 10px 20px;
+    font-size: 18px;
+    cursor: pointer;
+    margin: 50px 60px 0px 60px;
+    transition: 0.8s;
+    position: relative;
+    overflow: hidden;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-radius: 16px;
+}
+
+.butoesAcceptBack button:hover {
+    color: #fff;
+}
+
+.butoesAcceptBack button::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 0%;
+    z-index: -1;
+    transition: 0.8s;
+    bottom: 0;
+    border-radius: 50% 50% 0 0;
+}
+
+.butoesAcceptBack button:hover::before{
+    height: 180%;
+}
+
+/* Buttoes Laranjas e Pretos */
+
+.buttonOrange {
+    border: 1px solid; /* specify border width and style */
+    border-image: linear-gradient(90deg, #ff5500, #f8b028) 16px;
+    
+    color: #ff5500;
+}
+
+.buttonOrange::before {
+    background: linear-gradient(90deg, #ff5500, #f8b028);
+}
+
+.buttonBlack {
+    border: 1px solid var( --title-color-dark);
+    color: var( --title-color-dark);
+}
+
+.buttonBlack::before {
+    background: var( --title-color-dark);
+}

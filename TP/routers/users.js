@@ -36,7 +36,7 @@ router.post("/registo", (req, res) => {
                     })
                     .catch(e => { res.status(400).jsonp({ error: e }) })
             } else {
-                res.status(500).jsonp("User já existe!")
+                res.status(501).jsonp("User já existe!")
             }
         })
         .catch(e => { res.status(500).jsonp({ error: e }) })

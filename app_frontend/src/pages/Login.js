@@ -1,7 +1,9 @@
-import {useRef} from 'react';
+import {useState, useRef} from 'react';
 import {useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import {NavbarDynamic} from '../components/NavbarDynamic.js';
+import '../components/Buttons.css';
+import '../components/LoginRegister.css';
 
 const API_URL="http://localhost:3000"
 
@@ -11,10 +13,12 @@ export function Login() {
     const inputPasswordRef = useRef(null);
     const navigate = useNavigate();
 
+    const [alert, setAlert] = useState(false)
+    const [alertMsg, setAlertMsg] = useState("")
 
     const handleLogin = async (e) => {
         e.preventDefault()
-
+        console.log("Entrei aqui")
         const bodyMessage = {
             "email": inputEmailRef.current.value,
             "password": inputPasswordRef.current.value
@@ -22,27 +26,50 @@ export function Login() {
 
         axios.post(`${API_URL}/users/login`, bodyMessage)
             .then(response => {
-                console.log(response)
                 localStorage.setItem("token", response.data.token)
                 navigate("/")
             })
-            .catch(e => console.log(e))
+            .catch(e => {
+                switch (e.response.status) {
+                    case 503:
+                        setAlertMsg("Utilizador não existe!")
+                        break
+                    case 501:
+                        setAlertMsg("Password incorreta!")
+                        break
+                    default:
+                        setAlertMsg("Algo correu mal!")
+                        break
+                }
+                setAlert(true)
+                console.log(e.response.status)
+            })
     }
 
 
-    
+    /*{
+        (alert) ? (
+            <p className="alert" style="color: red">asdasdasd</p>
+        ) : (null)
+    }*/
+
     return (
         <>
         <NavbarDynamic/>
-        <h1>LOGIN</h1>
-        <form onSubmit={handleLogin}>
-            <div>
+
+        <form className="login-info-form" onSubmit={handleLogin}>
+            <h1>Iniciar Sessão</h1>
+            <div className="campoDados">
+                <p style={{color: "red", marginBottom:"10px"}}>{alert ? alertMsg : ''}</p>
                 <input ref={inputEmailRef} id="email" type="email" placeholder="Email" required></input><br/>
                 <input ref={inputPasswordRef} id="password" type="password" placeholder="Password" required></input>
             </div>
-            <button>Login</button>
+            <Link to="/registo" class="registerLink">Não tem conta? Registe-se.</Link>
+            <div className="butoesAcceptBack" style={{ marginBottom: "50px" }}>
+                <Link to="/"><button className="buttonCancel buttonBlack">Cancel</button></Link>
+                <button className="buttonAccept buttonOrange">Login</button>
+            </div>
         </form>
-        <button><Link to="/registo">Registe-se</Link></button>
         </>
     )
         

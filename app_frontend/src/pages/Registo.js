@@ -1,7 +1,9 @@
 import {useRef, useState} from 'react';
-import {useNavigate } from 'react-router-dom'
+import {useNavigate, Link} from 'react-router-dom'
 import axios from 'axios';
 import {NavbarDynamic} from '../components/NavbarDynamic.js';
+import '../components/Buttons.css';
+import '../components/LoginRegister.css';
 
 const API_URL="http://localhost:3000"
 
@@ -13,6 +15,8 @@ export function Registo() {
     const inputNomeRef = useRef(null);
     const inputDataRef = useRef(null);
 
+    const [alert, setAlert] = useState(false)
+    const [alertMsg, setAlertMsg] = useState("")
     const [selectGenero, setSelectGenero] = useState();
 
     const navigate = useNavigate();
@@ -36,10 +40,21 @@ export function Registo() {
                     console.log(response)
                     navigate("/login")
                 })
-                .catch(e => console.log(e))
+                .catch(e => {
+                    switch (e.response.status) {
+                        case 501:
+                            setAlertMsg("Utilizador já existe!")
+                            break
+                        default:
+                            setAlertMsg("Algo correu mal!")
+                            break
+                    }
+                    setAlert(true)
+                })
             
         } else {
-            console.log("Passwords são diferentes")
+            setAlertMsg("Passwords são diferentes!")
+            setAlert(true)
         }
 
     }
@@ -49,9 +64,10 @@ export function Registo() {
     return (
         <>
         <NavbarDynamic/>
-        <h1>Registo</h1>
-        <form onSubmit={handleRegisto}>
-            <div>
+        <form className="login-info-form" onSubmit={handleRegisto} style={{marginTop:"-10px"}}>
+            <h1>Registo utilizador</h1>
+            <div className="campoDados">
+                <p style={{color: "red", marginBottom:"10px"}}>{alert ? alertMsg : ''}</p>
                 <input ref={inputEmailRef} id="email" type="email" placeholder="Email" required></input><br/>
                 <input ref={inputPassword1Ref} id="password1" type="password" placeholder="Password" required></input><br/>
                 <input ref={inputPassword2Ref} id="password2" type="password" placeholder="Repeat Password" required></input><br/>
@@ -63,7 +79,10 @@ export function Registo() {
                     <option value="1">Feminino</option>
                 </select>
             </div>
-            <button>Registo</button>
+            <div className="butoesAcceptBack" style={{ marginBottom: "50px" }}>
+                <Link to="/"><button className="buttonCancel buttonBlack">Cancel</button></Link>
+                <button className="buttonAccept buttonOrange">Registo</button>
+            </div>
         </form>
         </>
     )
