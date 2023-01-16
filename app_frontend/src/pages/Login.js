@@ -18,7 +18,6 @@ export function Login() {
 
     const handleLogin = async (e) => {
         e.preventDefault()
-        console.log("Entrei aqui")
         const bodyMessage = {
             "email": inputEmailRef.current.value,
             "password": inputPasswordRef.current.value

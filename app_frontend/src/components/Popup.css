@@ -1,0 +1,62 @@
+.popup .overlay {
+    position: fixed;
+    top: -100px;
+    left: 0px;
+    width: 100vw;
+    height: 120vh;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 101;
+    display: none;
+}
+.popup .overlayContent {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    background: #fff;
+    width: 450px;
+    height: 260px;
+    z-index: 2;
+    text-align: center;
+    padding: 20px;
+    box-sizing: border-box;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+.popup .butoesAcceptBack button {
+    margin: 20px 10px 0px 10px;
+}
+.popup img {
+    padding: 20px;
+    max-width: 300px;
+    max-height: 300px;
+}
+.popup h1 {
+    font-size: 30px;
+    font-weight: 700;
+}
+.popup.active .overlay {
+    display: block;
+}
+.popup.active .overlayContent {
+    transition: all 300ms ease-in-out;
+    transform: translate(-50%, -50%) scale(1);
+}
+.popup label {
+    display: block;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 16px;
+    margin: 4px 0 8px 0;
+}
+  
+.popup input {
+    padding: 0.7em 1em;
+    border-radius: 4px;
+    border: 1px solid black;
+    width: 360px;
+    margin-bottom: 20px;
+}
