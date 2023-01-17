@@ -56,7 +56,7 @@ export function Login() {
         <>
         <NavbarDynamic/>
 
-        <form className="login-info-form" onSubmit={handleLogin}>
+        <form className="login-info-form w3-mobile" onSubmit={handleLogin}>
             <h1>Iniciar Sessão</h1>
             <div className="campoDados">
                 <p style={{color: "red", marginBottom:"10px"}}>{alert ? alertMsg : ''}</p>

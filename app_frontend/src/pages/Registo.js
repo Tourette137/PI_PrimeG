@@ -64,7 +64,7 @@ export function Registo() {
     return (
         <>
         <NavbarDynamic/>
-        <form className="login-info-form" onSubmit={handleRegisto} style={{marginTop:"-10px"}}>
+        <form className="login-info-form w3-mobile" onSubmit={handleRegisto} style={{marginTop:"-10px"}}>
             <h1>Registo utilizador</h1>
             <div className="campoDados">
                 <p style={{color: "red", marginBottom:"10px"}}>{alert ? alertMsg : ''}</p>
