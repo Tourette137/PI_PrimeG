@@ -41,18 +41,18 @@ function grupoJImpar(teams,jogos) {
   }
 	return schedule
 }
-  
+
   function generate(posicoesValidas) {
     const randomElement = Math.floor(Math.random() * posicoesValidas.length);
     return randomElement;
   }
-  
+
   function gerarJornadaImpar(jornada){
     var size = jornada.length,jornada2 = []
-  
+
     for(var i = 0; i < size;i++)
       jornada2.push({id1:'',id2:''})
-  
+
     for(var i = 0; i < size;i++){
       if(i == 0){
         jornada2[i].id1 = jornada[i].id2
@@ -69,13 +69,13 @@ function grupoJImpar(teams,jogos) {
     }
     return jornada2
   }
-  
+
   function gerarJornadaPar(jornada){
     var size = jornada.length,jornada2 = []
-  
+
     for(var i = 0; i < size;i++)
       jornada2.push({id1:'',id2:''})
-  
+
     for(var i = 0; i < size;i++){
       jornada2[i].id1 = jornada[i].id2
       if(i == 0)
@@ -86,62 +86,62 @@ function grupoJImpar(teams,jogos) {
     }
     return jornada2
   }
-  
+
   function gerarJornada(jogadores,jornadaSize){
     var jornada = [],disp = jogadores
-  
+
     for(var i = 0; i < jornadaSize;i++)
       jornada.push({id1:'',id2:''})
-  
+
     for(var i = 0; i < jornadaSize;i++){
       var p = generate(disp)
       var value = disp[p]
       disp.splice(p,1)
-  
+
       var p2 = generate(disp)
       var value2 = disp[p2]
       disp.splice(p2,1)
-  
+
       jornada[i].id1 = value
       jornada[i].id2 = value2
     }
     return jornada
   }
-  
+
   function grupoJPar(grupo,jogos){
     var size = grupo.length,n = (size - 1)
     var jornadas = [],jornadaSize = Math.floor(size / 2)
-  
+
     jornadas.push(gerarJornada(grupo,jornadaSize))
-  
+
     for(var i = 1; i < n;i+=2){
       jornadas.push(gerarJornadaPar(jornadas[i-1]))
       jornadas.push(gerarJornadaImpar(jornadas[i-1]))
     }
-  
+
     return jornadas;
   }
-  
+
   //sorteio aleatorio sem grupos
   function sortearGruposRandom(jogadores,grupos){
     var gruposDisp = createList(grupos.length);
-  
+
     for(var i=0;i < jogadores.length;i++){
         var j = jogadores[i]
-  
+
         var pos = generate(gruposDisp);
         var value = gruposDisp[pos];
-  
+
         grupos[value].jogadores.push(j);
         grupos[value].disponivel--;
-  
+
         if(grupos[value].disponivel == 0){
           gruposDisp.splice(pos, 1);
         }
     }
     return grupos
   }
-  
+
   function initClassificacao(equipas,tipo){
     let c = ""
     if (tipo == 1) {
@@ -158,7 +158,7 @@ function grupoJImpar(teams,jogos) {
     }
     return c
   }
-  
+
   function updateJornadasGrupos(jornadas,jogos,sizeG,mao){
     var n = (sizeG % 2 == 0) ? (sizeG-1) : sizeG
     var jornadaSize = Math.floor(sizeG / 2);
@@ -185,7 +185,7 @@ function grupoJImpar(teams,jogos) {
   function updateGrupos(jogadores,option,torneioID){
     var total = jogadores.length;
     var grupos = [],clubes=[];
-  
+
     var sql = "SELECT idFaseGrupos from FaseGrupos where Torneio_idTorneio = " + torneioID + ";"
     data.query(sql).then(id => {
       var idFase_Grupos = id[0].idFaseGrupos;
@@ -193,11 +193,11 @@ function grupoJImpar(teams,jogos) {
       data.query(sql2).then(grupos2 => {
         for (var i=0; i < grupos2.length; i++)
           grupos.push({numeroGrupo:i+1,jogadores:[],disponivel:grupos2[i].nParticipantes,});
-  
+
         if(option == -1){
           grupos = sortearGruposRandom(jogadores,grupos)
         }
-  
+
         var sql3 = "select nomeDesporto from desporto as d "+
                   "join torneio as t on t.idDesporto = d.idDesporto "+
                   "where t.idTorneio = "+torneioID+";"
@@ -208,7 +208,7 @@ function grupoJImpar(teams,jogos) {
           for (var i=0; i < grupos2.length; i++){
             var classificacao = initClassificacao(grupos[i].jogadores,t)
             sql4 += "update Grupo "+
-                    "set classificacaoGrupo = '"+classificacao + 
+                    "set classificacaoGrupo = '"+classificacao +
                     "' where idGrupo = "+grupos2[i].idGrupo+";"
           }
           data.query(sql4).then(res2 => {
@@ -266,23 +266,21 @@ function grupoJImpar(teams,jogos) {
     var res = dataTorneio + " " + d
     return  res
   }
-  
+
   function gerarCalendarioJogosGrupos(size,horaInicial,minutosInicial,campos,intervaloJ,duracaoJogo,idGrupo,dataTorneio,mao){
     var jornadaSize = Math.floor(size / 2)
     var jornadas = []
-    var sizeC = campos.length
+    var sizeC = campos.length;
     //let intervaloJ = intervalo + duracaoJogo
     var nJornadas = (size % 2 == 0) ? (size - 1) : size
     var n = Math.ceil(jornadaSize / sizeC)
     intervaloJ += n * duracaoJogo
-  
+
     for(var i = 0; i < nJornadas;i++){
       jornadas.push([])
     }
-  
     var sql = ""
 
-  
     for(var i = 0; i < nJornadas;i++){
       for(var i2 = 0; i2 < jornadaSize;i2++){
         var jogo = {hora:'',numeroCampo:-1,Grupo_idGrupo:-1}
@@ -297,38 +295,36 @@ function grupoJImpar(teams,jogos) {
         }
         jogo.Grupo_idGrupo = idGrupo
         jornadas[i].push(jogo)
-  
         sql += "("+jogo.numeroCampo + ",'" + jogo.hora +"'," + idGrupo + "," + (i + 1) + ",0," + mao + "),"
       }
     }
     return sql
   }
-  
+
   function gerarGrupos(tid,groupSize,inscritos,dataTorneio,horaInicial,minutosInicial,intervalo,duracao,campos,mao){
     var total = inscritos.length
-    console.log(groupSize)
     var gruposLen = Math.floor( total / groupSize);
     var extra = total % groupSize,grupos = [],gruposSize = []
-  
+
     for (var i=0; i < gruposLen; i++)
         grupos.push(groupSize);
-  
+
     if (extra === groupSize - 1){
         gruposLen += 1
         extra = 0
         grupos.push(groupSize-1);
     }
-  
+
     for(var i=0; i < extra;i++)
       grupos[gruposLen - 1 - i] += 1
-    
-  
+
+
     var faseGrupos = {numeroGrupos:gruposLen,torneioID:tid,terminado:0}
     var idFase_Grupos = 0 // get id na bd
-    
+
     var sql = "INSERT INTO FaseGrupos(numeroGrupos,Torneio_idTorneio,terminado)"+
               "VALUES (" + faseGrupos.numeroGrupos + "," + faseGrupos.torneioID +"," + faseGrupos.terminado + ");"
-  
+
     //data.inserirFaseGrupos(faseGrupos);
     data.query(sql).then(inst => {
       sql = "SELECT idFaseGrupos from FaseGrupos where Torneio_idTorneio = " + faseGrupos.torneioID + ";"
@@ -338,20 +334,20 @@ function grupoJImpar(teams,jogos) {
         var i = 0
         for(i = 0;i < gruposLen-1;i++)
           sql += "(" +idFase_Grupos+','+ (i+1) +',0,'+grupos[i]+'),'
-  
+
         sql += "(" +idFase_Grupos+','+ (i+1) +',0,'+grupos[i]+');'
-        data.query(sql).then(r => {
+        data.query(sql).then(r => {console.log("escachou select grupos");
           let sql2 = "SELECT idGrupo,numeroGrupo from Grupo where faseGrupos_idFaseGrupos = "+idFase_Grupos+" order by numeroGrupo;"
           data.query(sql2).then(ids => {
             let sql3  = "insert into Jogo (numeroCampo,hora,Grupo_idGrupo,ronda,estado,mao) values "
 
             let size = campos.length/ ids.length
             let camposGrupo = chunkArrayInGroups(campos,size)
-            let l = tempo2MaoGrupos(horaInicial,minutosInicial,ids.length,campos.length,duracao,intervalo)
             for(var i = 0;i<ids.length;i++){
-                                                //tamanho,horaInicial,minutoInicial,campos,intervalo,duracaoJogo,idGrupo                 
+                                                //tamanho,horaInicial,minutoInicial,campos,intervalo,duracaoJogo,idGrupo
               sql3 += gerarCalendarioJogosGrupos(grupos[i],horaInicial,minutosInicial,camposGrupo[i],intervalo,duracao,ids[i].idGrupo,dataTorneio,1)
               if(mao == 2){
+                let l = tempo2MaoGrupos(horaInicial,minutosInicial,grupos[i],camposGrupo[i].length,duracao,intervalo)
                 sql3 += gerarCalendarioJogosGrupos(grupos[i],l[0],l[1],camposGrupo[i],intervalo,duracao,ids[i].idGrupo,dataTorneio,2)
               }
             }
@@ -374,7 +370,7 @@ function grupoJImpar(teams,jogos) {
     var tempoJornada = duracao * rounds + intervalo
     var total = tempoJornada * jornadas
     var minutos2 = total + minutos + intervalo
-    
+
     horas += Math.floor(total/60)
     var min2 = (minutos2 > 60) ? (minutos2 % 60) : minutos2
     return [horas,min2]
@@ -386,26 +382,26 @@ function grupoJImpar(teams,jogos) {
     let tipo = l[0]
     let equipas = l[1].split('|')
     let lista = []
-  
+
     if (tipo == 1) {
       let sp = resultado.split('-')
       let vencedor = (parseInt(sp[0]) > parseInt(sp[1])) ? 1 : ((parseInt(sp[0]) < parseInt(sp[1])) ? 2 : 0)
-  
+
       for (var i = 0; i < equipas.length; i++) {
         let campos = equipas[i].split('-')
         struct1(lista,campos,sp,vencedor,eq1,eq2,i)
       }
-  
+
       lista.sort(function(a, b) {
         if (a.pontos < b.pontos) return 1;
         if (a.pontos > b.pontos) return -1;
         return (b.golosM - b.golosS) - (a.golosM - a.golosS);
       });
-  
+
     } else if (tipo == 2) {
       let sp = resultado.split('|')
       let pontosGanhos1 = 0, pontosGanhos2 = 0, setsGanhos1 = 0,setsGanhos2 = 0;
-  
+
       for (var i = 0; i < sp.length; i++){
         let sp2 = sp[i].split('-')
         let vencedor = (parseInt(sp2[0]) > parseInt(sp2[1])) ? 1 : 2
@@ -417,23 +413,23 @@ function grupoJImpar(teams,jogos) {
           setsGanhos2++
         }
       }
-  
+
       let vencedor = (setsGanhos1 > setsGanhos2) ? 1 : 2
-  
+
       for (var i = 0; i < equipas.length; i++) {
         let campos = equipas[i].split('-')
         struct2(lista,campos,vencedor,eq1,eq2,i,pontosGanhos1, pontosGanhos2, setsGanhos1,setsGanhos2)
       }
-  
+
       lista.sort(function(a, b) {
         if (a.pontos < b.pontos) return 1;
         if (a.pontos > b.pontos) return -1;
         return (b.setsGanhos / b.setsPerdidos) - (a.setsGanhos - a.setsPerdidos);
       });
     }
-  
+
     let c = listaToString(lista,tipo)
-  
+
     return c
   }
 
@@ -447,8 +443,9 @@ function grupoJImpar(teams,jogos) {
 
   function tempoProximaEtapa(horas,minutos,sizeEtapa,nMesas,duracao,intervalo){
     var rounds = Math.ceil(sizeEtapa/nMesas);
-    var min = rounds * duracao + intervalo;
-    var min2 = ((min+minutos)>60) ? (min+minutos)%60 : min+minutos
+    var min = rounds * parseInt(duracao);
+    min = min + parseInt(intervalo);
+    var min2 = ((min+minutos)>60) ? (min+minutos)%60 : (min+minutos);
     horas += Math.floor((min+minutos)/60)
     return [horas,min2]
   }
@@ -498,7 +495,7 @@ function grupoJImpar(teams,jogos) {
     lista.push({nome:campos[0],id:parseInt(campos[1]),pontos:parseInt(campos[2]),
                 vitorias:parseInt(campos[3]),empates:parseInt(campos[4]),derrotas:parseInt(campos[5]),
                 golosM:parseInt(campos[6]),golosS:parseInt(campos[7])})
-  
+
     if(campos[1] == eq1){
       if(vencedor == 1){
         lista[i].pontos += 3
@@ -510,7 +507,7 @@ function grupoJImpar(teams,jogos) {
       } else {
         lista[i].derrotas += 1
       }
-  
+
       lista[i].golosM += parseInt(sp[0])
       lista[i].golosS += parseInt(sp[1])
     }
@@ -525,7 +522,7 @@ function grupoJImpar(teams,jogos) {
       } else {
         lista[i].derrotas += 1
       }
-  
+
       lista[i].golosM += parseInt(sp[1])
       lista[i].golosS += parseInt(sp[0])
     }
@@ -535,7 +532,7 @@ function grupoJImpar(teams,jogos) {
     lista.push({nome:campos[0],id:parseInt(campos[1]),pontos:parseInt(campos[2]),
                 vitorias:parseInt(campos[3]),derrotas:parseInt(campos[4]),setsGanhos:parseInt(campos[5]),
                 setsPerdidos:parseInt(campos[6]),pontosGanhos:parseInt(campos[7]),pontosPerdidos:parseInt(campos[8])})
-  
+
     if(campos[1] == eq1){
       lista[i].pontosGanhos += pontosGanhos1
       lista[i].pontosPerdidos += pontosGanhos2
@@ -568,11 +565,11 @@ function grupoJImpar(teams,jogos) {
     var s = posicoes.length;
     var listPos =[];
     //console.log("posDis recebe:"+chunks + "posicoes "+posicoes);
-  
+
     for (var i=0; i < s; i++){
       var pos = posicoes[i];
       var index = findPos(chunks,pos);
-  
+
       if(index > -1)
         listPos.push(index);
     }
@@ -649,7 +646,7 @@ function sortear(jogadores,idsJogos){
       }
       var sql7 = "", hora2 = hora, min2 = minutos, temp2 = []
       //,hora = 14,minutos = 15;
-      for (var i = etapaIds.length - 1; i >= 0; i--) {  //hora += x --- CALCULAR 
+      for (var i = etapaIds.length - 1; i >= 0; i--) {  //hora += x --- CALCULAR
         sql7 += updateCalendarioEtapa(hora2,min2,mesas,duracao,jogosEtapa[i],dataTorneio);
         temp2 = tempoProximaEtapa(hora2,min2,etapaIds.length,mesas.length,duracao,intervalo);
         hora2 = temp2[0]
@@ -657,11 +654,11 @@ function sortear(jogadores,idsJogos){
         if(mao == 2){
           //VERIFICAR SE MIN>60 E HORAS>24
           //Pensar nisto minutos+30???? calcular valor
-          sql7 += updateCalendarioEtapa(hora2,min2,mesas,duracao,jogosEtapa2[i],dataTorneio); 
+          sql7 += updateCalendarioEtapa(hora2,min2,mesas,duracao,jogosEtapa2[i],dataTorneio);
           temp2 = tempoProximaEtapa(hora2,min2,etapaIds.length,mesas.length,duracao,intervalo);
           hora2 = temp2[0]
           min2 = temp2[1]
-        } 
+        }
       }
       data.query(sql7);
     })
@@ -711,7 +708,7 @@ function sortear(jogadores,idsJogos){
                 sql5 += "(0,'10:10:10'," +ronda+',0,'+etapaIds[i].idEtapa+',1)'
                 if(mao == 2)
                   sql5 += ",(0,'10:10:10'," +ronda+',0,'+etapaIds[i].idEtapa+',2)'
-  
+
                 sql5 += (i == etapaIds.length - 1 && ronda == etapaSize) ? ';' : ','
               }
             }
@@ -745,7 +742,7 @@ function sortear(jogadores,idsJogos){
       var sql3 = data.updateJogos(jogos)
       if(idsJogos2.length > 0)
         sql3 += data.updateJogos(gerar2Mao(jogos,idsJogos2))
-  
+
       data.query(sql3)
     })
   }
@@ -753,14 +750,14 @@ function sortear(jogadores,idsJogos){
   function apuradosGrupo(nApuradosGrupo,classificacao,numeroGrupo,apurados){
     let l = classificacao.split(':')
     let equipas = l[1].split('|')
-  
+
     for (var i = 0; i < nApuradosGrupo; i++) {
       let campos = equipas[i].split('-')
       //BUSCAR CLUBE????
       apurados.push({idEquipa:parseInt(campos[1]),ranking:numeroGrupo,posicao:i+1})
     }
   }
-  
+
   function equipasFromGrupos(nApuradosGrupo,idTorneio,tipoSorteio){
     var sql = data.getApuradosFromGrupos(idTorneio)
     data.query(sql).then(rank => {
@@ -778,10 +775,10 @@ function sortear(jogadores,idsJogos){
   function calculaVencedor2Maos(res1,res2,id1,id2){
     let sp = res1.split('|')
     let vencedor = -1;
-  
+
     if(sp.length > 1){
       let pontosGanhos1 = 0, pontosGanhos2 = 0, setsGanhos1 = 0,setsGanhos2 = 0;
-  
+
       for (var r = 0; r < 2; r++){
         if(r == 1)
           sp = res2.split('|')
@@ -805,7 +802,7 @@ function sortear(jogadores,idsJogos){
           }
         }
       }
-  
+
       vencedor = (setsGanhos1 > setsGanhos2) ? id1 :
                   ((setsGanhos2 > setsGanhos1) ? id2 :
                   ((pontosGanhos1 > pontosGanhos2) ? id1 : id2))
