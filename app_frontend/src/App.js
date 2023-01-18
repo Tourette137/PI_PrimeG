@@ -2,6 +2,7 @@ import {Link,Route,Routes} from 'react-router-dom';
 import PrivateRoutes from './utils/PrivateRoutes'
 
 import {Torneios} from './pages/Torneios.js';
+import {Gestao} from './pages/Gestao.js';
 import {Espacos} from './pages/Espacos.js';
 import {Espaco} from './pages/Espaco.js';
 import {Home} from './pages/Home.js';
@@ -44,6 +45,7 @@ function App() {
           </Route>
           <Route path = "/:id/jogos" element = {<Jogos/>}/>
           <Route path = "/:id/classificacao" element = {<Classificacao/>}/>
+          <Route path = "/:id/gestao" element = {<Gestao/>}/>
           <Route path = "*" element= {<NotFound/>}/>
 
           {/*A partir daqui, dentro do PrivateRoutes ficam as rotas privadas*/}
