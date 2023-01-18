@@ -83,12 +83,12 @@ export function NavbarDynamic() {
 
                     </ul>
 
-                    <i class="uil uil-times nav__close" onClick={() => setShowMenu(!showMenu)}></i>
+                    <i className="uil uil-times nav__close" onClick={() => setShowMenu(!showMenu)}></i>
 
                 </div>
 
                 <div className="nav__toggle" onClick={() => setShowMenu(!showMenu)}>
-                    <i class="uil uil-apps"></i>
+                    <i className="uil uil-apps"></i>
                 </div>
 
             </nav>

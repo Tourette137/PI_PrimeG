@@ -46,7 +46,6 @@ router.post("/registo", (req, res) => {
 
 //Login de um Utilizador
 router.post("/login", (req, res) => {
-    console.log(req.body.email);
     let sql = `Select * from utilizador WHERE email = "${req.body.email}";`
 
     data.query(sql)

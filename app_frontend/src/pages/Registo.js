@@ -64,10 +64,10 @@ export function Registo() {
     return (
         <>
         <NavbarDynamic/>
-        <form className="login-info-form" onSubmit={handleRegisto} style={{marginTop:"-10px"}}>
+        <form className="login-info-form w3-mobile" onSubmit={handleRegisto} style={{marginTop:"-30px"}}>
             <h1>Registo utilizador</h1>
             <div className="campoDados">
-                <p style={{color: "red", marginBottom:"10px"}}>{alert ? alertMsg : ''}</p>
+                <p style={{color: "red", marginBottom:"10px", marginTop:(alert?"-10px":"")}}>{alert ? alertMsg : ''}</p>
                 <input ref={inputEmailRef} id="email" type="email" placeholder="Email" required></input><br/>
                 <input ref={inputPassword1Ref} id="password1" type="password" placeholder="Password" required></input><br/>
                 <input ref={inputPassword2Ref} id="password2" type="password" placeholder="Repeat Password" required></input><br/>
@@ -80,8 +80,8 @@ export function Registo() {
                 </select>
             </div>
             <div className="butoesAcceptBack" style={{ marginBottom: "50px" }}>
-                <Link to="/"><button className="buttonCancel buttonBlack">Cancel</button></Link>
-                <button className="buttonAccept buttonOrange">Registo</button>
+                <Link to="/"><button type="button" className="buttonCancel buttonBlack">Cancel</button></Link>
+                <button type="submit" className="buttonAccept buttonOrange">Registo</button>
             </div>
         </form>
         </>

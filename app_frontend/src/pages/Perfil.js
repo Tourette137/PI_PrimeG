@@ -1,8 +1,11 @@
-import {useNavigate,Link,Route,Routes} from 'react-router-dom';
+import {useNavigate,Link} from 'react-router-dom';
 import {useState,useEffect} from 'react';
 import axios from 'axios';
 import PerfilDisplay from "./PerfilDisplay.jsx";
 import {NavbarDynamic} from '../components/NavbarDynamic.js';
+import '../components/Buttons.css';
+import '../components/Perfil.css';
+import '../components/Popup.css';
 
 const API_URL="http://localhost:3000"
 
@@ -10,6 +13,7 @@ export function Perfil() {
 
     const navigate = useNavigate()
     const [user, setUser] = useState("")
+    const [popUp, setPopUp] = useState(false)
     
     // Handler para voltar ao Perfil
     const handleTerminarSessao = async (e) => {
@@ -17,6 +21,10 @@ export function Perfil() {
         
         localStorage.setItem("token", null)
         navigate("/")
+    }
+
+    const handleTooglePopup = async (e) => {
+        setPopUp(!popUp)
     }
 
     // Handler para add Favorito
@@ -69,12 +77,11 @@ export function Perfil() {
     return(
         <>
         <NavbarDynamic/>
-            <h1>Só entra aqui se tiver o token / estiver logado.</h1>
             <h1>PERFIL UTILIZADOR</h1>
 
             <PerfilDisplay user = {user}/>
 
-            <button onClick={handleTerminarSessao}>Logout</button>
+            <button onClick={handleTooglePopup}>Logout</button>
 
             <button><Link to="/perfil/inscrito">Torneios Inscrito</Link></button>
             <button><Link to="/perfil/favoritos">Torneios Favoritos</Link></button>
@@ -82,6 +89,20 @@ export function Perfil() {
             <button><Link to="/perfil/historicoJogos">Historico Jogos</Link></button>
             <button><Link to="/perfil/notificacoes">Notificacoes</Link></button>
             { /* <button onClick={handleAddFavorito}>Adicionar Favorito</button> */ }
+
+            <div className={`popup ${popUp ? 'active' : ''}`}>
+                <div className="overlay">
+                    <div className="overlayContent">
+                        
+                        <h1>Deseja terminar sessão?</h1>
+                        <div className="butoesAcceptBack">
+                            <button className="buttonCancelar buttonBlack" onClick={handleTooglePopup}>Não</button>
+                            <button className="buttonAceitar buttonBlack" onClick={handleTerminarSessao}>Sim</button>
+                        </div>
+                    
+                    </div>
+                </div>	
+            </div>
         </>
     )
 }

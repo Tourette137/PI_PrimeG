@@ -18,7 +18,6 @@ export function Login() {
 
     const handleLogin = async (e) => {
         e.preventDefault()
-        console.log("Entrei aqui")
         const bodyMessage = {
             "email": inputEmailRef.current.value,
             "password": inputPasswordRef.current.value
@@ -57,17 +56,17 @@ export function Login() {
         <>
         <NavbarDynamic/>
 
-        <form className="login-info-form" onSubmit={handleLogin}>
+        <form className="login-info-form w3-mobile" onSubmit={handleLogin}>
             <h1>Iniciar Sessão</h1>
             <div className="campoDados">
-                <p style={{color: "red", marginBottom:"10px"}}>{alert ? alertMsg : ''}</p>
+                <p style={{color: "red", marginBottom:"10px", marginTop:(alert?"-10px":"")}}>{alert ? alertMsg : ''}</p>
                 <input ref={inputEmailRef} id="email" type="email" placeholder="Email" required></input><br/>
                 <input ref={inputPasswordRef} id="password" type="password" placeholder="Password" required></input>
             </div>
             <Link to="/registo" class="registerLink">Não tem conta? Registe-se.</Link>
             <div className="butoesAcceptBack" style={{ marginBottom: "50px" }}>
-                <Link to="/"><button className="buttonCancel buttonBlack">Cancel</button></Link>
-                <button className="buttonAccept buttonOrange">Login</button>
+                <Link to="/"><button type="button" className="buttonCancel buttonBlack">Cancel</button></Link>
+                <button type="submit" className="buttonAccept buttonOrange">Login</button>
             </div>
         </form>
         </>
