@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const data = require('../query.js')
-const isAuth = require('./auth');
+const {isAuth, isOrganizador} = require('./auth');
 const algoritmos = require('../algoritmos.js')
 
 //0 - por começar
@@ -488,52 +488,69 @@ router.get("/:id/classificacao/eliminatorias", (req,res) => {
 
 
 function getClassificacaoElim(idTorneio,res) {
-    let sql = "select E.numeroEtapa,J.ronda,Eq.idEquipa,Eq.nomeEquipa,J.resultado from Eliminatoria as El " +
+    let sql = "select E.numeroEtapa,J.mao,J.ronda,J.resultado,J.idOponente1,J.idOponente2 from Eliminatoria as El " +
                "join Etapa as E on E.Eliminatoria_idEliminatoria=El.idEliminatoria " +
                "join Jogo as J on J.idEtapa=E.idEtapa " +
-               "join Torneio as T on T.idTorneio = El.Torneio_idTorneio " +
-               "join Torneio_has_Equipa as TE on TE.Torneio_idTorneio=T.idTorneio " +
-               "join Equipa as Eq on Eq.idEquipa = TE.Equipa_idEquipa " +
-               "where T.idTorneio = " + idTorneio + " and El.Torneio_idTorneio = " + idTorneio +" and Eq.idEquipa = J.idOponente1 or Eq.idEquipa = J.idOponente2 ;"
-    data.query(sql).then(re => {
-        if (re.length != 0) {
-            let aux = []
-            let resultado = []
-            let aux2 = {}
-            re.map((r) => {
-            if (!(aux.includes((r.numeroEtapa,r.ronda)))) {
-                aux.push(r.numeroEtapa,r.ronda);
-                aux2 = {"numeroEtapa": r.numeroEtapa,
-                        "numeroRonda": r.ronda,
-                        "idEquipa1" : r.idEquipa,
-                        "nomeEquipa1" : r.nomeEquipa,
-                        "resultado" : r.resultado
-                }
-                resultado.push(aux2);
-            }
-            else {
-                for (var i = 0; i <resultado.length; i++) {
-                    if (resultado[i].numeroEtapa === r.numeroEtapa && resultado[i].numeroRonda === r.ronda) {
-                        resultado[i].idEquipa2 = r.idEquipa;
-                        resultado[i].nomeEquipa2 = r.nomeEquipa;
-                        break;
+               "where El.Torneio_idTorneio = " + idTorneio + ";"    
+    
+               data.query(sql).then(re => {
+                    if (re.length != 0) {
+                        let sql1 = ""
+                        for (let i = 0; i<re.length; i++) {
+                            if (re[i].idOponente1 != undefined) {
+                                sql1 += `Select idEquipa,nomeEquipa from Equipa where idEquipa = ${re[i].idOponente1};`
+                            }
+                            if (re[i].idOponente2 != undefined) {
+                                sql1 += `Select idEquipa,nomeEquipa from Equipa where idEquipa = ${re[i].idOponente2};`
+                            }
+                        }
+                        data.query(sql1).then(re1 => {
+                            //Põe os nomes das equipas na resposta.
+                            if (re1.length != 0) {
+                                let aux = -1;
+                                re.map ((r) => {
+                                    if (r.idOponente1 != undefined) {
+                                        for (let i = 0; i< re1.length; i++) {
+                                            if (r.idOponente1 == re1[i][0].idEquipa) {
+                                                r["nomeEquipa1"] = re1[i][0].nomeEquipa;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    if (r.idOponente2 != undefined) {
+                                        for (let i = 0; i< re1.length; i++) {
+                                            if (r.idOponente2 == re1[i][0].idEquipa) {
+                                                r["nomeEquipa2"] = re1[i][0].nomeEquipa;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                })
+                                //Remove a segunda mão da final
+                                for (let i = 0; i< re.length; i++) {
+                                    if (re[i].numeroEtapa == 1 && re[i].mao == 2) {
+                                        aux = i;
+                                        break;
+                                    }
+                                }
+                                re.splice(aux,1);
+                                res.send(re);
+                            }
+                            else {
+                                res.status(404).send("Erro ao encontrar as equipas")
+                           }
+                        })
                     }
-                }
-            }
-            re =resultado;
-            })
-            res.send(re);
-        }
-        else {
-            res.status(404).send("A eliminatória não foi encontrada!")
-        }
-    })
+                    else {
+                        res.status(404).send("A eliminatória não foi encontrada!")
+                    }
+                })
 }
 
 //Get de um torneio
-router.get("/:id", (req,res) => {
+router.get("/:id",isOrganizador,(req,res) => {
     const idTorneio = req.params.id;
-    let sql = "select T.idTorneio,T.nomeTorneio,T.terminado,T.isFederado,T.dataTorneio,T.escalao,T.tipoTorneio,T.tamEquipa,D.nomeDesporto,L.Nome from torneio as T " +
+    let sql = "select T.idTorneio,T.nomeTorneio,T.terminado,T.isFederado,T.dataTorneio,T.escalao,T.tipoTorneio,T.tamEquipa,D.nomeDesporto,L.Nome, T.idOrganizador from torneio as T " +
               "join Espaco as E on T.Espaco_idEspaco = E.idEspaco " +
               "join Localidade as L on E.Localidade_idLocalidade = L.idLocalidade " +
               "join Desporto as D on T.idDesporto = D.idDesporto " +
@@ -562,6 +579,7 @@ router.get("/:id", (req,res) => {
                     default: console.log("default");
                 }
             })
+            re[0]["isOrganizador"] = (re[0].idOrganizador == req.userId);
             res.send(re[0]);
 
         }
@@ -726,8 +744,7 @@ router.post("/:id/gestao/criarFaseGrupos",isAuth,(req,res) => {
                         for (let i= 0;i< numeroCampos;i++) {
                             campos[i] = i+1
                         }
-                        algoritmos.gerarGrupos(idTorneio,groupSize,inscritos,dataTorneio,horaInicial,minutosInicial,intervalo,duracao,campos,mao)
-                        res.send("Torneio gerado")
+                        algoritmos.gerarGrupos(idTorneio,groupSize,inscritos,dataTorneio,horaInicial,minutosInicial,intervalo,duracao,campos,mao,res,function callback() {res.send("Fase de grupos criada com sucesso")})
                     }
                     else {
                         res.status(404).send("O Torneio não tem inscritos para se realizar o sorteio")
@@ -791,8 +808,7 @@ router.post("/:idTorneio/gestao/criarEliminatorias",isAuth,(req,res) => {
                         data.query(sql3).then(c => {
                             if(c.length!=0){
                                 //gerarEliminatorias(nJogadores,idTorneio,mao,mesas,hora,minutos,duracao,intervalo)
-                                algoritmos.gerarEliminatorias(c[0].count,idTorneio,mao,campos,hora,minutos,duracao,intervalo,dataTorneio);
-                                res.status(200).send("broke")
+                                algoritmos.gerarEliminatorias(c[0].count,idTorneio,mao,campos,hora,minutos,duracao,intervalo,dataTorneio,res,function callback() {res.send("Eliminatórias criadas com sucesso")});
                             }
                             else {
                                 res.status(501).send("sem resultado em sql3")
@@ -870,8 +886,7 @@ router.post("/:idTorneio/gestao/criarEliminatoriasFromGrupos",isAuth,(req,res) =
                             campos[i] = i+1
                         }
                         // tenho de lhe mandar a hora e minutos direitos (hora e minutos do último jogo da fase de grupos para ele n figar)
-                        algoritmos.gerarEliminatorias(size,idTorneio,mao,campos,hora,minutos,duracao,intervalo,dataTorneio)
-                        res.status(200).send("broke")
+                        algoritmos.gerarEliminatorias(size,idTorneio,mao,campos,hora,minutos,duracao,intervalo,dataTorneio,res,function callback() {res.send("Eliminatórias criadas com sucesso")})
                     }
                     else {
                         res.status(501).send("sem resultado em sql2")
@@ -908,8 +923,7 @@ router.post("/:idTorneio/gestao/sortearEliminatoriasFromGrupos",isAuth,(req,res)
     data.query(sql).then(re => {
         if (re.length != 0) {
             if (re[0].idOrganizador == req.userId && re[0].gerado == 0 && verificaElimComGrupos(re[0].tipoTorneio) == 1) {
-                algoritmos.equipasFromGrupos(nApuradosGrupo,idTorneio,tipoSorteio)
-                res.status(200).send("broke")
+                algoritmos.equipasFromGrupos(nApuradosGrupo,idTorneio,tipoSorteio,res,function callback() {res.send("Eliminatórias sorteadas com sucesso")})
             }
             else {
                 if (re[0].gerado == 1) {
@@ -945,8 +959,7 @@ router.post("/:idTorneio/gestao/sortearEliminatorias",isAuth,(req,res) => {
             if (re[0].idOrganizador == req.userId && re[0].gerado == 0 && verificaElimSemGrupos(re[0].tipoTorneio) == 1) {
                 var sql = data.getEquipasFromElim(idTorneio);
                 data.query(sql).then(inscritos => {
-                    algoritmos.sortearElim(inscritos,idTorneio,tipoSorteio)
-                    res.status(200).send("broke")
+                    algoritmos.sortearElim(inscritos,idTorneio,tipoSorteio,res,function callback() {res.send("Eliminatórias sorteadas com sucesso")})
                 })
             }
             else {

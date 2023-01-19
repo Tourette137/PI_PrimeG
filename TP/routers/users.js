@@ -4,7 +4,7 @@ const router = express.Router();
 const data = require('../query.js');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const isAuth = require('./auth');
+const {isAuth} = require('./auth');
 
 
 //Imprimir todos os utilizadores

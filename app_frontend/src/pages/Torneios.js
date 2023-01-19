@@ -40,7 +40,6 @@ export function Torneios() {
         const response = await fetch(pedido);
         if (response.status === 200) {
             const data = await response.json();
-            console.log(data);
             setTorneios(data);
         }
         else {
@@ -79,7 +78,6 @@ export function Torneios() {
 
       //Search dos torneios inicialmente e depois do tipo ser alterado.
       useEffect(() => {
-        console.log("entrei aqui");
         searchTorneios(tipo);
       },[tipo,localidade,desporto,federado]);
 

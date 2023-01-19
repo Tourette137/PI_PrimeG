@@ -1,5 +1,5 @@
 import {useRef,useState,useEffect} from 'react';
-import {useParams} from 'react-router-dom'
+import {useParams,useNavigate} from 'react-router-dom'
 import GrupoDisplay from "./GrupoDisplay.jsx";
 import ElimDisplay from "./ElimDisplay.jsx";
 import {NavbarDynamic} from '../components/NavbarDynamic.js';
@@ -13,6 +13,8 @@ export function Gestao() {
     const [classificacaoGrupo,setClassificacaoGrupo] = useState([]);
     const [classificacaoElim,setClassificacaoElim] = useState([]);
     const [torneio,setTorneio] = useState("");
+    const navigate = useNavigate();
+
 
     // variaveis criar elim
     const inputDuracaoJogoRef = useRef(null);
@@ -34,15 +36,34 @@ export function Gestao() {
       }
 
       const searchTorneio = async () => {
-          const response = await fetch (`${API_URL}/torneios/${id}`);
-          if (response.status === 200) {
-              const data = await response.json();
-              setTorneio(data);
+        let requestOptions = {}
+        let aux = localStorage.getItem("token");
+        let response = null
+
+
+        if(aux != "null"){
+          requestOptions = {
+            headers: {'Authorization': "Bearer " + localStorage.getItem("token")}
           }
-          else {
-              setTorneio([]);
-          }
+
+          response = await fetch (`${API_URL}/torneios/${id}`,requestOptions);
         }
+        else {
+          response = await fetch (`${API_URL}/torneios/${id}`);
+        }
+         
+        
+        if (response.status === 200) {
+            const data = await response.json();
+            if(!data.isOrganizador) {
+              navigate(`/torneios/${id}`)
+            } 
+            setTorneio(data);
+        }
+        else {
+            setTorneio([]);
+        }
+      }
 
     // Função que vai buscar a classificação das eliminatórias.
     const searchElim = async () => {
@@ -135,12 +156,11 @@ export function Gestao() {
 
     // Vai buscar os grupos e as eliminatórias.
     useEffect(() => {
-        searchGrupos();
-        searchElim();
-        searchTorneio();
-      },[])
-
-
+      searchTorneio();
+      searchGrupos();
+      searchElim();
+    },[])
+    
 
     return(
         <>

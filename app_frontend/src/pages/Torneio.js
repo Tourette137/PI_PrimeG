@@ -11,18 +11,38 @@ const API_URL="http://localhost:3000"
 export function Torneio() {
     const {id} = useParams()
     const [torneio,setTorneio] = useState("");
+    const [gestao,setGestao] = useState(0);
 
     // Vai à API buscar a informação do torneio para dar display na página principal
     const searchTorneio = async () => {
-        const response = await fetch (`${API_URL}/torneios/${id}`);
+        let requestOptions = {}
+        let aux = localStorage.getItem("token");
+        let response = null
+
+
+        if(aux != "null") {
+            requestOptions = {
+                headers: {'Authorization': "Bearer " + localStorage.getItem("token")}
+            }
+            response = await fetch (`${API_URL}/torneios/${id}`,requestOptions);
+        }
+        else {
+            response = await fetch (`${API_URL}/torneios/${id}`);
+        }
+        
+        const data = await response.json();
         if (response.status === 200) {
-            const data = await response.json();
+            console.log(data)
+            if(data.isOrganizador) {
+                setGestao(1);
+            } 
             setTorneio(data);
         }
         else {
             setTorneio([]);
         }
       }
+      console.log(gestao)
 
     //Search inicial do torneio
     useEffect(() => {
@@ -39,7 +59,11 @@ export function Torneio() {
             (<li><Link to={"/" + id + "/classificacao"}>Classificacao</Link></li>)
             : (null)
             }
-            <li><Link to={"/" + id + "/gestao?t=" + torneio.tipoTorneio}>Jogos</Link></li>
+            {gestao == 1
+            ?
+            <li><Link to={"/" + id + "/gestao?t=" + torneio.tipoTorneio}>Gestão</Link></li>
+            : (null)
+            }
         {torneio !== ""
         ? (<div className = "Torneio">
           <TorneioDisplay torneio = {torneio}/>
