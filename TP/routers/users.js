@@ -21,7 +21,6 @@ router.get("/", (req, res) => {
 router.post("/registo", (req, res) => {
     
     let sql = `Select * from utilizador WHERE email = "${req.body.email}";`
-    console.log(req.body)
 
     data.query(sql)
         .then( async re => {

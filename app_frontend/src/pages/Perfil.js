@@ -77,17 +77,22 @@ export function Perfil() {
     return(
         <>
         <NavbarDynamic/>
+
+        <section className="profile-info w3-mobile" style={{marginTop: "-150px"}}>
             <h1>PERFIL UTILIZADOR</h1>
 
-            <PerfilDisplay user = {user}/>
+            <PerfilDisplay user = {user} handleTooglePopup = {handleTooglePopup}/>
 
-            <button onClick={handleTooglePopup}>Logout</button>
 
-            <button><Link to="/perfil/inscrito">Torneios Inscrito</Link></button>
-            <button><Link to="/perfil/favoritos">Torneios Favoritos</Link></button>
-            <button><Link to="/perfil/historico">Historico Torneios</Link></button>
-            <button><Link to="/perfil/historicoJogos">Historico Jogos</Link></button>
-            <button><Link to="/perfil/notificacoes">Notificacoes</Link></button>
+            <div className="butoesAcceptBack gridButtons container" style={{ margin: "0 0 30px 0" }}>
+                <button className="buttonBlack"><Link to="/perfil/inscrito">Torneios Inscrito</Link></button>
+                <button className="buttonBlack"><Link to="/perfil/favoritos">Torneios Favoritos</Link></button>
+                <button className="buttonBlack"><Link to="/perfil/historico">Historico Torneios</Link></button>
+                <button className="buttonBlack"><Link to="/perfil/historicoJogos">Historico Jogos</Link></button>
+                <button className="buttonBlack"><Link to="/perfil/notificacoes">Notificacoes</Link></button>
+            </div>
+        </section>
+
             { /* <button onClick={handleAddFavorito}>Adicionar Favorito</button> */ }
 
             <div className={`popup ${popUp ? 'active' : ''}`}>

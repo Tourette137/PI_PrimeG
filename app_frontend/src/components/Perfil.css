@@ -1,3 +1,53 @@
+.grid-container {
+    display: grid;
+    grid-gap: 10px;
+    column-gap: 40px;
+
+    border-radius: 16px;
+    padding: 20px 20px;
+    width: 100%;
+    background: white;
+    margin-top: 30px;
+    box-shadow: 10px 10px 5px lightgray;
+
+    grid-template-columns: 400px auto;
+    grid-template-areas: 
+        "profilePic nomePerfil"
+        "profilePic emailPerfil"
+        "profilePic dataNascimentoPerfil"
+        "profilePic generoPerfil";
+}
+
+.profilePic {
+    grid-area: profilePic;
+    display: block;
+    margin: auto auto;
+}
+
+.nomePerfil {
+    grid-area: nomePerfil;
+    display: flex;
+    align-items: center;
+}
+
+.emailPerfil {
+    grid-area: emailPerfil;
+    display: flex;
+    align-items: center;
+}
+
+.dataNascimentoPerfil {
+    grid-area: dataNascimentoPerfil;
+    display: flex;
+    align-items: center;
+}
+
+.generoPerfil {
+    grid-area: generoPerfil;
+    display: flex;
+    align-items: center;
+}
+
 .profile-info {
     padding-top: 180px;
     display: flex;
@@ -11,18 +61,90 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 1px;
+    padding: 0 20px;
 }
 .profile-info img {
-    margin-top: 30px;
-    margin-bottom: 10px;
-    height: 150px;
-    width: 150px;
+    height: 400px;
+    width: auto;
+    border-radius: 16px;
 }
 .profile-info h2 {
+    font-size: 25px;
     font-weight: bold;
     padding: 10px 0px;
 }
 .profile-info h3 {
-    font-size: 16;
-    margin-top: -30px;
+    font-weight: var(--font-normal);
+    font-size: 25px;
 }
+
+@media screen and (max-width: 1150px) {
+    .grid-container {
+        width: 90%;
+    }
+}
+
+@media screen and (max-width: 992px) {
+    .grid-container {
+        width: 90%;
+        grid-template-columns: 300px auto;
+    }
+
+    .profile-info img {
+        height: 300px;
+        width: auto;
+    }
+}
+
+@media screen and (max-width: 850px) {
+    .grid-container {
+        display: flex;
+        justify-content: center;
+        align-content: center;
+        flex-direction: column;
+    }
+
+    .grid-container .butoesAcceptBack {
+        left: 0;
+        margin: 40px auto 20px auto;
+    }
+
+    .grid-container .butoesAcceptBack {
+        left: 0;
+        margin: 40px auto 20px auto;
+    }
+
+    .nomePerfil {
+        justify-content: center;
+        flex-direction: column;
+    }
+
+    .emailPerfil {
+        justify-content: center;
+        flex-direction: column;
+    }
+    
+    .dataNascimentoPerfil {
+        justify-content: center;
+        flex-direction: column;
+    }
+    
+    .generoPerfil {
+        justify-content: center;
+        flex-direction: column;
+    }
+
+    .profile-info img {
+        width: 90%;
+        height: auto;
+        margin: 20px auto;
+    }
+
+    .profile-info h3 {
+        margin-top: -15px;
+        font-size: 25px;
+    }
+}
+
+
+  
