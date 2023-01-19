@@ -44,7 +44,6 @@ async function isOrganizador(req, res, next) {
   try {
 
     jwt.verify(token, 'PRIVATEKEY', (err, user) => {
-
       if (err) {
         return res.sendStatus(401)
       }

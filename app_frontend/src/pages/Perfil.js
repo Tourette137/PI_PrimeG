@@ -1,5 +1,5 @@
 import {useNavigate,Link} from 'react-router-dom';
-import {useState,useEffect} from 'react';
+import {useState,useEffect, useRef} from 'react';
 import axios from 'axios';
 import PerfilDisplay from "./PerfilDisplay.jsx";
 import {NavbarDynamic} from '../components/NavbarDynamic.js';
@@ -14,6 +14,12 @@ export function Perfil() {
     const navigate = useNavigate()
     const [user, setUser] = useState("")
     const [popUp, setPopUp] = useState(false)
+
+    const [alert, setAlert] = useState(false)
+    const [alertMsg, setAlertMsg] = useState("") 
+    const [popUpNewImage, setPopUpNewImage] = useState(false)
+    
+    const inputImageRef = useRef(null);
     
     // Handler para voltar ao Perfil
     const handleTerminarSessao = async (e) => {
@@ -25,6 +31,46 @@ export function Perfil() {
 
     const handleTooglePopup = async (e) => {
         setPopUp(!popUp)
+    }
+
+    const handleTooglePopupNewImage = async (e) => {
+        setPopUpNewImage(!popUpNewImage)
+
+        setAlertMsg("")
+        setAlert(false)
+    }
+
+    const handleChangeImage = async (e) => {
+
+        const file = inputImageRef.current.files[0]
+        
+        const validFileTypes = ['image/jpg', 'image/jpeg', 'image/png']
+
+        if(!validFileTypes.find(type => type === file.type)) {
+            setAlertMsg("Ficheiro deve possuir formatos JPG ou PNG!")
+            setAlert(true)
+            inputImageRef.current.value = null;
+            return;
+        }
+
+        const formData = new FormData()
+        formData.append("fotoPerfil", file)
+
+        axios.post(`${API_URL}/users/changePicture`, formData, { headers: {'Content-Type': 'multipart/form-data', "authorization": "Bearer " + localStorage.getItem("token")}})
+                .then(response => {
+                    const newUser = user
+                    newUser["imageUrl"] = response.data
+                    setUser(newUser)
+                    setAlertMsg("")
+                    setAlert(false)
+                    setPopUpNewImage(false)
+                    inputImageRef.current.value = null;
+                })
+                .catch(e => {
+                    setAlertMsg("Algo correu mal")
+                    setAlert(true)
+                    return;
+                })
     }
 
     // Handler para add Favorito
@@ -81,7 +127,22 @@ export function Perfil() {
         <section className="profile-info w3-mobile" style={{marginTop: "-150px"}}>
             <h1>PERFIL UTILIZADOR</h1>
 
-            <PerfilDisplay user = {user} handleTooglePopup = {handleTooglePopup}/>
+            <PerfilDisplay user = {user} handleTooglePopup = {handleTooglePopup} handleTooglePopupNewImage = {handleTooglePopupNewImage}/>
+
+            <div className={`popup ${popUpNewImage ? 'active' : ''}`}>
+                <div className="overlay">
+                    <div className="overlayContent">
+                        <h1>Nova Foto de Perfil</h1>
+                        <p style={{color: "red", marginBottom:"10px", marginTop:(alert?"-10px":"")}}>{alert ? alertMsg : ''}</p>
+                        <input className="w3-file" ref={inputImageRef} id="file" type="file"></input>
+                        <div className="butoesAcceptBack" style={{marginTop:"-20px"}}>
+                            <button className="buttonCancelar buttonBlack" onClick={handleTooglePopupNewImage}>Cancelar</button>
+                            <button className="buttonAceitar buttonBlack" onClick={handleChangeImage}>Confirmar</button>
+                        </div>
+                    
+                    </div>
+                </div>	
+            </div>
 
 
             <div className="butoesAcceptBack gridButtons container" style={{ margin: "0 0 30px 0" }}>

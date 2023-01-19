@@ -41,7 +41,6 @@ export function Login() {
                         break
                 }
                 setAlert(true)
-                console.log(e.response.status)
             })
     }
 
@@ -63,7 +62,7 @@ export function Login() {
                 <input ref={inputEmailRef} id="email" type="email" placeholder="Email" required></input><br/>
                 <input ref={inputPasswordRef} id="password" type="password" placeholder="Password" required></input>
             </div>
-            <Link to="/registo" class="registerLink">Não tem conta? Registe-se.</Link>
+            <Link to="/registo" className="registerLink">Não tem conta? Registe-se.</Link>
             <div className="butoesAcceptBack" style={{ marginBottom: "50px" }}>
                 <Link to="/"><button type="button" className="buttonCancel buttonBlack">Cancel</button></Link>
                 <button type="submit" className="buttonAccept buttonOrange">Login</button>

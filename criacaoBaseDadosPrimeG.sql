@@ -24,6 +24,7 @@ CREATE TABLE IF NOT EXISTS `primeG`.`Utilizador` (
   `password` VARCHAR(60) NOT NULL,
   `dataNascimento` DATE NOT NULL,
   `genero` INT NOT NULL,
+  `imageName` VARCHAR(60) NULL,
   PRIMARY KEY (`idUtilizador`))
 ENGINE = InnoDB;
 

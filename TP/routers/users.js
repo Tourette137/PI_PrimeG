@@ -5,7 +5,29 @@ const data = require('../query.js');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const {isAuth} = require('./auth');
+const dotenv = require('dotenv');
+const multer = require('multer');
 
+const {S3Client, PutObjectCommand, GetObjectCommand} = require('@aws-sdk/client-s3');
+const {getSignedUrl} =  require ("@aws-sdk/s3-request-presigner");
+
+dotenv.config()
+
+const bucketName = process.env.AWS_BUCKET_NAME
+const region = process.env.AWS_BUCKET_REGION
+const accessKeyId = process.env.AWS_ACCESS_KEY
+const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY
+
+const s3Client = new S3Client({
+    region,
+    credentials: {
+        accessKeyId,
+        secretAccessKey
+    }
+  })
+
+const storage = multer.memoryStorage()
+const upload = multer({ storage: storage })
 
 //Imprimir todos os utilizadores
 router.get("/", (req, res) => {
@@ -18,8 +40,8 @@ router.get("/", (req, res) => {
 
 
 //Registo de um utilizador 
-router.post("/registo", (req, res) => {
-    
+router.post("/registo", upload.single('fotoPerfil'), (req, res) => {
+
     let sql = `Select * from utilizador WHERE email = "${req.body.email}";`
 
     data.query(sql)
@@ -30,8 +52,32 @@ router.post("/registo", (req, res) => {
                 let sql = `Insert into utilizador (Nome, email, password, dataNascimento, genero) 
                     values ("${req.body.nome}", "${req.body.email}", "${hashedPass}", "${req.body.dataNascimento}", "${req.body.genero}")`
                 data.query(sql)
-                    .then(re => {
-                        res.send("Utilizador registado com sucesso")
+                    .then(async re => {
+                        
+                        if (!(req.file === undefined)) {
+                            const fileName = "profile"+re.insertId
+    
+                            const params = {
+                                Bucket: bucketName,
+                                Body: req.file.buffer,
+                                Key: fileName,
+                                ContentType: req.file.mimetype
+                            }
+    
+                            await s3Client.send(new PutObjectCommand(params))
+
+                            let sql = `Update utilizador Set imageName='${fileName}' Where idUtilizador = ${re.insertId};`
+
+                            data.query(sql)
+                                .then(re => {
+                                    res.send("Utilizador registado com sucesso")
+                                }) 
+                                .catch (e => { res.status(400).jsonp({ error: e }) })
+
+                        } else {
+                            res.send("Utilizador registado com sucesso")
+                        }
+
                     })
                     .catch(e => { res.status(400).jsonp({ error: e }) })
             } else {
@@ -93,12 +139,26 @@ router.get("/torneiosInscrito", isAuth, (req, res) => {
 
 router.get("/perfil", isAuth, (req, res) => {
 
-    let sql =  `Select Nome, email, dataNascimento, genero from Utilizador
+    let sql =  `Select Nome, email, dataNascimento, genero, imageName from Utilizador
                 Where idUtilizador = "${req.userId}";`
 
     data.query(sql)
         .then( async re => {
             if (re.length != 0) {
+
+                if (!(re[0].imageName === null)) {
+                    const params = {
+                        Bucket: bucketName,
+                        Key: re[0].imageName
+                    }
+    
+                    const command = new GetObjectCommand(params);
+                    const url = await getSignedUrl(s3Client, command, {expiresIn: 60}) 
+                    re[0]["imageUrl"] = url
+                } else {
+                    re[0]["imageUrl"] = null
+                }
+
                 re[0].dataNascimento = re[0].dataNascimento.toLocaleDateString();
                 res.send(re);
             }
@@ -190,6 +250,36 @@ router.get("/notificacoes", isAuth, (req, res) => {
 
 
 // Editar Perfil Utilizador
+
+// Trocar de fotografia
+router.post("/changePicture", upload.single('fotoPerfil'), isAuth, async (req, res) => {
+
+    const fileName = "profile"+req.userId
+    
+    const params = {
+        Bucket: bucketName,
+        Body: req.file.buffer,
+        Key: fileName,
+        ContentType: req.file.mimetype
+    }
+
+    await s3Client.send(new PutObjectCommand(params))
+
+    let sql = `Update utilizador Set imageName='${fileName}' Where idUtilizador = ${req.userId};`
+
+    data.query(sql)
+        .then(async re => {
+            const params = {
+                Bucket: bucketName,
+                Key: fileName
+            }
+
+            const command = new GetObjectCommand(params);
+            const url = await getSignedUrl(s3Client, command, {expiresIn: 60}) 
+            res.send(url)
+        }) 
+        .catch (e => { res.status(400).jsonp({ error: e }) })
+})
 
 // Inscrição num torneio por parte do User
 

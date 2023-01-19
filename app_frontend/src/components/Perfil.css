@@ -22,6 +22,22 @@
     grid-area: profilePic;
     display: block;
     margin: auto auto;
+    height: 400px;
+}
+
+.profilePic img {
+    position: relative;
+}
+
+.profilePic .editButton {
+    position: relative;
+    font-size: 35px;
+    bottom: 50px;
+    left: 44%;
+
+    background: -webkit-linear-gradient(90deg, #ff5500, #f8b028); 
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 .nomePerfil {
@@ -65,8 +81,9 @@
 }
 .profile-info img {
     height: 400px;
-    width: auto;
     border-radius: 16px;
+    object-fit: cover;
+    aspect-ratio: 1/1;
 }
 .profile-info h2 {
     font-size: 25px;
@@ -88,12 +105,22 @@
     .grid-container {
         width: 90%;
         grid-template-columns: 300px auto;
+        grid-gap: 0px;
+        column-gap: 40px;
+    }
+
+    .profilePic {
+        height: 300px;
     }
 
     .profile-info img {
         height: 300px;
-        width: auto;
     }
+
+    .profilePic .editButton {
+        left: 43%;
+    }
+
 }
 
 @media screen and (max-width: 850px) {
@@ -107,6 +134,19 @@
     .grid-container .butoesAcceptBack {
         left: 0;
         margin: 40px auto 20px auto;
+    }
+
+    .profilePic {
+        display: flex;
+        height: auto;
+        flex-direction: column;
+    }
+
+    .profilePic .editButton {
+        bottom: 75px;
+        left: 40%;
+        margin-bottom: -50px;
+        cursor: pointer;
     }
 
     .grid-container .butoesAcceptBack {

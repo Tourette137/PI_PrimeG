@@ -1,14 +1,22 @@
 import React from 'react'
-//import profileIcon from '../images/profileIcon.png'
-import profileIcon from '../images/aboutUs/fotografia_BrunoDias.jpg'
+import profileIcon from '../images/profileIcon.png'
 import '../components/Buttons.css'
 
 
-const PerfilDisplay = ({user, handleTooglePopup}) => {
+const PerfilDisplay = ({user, handleTooglePopup, handleTooglePopupNewImage}) => {
     return (
         <div className="container grid-container">  
             
-            <img className="profilePic" src={profileIcon} alt="Profile Pic"></img>
+            <div className="profilePic">
+                {(user.imageUrl === null) ?
+                    (<img src={profileIcon} alt="Profile Picture"></img>)
+                :   (<img src={user.imageUrl} alt="Profile Picture2"></img>)
+                }
+                <a className="editButton" onClick={handleTooglePopupNewImage} style={{cursor: "pointer"}}>
+                    <i className="uil uil-image-edit"></i>
+                </a>
+            </div>
+            
 
             <div className="nomePerfil">
                 <h2>Nome:&nbsp;</h2>
