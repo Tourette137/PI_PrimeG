@@ -9,7 +9,11 @@ const GrupoDisplay = ({grupo}) => {
             </div>
             <div>
                 {grupo.classificacaoGrupo.map((classificacao) => (
-                    <div>{"Equipa:" + `${classificacao.split('-')[0]}`+ " | Pontos: "+`${classificacao.split('-')[1]}` }</div>
+                    (grupo.tipoClassificacao == 1) 
+                        ? 
+                        <div>{"Equipa:" + `${classificacao.split('-')[0]}`+ " | Pontos: "+`${classificacao.split('-')[2]}` }</div>
+                    :
+                    <div>{"Equipa:" + `${classificacao.split('-')[0]}`+ " | Pontos: "+`${classificacao.split('-')[2]}` }</div>
                 ))}
             </div>
         </div>

@@ -452,11 +452,13 @@ function getClassificacaoGrupo(idTorneio,res) {
             re.map((r) => {
                 let aux1 = [],aux3 = `${r.classificacaoGrupo}`.split(':');
                 let aux2 = aux3[1].split('|');
+                let tipoClassificacao = parseInt(aux3[0]);
                 for (var i = 0; i< aux2.length; i++) {
                     aux1.push(aux2[i]);
                 }
                 r.classificacaoGrupo = aux1;
-                aux1 = {}
+                r["tipoClassificacao"] = tipoClassificacao;
+                aux1 = []
             })
             res.send(re);
         }
@@ -488,7 +490,7 @@ router.get("/:id/classificacao/eliminatorias", (req,res) => {
 
 
 function getClassificacaoElim(idTorneio,res) {
-    let sql = "select E.numeroEtapa,J.mao,J.ronda,J.resultado,J.idOponente1,J.idOponente2 from Eliminatoria as El " +
+    let sql = "select E.nomeEtapa,J.mao,J.ronda,J.resultado,J.idOponente1,J.idOponente2,J.hora,J.numeroCampo from Eliminatoria as El " +
                "join Etapa as E on E.Eliminatoria_idEliminatoria=El.idEliminatoria " +
                "join Jogo as J on J.idEtapa=E.idEtapa " +
                "where El.Torneio_idTorneio = " + idTorneio + ";"    
@@ -504,42 +506,65 @@ function getClassificacaoElim(idTorneio,res) {
                                 sql1 += `Select idEquipa,nomeEquipa from Equipa where idEquipa = ${re[i].idOponente2};`
                             }
                         }
-                        data.query(sql1).then(re1 => {
-                            //Põe os nomes das equipas na resposta.
-                            if (re1.length != 0) {
-                                let aux = -1;
-                                re.map ((r) => {
-                                    if (r.idOponente1 != undefined) {
-                                        for (let i = 0; i< re1.length; i++) {
-                                            if (r.idOponente1 == re1[i][0].idEquipa) {
-                                                r["nomeEquipa1"] = re1[i][0].nomeEquipa;
-                                                break;
+                        if (sql1  != "") {
+                            data.query(sql1).then(re1 => {
+                                //Põe os nomes das equipas na resposta.
+                                if (re1.length != 0) {
+                                    re.map ((r) => {
+                                        if (r.idOponente1 != undefined) {
+                                            for (let i = 0; i< re1.length; i++) {
+                                                if (r.idOponente1 == re1[i][0].idEquipa) {
+                                                    r["nomeEquipa1"] = re1[i][0].nomeEquipa;
+                                                    break;
+                                                }
                                             }
                                         }
-                                    }
-                                    if (r.idOponente2 != undefined) {
-                                        for (let i = 0; i< re1.length; i++) {
-                                            if (r.idOponente2 == re1[i][0].idEquipa) {
-                                                r["nomeEquipa2"] = re1[i][0].nomeEquipa;
-                                                break;
+                                        if (r.idOponente2 != undefined) {
+                                            for (let i = 0; i< re1.length; i++) {
+                                                if (r.idOponente2 == re1[i][0].idEquipa) {
+                                                    r["nomeEquipa2"] = re1[i][0].nomeEquipa;
+                                                    break;
+                                                }
                                             }
                                         }
+                                        let hora = r.hora.getHours()
+                                        let minutos =r.hora.getMinutes()
+                                        r.hora = r.hora.toLocaleDateString() + ` ${hora}:${minutos}`;
+                                    })
+                                    let aux = -1;        
+                                    for (let i = 0; i< re.length; i++) {
+                                        if (re[i].nomeEtapa == "Final" && re[i].mao == 2) {
+                                            aux = i;
+                                            break;
+                                        }
                                     }
-                                })
-                                //Remove a segunda mão da final
-                                for (let i = 0; i< re.length; i++) {
-                                    if (re[i].numeroEtapa == 1 && re[i].mao == 2) {
-                                        aux = i;
-                                        break;
+                                    if (aux != -1) {
+                                        re.splice(aux,1);
                                     }
+                                    res.send(re);
                                 }
-                                re.splice(aux,1);
-                                res.send(re);
+                                else {
+                                    res.status(404).send("Erro ao encontrar as equipas")
+                               }
+                            })
+                        }
+                        //Remove a segunda mão da final
+                        else {
+                            let aux = -1;        
+                            for (let i = 0; i< re.length; i++) {
+                                if (re[i].nomeEtapa == "Final" && re[i].mao == 2) {
+                                    aux = i;
+                                    break;
+                                }
                             }
-                            else {
-                                res.status(404).send("Erro ao encontrar as equipas")
-                           }
-                        })
+                            if (aux != -1) {
+                                re.splice(aux,1);
+                            }
+                            re.map((r) => {
+                                r.hora = r.hora.toLocaleDateString();
+                            })
+                            res.send(re);
+                        }
                     }
                     else {
                         res.status(404).send("A eliminatória não foi encontrada!")

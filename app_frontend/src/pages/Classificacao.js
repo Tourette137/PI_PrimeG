@@ -30,6 +30,7 @@ export function Classificacao() {
         const response = await fetch (`${API_URL}/torneios/${id}/classificacao/eliminatorias`);
         if (response.status === 200) {
             const data = await response.json();
+            console.log(data)
             setClassificacaoElim(data);
         }
         else {

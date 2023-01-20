@@ -35,7 +35,7 @@ export function Espaco() {
             <h1>Página do espaco {id}</h1>
         {espaco !== ""
         ? (<div className = "Espaco">
-          <EspacoDisplay nome = {espaco.nome} rua = {espaco.rua} contacto = {espaco.contacto} desporto = {espaco.nomeDesporto} localidade = {espaco.localidade} nMesas = {espaco.numeroMesas}/>
+          <EspacoDisplay nome = {espaco.nome} rua = {espaco.rua} contacto = {espaco.contacto} desporto = {espaco.nomeDesporto} localidade = {espaco.localidade} numeroMesas = {espaco.numeroMesas}/>
           </div>
         )
         : (<div className="empty">

@@ -1,6 +1,6 @@
 import React from 'react'
 
-const EspacoDisplay = ({nome,rua,contacto,desporto,localidade,nMesas}) => {
+const EspacoDisplay = ({nome,rua,contacto,desporto,localidade,numeroMesas}) => {
     return (
         <div className="Espaco">
             <div>
@@ -10,16 +10,16 @@ const EspacoDisplay = ({nome,rua,contacto,desporto,localidade,nMesas}) => {
                 <p>Rua: {rua}</p>
             </div>
             <div>
-                <p>contacto: {contacto}</p>
+                <p>Contacto: {contacto}</p>
             </div>
             <div>
-                <p>localidade: {localidade}</p>
+                <p>Localidade: {localidade}</p>
             </div>
             <div>
-                <p>desporto: {desporto}</p>
+                <p>Desporto: {desporto}</p>
             </div>
             <div>
-                <p>numero de mesas: {nMesas}</p>
+                <p>Número de campos: {numeroMesas}</p>
             </div>
         </div>
     )

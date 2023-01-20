@@ -75,7 +75,7 @@ export function RegistoEspaco() {
             "nMesas" : inputNMesasRef.current.value
         }
 
-        axios.post(`${API_URL}/espacos/registoNFavorito`, bodyEspaco,{headers: headers})
+        axios.post(`${API_URL}/espacos/registarEspaco`, bodyEspaco,{headers: headers})
             .then(response => {
             const idEspaco = response.data.idEspaco
             navigate(`/espacos/${idEspaco}`)

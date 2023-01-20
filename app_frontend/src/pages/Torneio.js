@@ -56,7 +56,7 @@ export function Torneio() {
             <li><Link to={"/" + id + "/jogos?t=" + torneio.tipoTorneio}>Jogos</Link></li>
             {torneio.terminado != 0
             ?
-            (<li><Link to={"/" + id + "/classificacao"}>Classificacao</Link></li>)
+            (<li><Link to={"/" + id + "/classificacao"}>Classificação</Link></li>)
             : (null)
             }
             {gestao == 1

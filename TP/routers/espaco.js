@@ -9,7 +9,7 @@ router.get("/desporto/:id",(req,res) => {
     const idDesporto = req.params.id;
     const idLocalidade = req.query.localidade;
     let sql = "select * from espaco join Desporto_Has_Espaco as de on de.idEspaco = espaco.idEspaco where de.idDesporto = " + idDesporto
-            + " and espaco.favorito = 1;";
+            + " and espaco.favorito = 1 and espaco.Localidade_idLocalidade = "+ idLocalidade +";";
     data.query(sql).then(re => {
         if(re.length != 0){
             res.send(re);
@@ -24,22 +24,23 @@ router.get("/desporto/:id",(req,res) => {
 
 // Vai buscar os espaços disponiveis
 router.get("/disponiveis",(req,res) => {
-    let sql = "select * from espaco join Desporto_Has_Espaco as de on de.idEspaco = espaco.idEspaco"
-
+    let sql = "select * from espaco as esp join Desporto_Has_Espaco as de on de.idEspaco = esp.idEspaco"
+    sql += " join localidade as l on l.idLocalidade = esp.Localidade_idLocalidade "
+    sql += " join desporto as d on d.idDesporto = de.idDesporto"
     //Filtro de Localidade
     if(req.query.localidade != null){
           if(!isNaN(req.query.localidade)){
-                sql += " where espaco.Localidade_idLocalidade = " + req.query.localidade;
                 if(!isNaN(req.query.desporto)){
-                        sql += " and de.idDesporto = " + req.query.desporto;
+                        sql += " where de.idDesporto = " + req.query.desporto;
                 }
+                sql += " and esp.Localidade_idLocalidade = " + req.query.localidade;
           }
     }
 
     //Filtro de Desporto
     else if(req.query.desporto != null)
             if(!isNaN(req.query.desporto)){
-                    sql += " where de.idDesporto = " + req.query.desporto;
+                sql += " where de.idDesporto = " + req.query.desporto;
             }
 
     sql += ";";
@@ -55,7 +56,10 @@ router.get("/disponiveis",(req,res) => {
 
 // Vai buscar os espaços favoritos
 router.get("/favoritos",(req,res) => {
-    let sql = "select * from espaco join Desporto_Has_Espaco as de on de.idEspaco = espaco.idEspaco where espaco.favorito = 1"
+    let sql = "select * from espaco join Desporto_Has_Espaco as de on de.idEspaco = espaco.idEspaco"
+    sql += " join localidade as l on l.idLocalidade = espaco.Localidade_idLocalidade "
+    sql += " join desporto as d on d.idDesporto = de.idDesporto "
+    sql += "where espaco.favorito = 1"
 
     //Filtro de Localidade
     if(req.query.localidade != null){
@@ -102,7 +106,7 @@ router.get("/:id",(req,res) => {
 })
 
 
-//Associar ao espaço o utilizador 1 E criar o espaço com favorito a 0
+
 
 router.post("/registoNFavorito",isAuth,(req,res) => {
     let sql = `insert into espaco (nome, rua, contacto, Utilizador_idUtilizador, Localidade_idLocalidade, Favorito) values( "${req.body.nome}","${req.body.rua}","${req.body.contacto}",${req.userId},${req.body.localidade},0);`
@@ -122,31 +126,21 @@ router.post("/registoNFavorito",isAuth,(req,res) => {
 })
 
 // Registar o espaço como favorito
-router.post("/registarEspaco",(req,res) => {
-    const nome = req.body.nome;
-    const rua = req.body.rua;
-    const contacto = req.body.contacto;
-    const idUtilizador = req.body.idUtilizador;
-    const idLocalidade = req.body.idLocalidade;
-
-    let sql = "select nome from espaco where nome = " + nome + ";";
+router.post("/registarEspaco",isAuth,(req,res) => {
+    let sql = `insert into espaco (nome, rua, contacto, Utilizador_idUtilizador, Localidade_idLocalidade, Favorito) values( "${req.body.nome}","${req.body.rua}","${req.body.contacto}",${req.userId},${req.body.localidade},1);`
     data.query(sql).then(re => {
-        if(re.length != 0){
-            res.status(404).send("Espaço já existe!");
-        }
-        else {
-            sql = "insert into espaco (nome,rua,contacto,Utilizador_idUtilizador,Localidade_idLocalidade,Favorito)"+
-                  "values (" + nome + "," + rua + "," + contacto + "," + idUtilizador + "," + idLocalidade + ",1);"
-            data.query(sql).then(re => {
-                if(re != 0){
-                  res.send(re);
-                }
-                else {
-                  res.status(404).send("Espaços já existente");
-                }
+       let sql1 = `select idEspaco from espaco as e where e.nome = "${req.body.nome}" and e.rua = "${req.body.rua}" and e.contacto = "${req.body.contacto}" and e.Utilizador_idUtilizador = ${req.userId} and e.Localidade_idLocalidade = ${req.body.localidade} and e.Favorito = 1;`
+        data.query(sql1).then(re => {
+           if (re.length != 0) {
+                let sql2 = `insert into desporto_has_espaco (idDesporto,idEspaco,numeroMesas) values (${req.body.desporto},${re[0].idEspaco},${req.body.nMesas});`
+                data.query(sql2)
+                res.send(re[0])
             }
-    )}
-    });
+            else {
+                res.status(404).send("Espaco não encontrado")
+            }
+        })
+    })
 })
 
 router.get("/espacoByLocal/:idLocalidade",(req,res) => {

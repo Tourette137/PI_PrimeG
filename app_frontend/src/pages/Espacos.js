@@ -32,6 +32,7 @@ console.log(pedido);
         const response = await fetch(pedido);
         if (response.status === 200) {
             const data = await response.json();console.log(data);
+            console.log(data);
             setEspacos(data);
 
         }
@@ -138,7 +139,7 @@ console.log(pedido);
         <div className="container">
           <ul>
           {espacos.map((espaco) => (
-            <li><Link to ={"/espacos/" + espaco.idEspaco}><EspacoDisplay nome = {espaco.nome} rua = {espaco.rua} contacto = {espaco.contacto} /></Link></li>
+            <li><Link to ={"/espacos/" + espaco.idEspaco}><EspacoDisplay nome = {espaco.nome} localidade = {espaco.Nome} desporto = {espaco.nomeDesporto} rua = {espaco.rua} contacto = {espaco.contacto} numeroMesas={espaco.numeroMesas} /></Link></li>
           ))}
           </ul>
         </div>
