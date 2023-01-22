@@ -336,15 +336,15 @@ function grupoJImpar(teams,jogos) {
           sql += "(" +idFase_Grupos+','+ (i+1) +',0,'+grupos[i]+'),'
 
         sql += "(" +idFase_Grupos+','+ (i+1) +',0,'+grupos[i]+');'
-        data.query(sql).then(r => {console.log("escachou select grupos");
+        data.query(sql).then(r => {
           let sql2 = "SELECT idGrupo,numeroGrupo from Grupo where faseGrupos_idFaseGrupos = "+idFase_Grupos+" order by numeroGrupo;"
           data.query(sql2).then(ids => {
             let sql3  = "insert into Jogo (numeroCampo,hora,Grupo_idGrupo,ronda,estado,mao) values "
 
             let size = campos.length/ ids.length
             let camposGrupo = chunkArrayInGroups(campos,size)
+            //estoura quando tem menos mesas que grupos
             for(var i = 0;i<ids.length;i++){
-                                                //tamanho,horaInicial,minutoInicial,campos,intervalo,duracaoJogo,idGrupo
               sql3 += gerarCalendarioJogosGrupos(grupos[i],horaInicial,minutosInicial,camposGrupo[i],intervalo,duracao,ids[i].idGrupo,dataTorneio,1)
               if(mao == 2){
                 let l = tempo2MaoGrupos(horaInicial,minutosInicial,grupos[i],camposGrupo[i].length,duracao,intervalo)
@@ -352,7 +352,6 @@ function grupoJImpar(teams,jogos) {
               }
             }
             sql3 = sql3.replace(/.$/,";")
-            console.log(sql3)
             data.query(sql3).then(res1 => {
               updateGrupos(inscritos,-1,tid,callback)
             })
@@ -737,24 +736,34 @@ function sortear(jogadores,idsJogos){
   // **** -> 2 - clubes
   // **** -> 3 - ranking
   // DEPOIS VÊ-SE
+  // gerado fica a 2 até ser fechado no front
   function sortearElim(inscritos,idTorneio,tipoSorteio,res,callback){
     //DEPOIS PRECISAMOS USAR O TIPO SORTEIO PARA OS DIFERENTES TIPOS EXISTENTES
-    var sql2 = data.getJogosParaSorteio(idTorneio)
-    data.query(sql2).then(ids => {
-      var idsJogos = [],idsJogos2 = [];
-      for (var i = 0; i < ids.length; i++) {
-        if(ids[i].mao == 1)
-          idsJogos.push(ids[i].idJogo)
-        else {
-          idsJogos2.push(ids[i].idJogo)
-        }
-      }
-      var jogos = sortear(inscritos.map(x => x.idEquipa),idsJogos)
-      var sql3 = data.updateJogos(jogos)
-      if(idsJogos2.length > 0)
-        sql3 += data.updateJogos(gerar2Mao(jogos,idsJogos2))
+    let sql1  = `Select idEliminatoria from Eliminatoria as E join Torneio as T on
+                T.idTorneio = E.Torneio_idTorneio where T.idTorneio = ${idTorneio};`
+    data.query(sql1).then(re2 => {
+        if (re2.length != 0) {
+            let sql2 = `update Eliminatoria set gerado = 2 where idEliminatoria = ${re2[0].idEliminatoria};`
+            data.query(sql2).then(re3 => {
+                var sql2 = data.getJogosParaSorteio(idTorneio)
+                data.query(sql2).then(ids => {
+                  var idsJogos = [],idsJogos2 = [];
+                  for (var i = 0; i < ids.length; i++) {
+                    if(ids[i].mao == 1)
+                      idsJogos.push(ids[i].idJogo)
+                    else {
+                      idsJogos2.push(ids[i].idJogo)
+                    }
+                  }
+                  var jogos = sortear(inscritos.map(x => x.idEquipa),idsJogos)
+                  var sql3 = data.updateJogos(jogos)
+                  if(idsJogos2.length > 0)
+                    sql3 += data.updateJogos(gerar2Mao(jogos,idsJogos2))
 
-      data.query(sql3).then(() => callback())
+                  data.query(sql3).then(() => callback())
+                })
+            })
+        }
     })
   }
 

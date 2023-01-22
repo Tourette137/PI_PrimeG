@@ -411,6 +411,107 @@ router.get("/aDecorrer",(req,res) => {
     });
 });
 
+router.get("/:id/calendario/grupos", (req,res) => {
+    const idTorneio = req.params.id;
+    let sql = "select tipoTorneio from Torneio where idTorneio = " + idTorneio + ";";
+    data.query(sql).then(re => {
+        if(re.length!=0){
+            if (re[0].tipoTorneio !== 1 && re[0].tipoTorneio !== 4) {
+                getCalendarioGrupos(idTorneio,res);
+            }
+            else{
+                res.status(400).send("O torneio não contém grupos.")
+            }
+        }
+        else {
+            res.status(404).send("O torneio não existe.");
+        }
+    });
+});
+
+function getCalendarioGrupos(idTorneio,res) {
+    let sql = "select J.idJogo,G.numeroGrupo,J.hora,J.ronda,J.numeroCampo from Grupo as G " +
+              "join FaseGrupos as FG on G.faseGrupos_idFaseGrupos = FG.idFaseGrupos " +
+              "join Torneio as T on T.idTorneio = FG.Torneio_idTorneio " +
+              "join Jogo as J on J.Grupo_idGrupo = G.idGrupo " +
+              "where idTorneio = " + idTorneio + ";"
+    data.query(sql).then(re => {
+        if(re.length != 0) {
+            grupos = []
+            re.map((r) => {
+                let jogos = [];
+                let index = grupos.map(g => g.numero).indexOf(r.numeroGrupo);
+                if (index == -1){
+                  grupos.push({tipo:1,numero:r.numeroGrupo, jogos:[]});
+                  index = grupos.map(g => g.numero).indexOf(r.numeroGrupo);
+                }
+                grupos[index].jogos.push({hora:r.hora,ronda:r.ronda,campo:r.numeroCampo})
+            })
+            res.send(grupos);
+        }
+        else {
+            res.status(404).send("Calendario não encontrado")
+        }
+    });
+}
+
+router.get("/:id/SorteioElim", (req,res) => {
+    const idTorneio = req.params.id;
+    let sql = "select gerado from Eliminatoria as E where E.Torneio_idTorneio = " + idTorneio + ";";
+    data.query(sql).then(re => {
+        if(re.length!=0){
+            res.send({gerado:re[0].gerado})
+        }
+        else {
+            res.status(404).send("erro");
+        }
+    });
+});
+
+router.get("/:id/calendario/eliminatorias", (req,res) => {
+    const idTorneio = req.params.id;
+    let sql = "select tipoTorneio from Torneio where idTorneio = " + idTorneio + ";";
+    data.query(sql).then(re => {
+        if(re.length!=0){
+            if (re[0].tipoTorneio !== 1 && re[0].tipoTorneio !== 4) {
+                getCalendarioElim(idTorneio,res);
+            }
+            else{
+                res.status(400).send("O torneio não contém grupos.")
+            }
+        }
+        else {
+            res.status(404).send("O torneio não existe.");
+        }
+    });
+});
+
+function getCalendarioElim(idTorneio,res) {
+    let sql = "select J.idJogo,E.nomeEtapa,E.numeroEtapa,J.hora,J.ronda,J.numeroCampo from Etapa as E " +
+              "join Eliminatoria as El on El.idEliminatoria = E.Eliminatoria_idEliminatoria " +
+              "join Torneio as T on T.idTorneio = El.Torneio_idTorneio " +
+              "join Jogo as J on J.idEtapa = E.idEtapa " +
+              "where idTorneio = " + idTorneio + ";"
+    data.query(sql).then(re => {
+        if(re.length != 0) {
+            etapas = []
+            re.map((r) => {
+                let jogos = [];
+                let index = etapas.map(e => e.numero).indexOf(r.numeroEtapa);
+                if (index == -1){
+                  etapas.push({tipo:2,numero:r.numeroEtapa,nome:r.nomeEtapa, jogos:[]});
+                  index = etapas.map(g => g.numero).indexOf(r.numeroEtapa);
+                }
+                etapas[index].jogos.push({hora:r.hora,campo:r.numeroCampo,ronda:r.ronda})
+            })
+            res.send(etapas);
+        }
+        else {
+            res.status(404).send("Calendario não encontrado")
+        }
+    });
+}
+
 
 /* Tipo do torneio
 0 - grupo (liga)
@@ -493,8 +594,8 @@ function getClassificacaoElim(idTorneio,res) {
     let sql = "select E.nomeEtapa,J.mao,J.ronda,J.resultado,J.idOponente1,J.idOponente2,J.hora,J.numeroCampo from Eliminatoria as El " +
                "join Etapa as E on E.Eliminatoria_idEliminatoria=El.idEliminatoria " +
                "join Jogo as J on J.idEtapa=E.idEtapa " +
-               "where El.Torneio_idTorneio = " + idTorneio + ";"    
-    
+               "where El.Torneio_idTorneio = " + idTorneio + ";"
+
                data.query(sql).then(re => {
                     if (re.length != 0) {
                         let sql1 = ""
@@ -531,7 +632,7 @@ function getClassificacaoElim(idTorneio,res) {
                                         let minutos =r.hora.getMinutes()
                                         r.hora = r.hora.toLocaleDateString() + ` ${hora}:${minutos}`;
                                     })
-                                    let aux = -1;        
+                                    let aux = -1;
                                     for (let i = 0; i< re.length; i++) {
                                         if (re[i].nomeEtapa == "Final" && re[i].mao == 2) {
                                             aux = i;
@@ -550,7 +651,7 @@ function getClassificacaoElim(idTorneio,res) {
                         }
                         //Remove a segunda mão da final
                         else {
-                            let aux = -1;        
+                            let aux = -1;
                             for (let i = 0; i< re.length; i++) {
                                 if (re[i].nomeEtapa == "Final" && re[i].mao == 2) {
                                     aux = i;
@@ -742,9 +843,6 @@ router.post("/:id/gestao/criarFaseGrupos",isAuth,(req,res) => {
                 var groupSize = req.body.groupSize
                 var intervalo = req.body.intervalo
                 var duracao = req.body.duracao
-                console.log(intervalo);
-                console.log(duracao);
-                console.log(groupSize);
                 //var mao = req.body.mao Não é preciso, vai-se buscar ao tipo
                 var mao = parseInt(getMaos(re[0].tipoTorneio,"grupos"));
                 var sql2 = "select E.idEquipa, E.nomeEquipa, E.ranking,T.dataTorneio,DE.numeroMesas from Equipa as E"+
@@ -866,10 +964,6 @@ router.post("/:idTorneio/gestao/criarEliminatorias",isAuth,(req,res) => {
     })
 })
 
-
-
-
-
 //Quando fizermos front precisamos de ver se o número de apurados por grupo é valido considerando o tamanho dos grupos
     //Precisamos de dar o número do menor grupo (nParticipantes do grupo a ser menor) => também não podemos deixar ser 0
 router.post("/:idTorneio/gestao/criarEliminatoriasFromGrupos",isAuth,(req,res) => {
@@ -878,8 +972,7 @@ router.post("/:idTorneio/gestao/criarEliminatoriasFromGrupos",isAuth,(req,res) =
     var duracao = req.body.duracao
     var intervalo = req.body.intervalo
     var nApurados = req.body.nApurados // número de apurados por grupo
-    var dataT = req.body.data // A data em que a fase eliminatória começa
-
+    var dataT = req.body.dataT // A data em que a fase eliminatória começa
     let sql = `Select Torneio.idOrganizador,Torneio.tipoTorneio,FG.terminado,FG.numeroGrupos from Torneio join
                 fasegrupos as FG on FG.Torneio_idTorneio = Torneio.idTorneio where Torneio.idTorneio = ${idTorneio};`
     data.query(sql).then(re => {
@@ -894,19 +987,9 @@ router.post("/:idTorneio/gestao/criarEliminatoriasFromGrupos",isAuth,(req,res) =
                             " where T.idTorneio = "+ idTorneio + ";"
                 data.query(sql2).then(i => {
                     if(i.length!=0){
-                        let numeroCampos = i[0].numeroMesas
-                        //let dataTorneio = `${(dataT).toLocaleDateString()}`
-                        let dataTorneio = `${(i[0].dataTorneio).toLocaleDateString()}`
-                        let aux = dataTorneio.split("/")
-                        dataTorneio = `${aux[2]}-${aux[1]}-${aux[0]}`
-
-                        //let hora= parseInt(`${(dataT).getHours()}`)
-
-                        let hora= parseInt(`${(i[0].dataTorneio).getHours()}`)
-
-                        //let minutos =parseInt(`${(dataT).getMinutes()}`)
-                        let minutos =parseInt(`${(i[0].dataTorneio).getMinutes()}`)
-                        let campos = []
+                        let aux = dataT.split("T")
+                        let aux2 = aux[1].split(":")
+                        let dataTorneio = aux[0],hora= parseInt(aux2[0]),minutos = parseInt(aux2[1]),numeroCampos = i[0].numeroMesas,campos = [];
                         for (let i= 0;i< numeroCampos;i++) {
                             campos[i] = i+1
                         }
@@ -1231,8 +1314,6 @@ router.post("/:id/gestao/:idJogo/fecharResultado",isAuth,(req,res) => {
 
                         data.query(sql).then(jogo => {
 
-
-
                         if(jogo.length != 0) {
                             if(jogo[0].Grupo_idGrupo != null){
                             //atualizar classificação da fase de grupos
@@ -1240,8 +1321,6 @@ router.post("/:id/gestao/:idJogo/fecharResultado",isAuth,(req,res) => {
                             data.query(sql2).then(res1 => {
                                 //Atualizamos a classificação do grupo
                                 var newCl = algoritmos.atualizaClassificacao(res1[0].classificacaoGrupo,jogo[0].idOponente1,jogo[0].idOponente2,resultado)
-
-
 
                                 var sql3 = data.getJogosAbertos(jogo[0].Grupo_idGrupo)
                                 data.query(sql3).then(sel => {
@@ -1475,9 +1554,6 @@ router.post("/:id/gestao/:idJogo/fecharResultado",isAuth,(req,res) => {
                                                                 res.status(404).send("Não foi encontrada a etapa seguinte")
                                                             }
                                                         })
-
-
-
 
 
                                                     }
