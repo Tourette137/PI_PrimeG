@@ -12,6 +12,7 @@ export function Torneio() {
     const {id} = useParams()
     const [torneio,setTorneio] = useState("");
     const [gestao,setGestao] = useState(0);
+    const [tipoTorneio,setTipoTorneio] = useState();
 
     // Vai à API buscar a informação do torneio para dar display na página principal
     const searchTorneio = async () => {
@@ -37,6 +38,7 @@ export function Torneio() {
                 setGestao(1);
             } 
             setTorneio(data);
+            setTipoTorneio(data.tipoTorneio);
         }
         else {
             setTorneio([]);
@@ -53,7 +55,9 @@ export function Torneio() {
         <>
         <NavbarDynamic/>
             <h1>Página do torneio {id}</h1>
-            <li><Link to={"/" + id + "/jogos?t=" + torneio.tipoTorneio}>Jogos</Link></li>
+
+            <li><Link to={`/${id}/jogos`}
+                 state={{ tipoTorneio : tipoTorneio }}>Jogos</Link></li>
             {torneio.terminado != 0
             ?
             (<li><Link to={"/" + id + "/classificacao"}>Classificação</Link></li>)
@@ -61,7 +65,8 @@ export function Torneio() {
             }
             {gestao == 1
             ?
-            <li><Link to={"/" + id + "/gestao?t=" + torneio.tipoTorneio}>Gestão</Link></li>
+            <li><Link to={`/${id}/gestao`}
+                state={{tipoTorneio : tipoTorneio}}>Gestão</Link></li>
             : (null)
             }
         {torneio !== ""

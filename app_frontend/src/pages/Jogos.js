@@ -1,4 +1,4 @@
-import {useParams,useSearchParams} from 'react-router-dom'
+import {useLocation,useParams} from 'react-router-dom'
 import {useState,useEffect} from 'react';
 import JogoDisplay from "./JogoDisplay.jsx";
 import {NavbarDynamic} from '../components/NavbarDynamic.js';
@@ -11,9 +11,9 @@ export function Jogos() {
     const [jogos,setJogos] = useState([]);
     const [tipo,setTipo] = useState("jogosaDecorrer");
     const [filtro,setFiltro] = useState("");
-    let [searchParams, setSearchParams] = useSearchParams();
+    let location = useLocation();
+    const tipoTorneio = location.state.tipoTorneio;
 
-    let tipoTorneio = searchParams.get("t");
 
     const searchJogos = async (tipo) => {
         let pedido = API_URL + "/" + id + "/" + tipo;
