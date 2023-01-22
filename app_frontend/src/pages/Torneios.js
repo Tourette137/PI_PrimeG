@@ -119,8 +119,9 @@ export function Torneios() {
 
         <div onChange={handleTipo}>
             <input type="radio" value="disponiveis" name="torneios" checked={("disponiveis"===tipo) ? "checked" : ""} /> Disponíves
-            <input type="radio" value="encerrados" name="torneios" checked={("encerrados"===tipo) ? "checked" : ""}/> Encerrados
+            <input type="radio" value="emBreve" name="torneios" checked={("emBreve"===tipo) ? "checked" : ""}/> Em Breve
             <input type="radio" value="aDecorrer" name="torneios" checked={("aDecorrer"===tipo) ? "checked" : ""}/> A Decorrer
+            <input type="radio" value="encerrados" name="torneios" checked={("encerrados"===tipo) ? "checked" : ""}/> Encerrados
         </div>
         <br/>
         <br/>

@@ -411,6 +411,78 @@ router.get("/aDecorrer",(req,res) => {
     });
 });
 
+
+//Listar torneios que acontecerão em Breve
+router.get("/emBreve",(req,res) => {
+    //0 -> inscricoes abertas
+    //1 -> inscricoes fechadas
+    let sql = "select T.idTorneio,T.nomeTorneio,T.isFederado,T.dataTorneio,T.escalao,T.tipoTorneio,T.tamEquipa,D.nomeDesporto,L.Nome from torneio as T " +
+              "join Espaco as E on T.Espaco_idEspaco = E.idEspaco " +
+              "join Localidade as L on E.Localidade_idLocalidade = L.idLocalidade " +
+              "join Desporto as D on T.idDesporto = D.idDesporto "
+
+    //Filtro de Localidade
+    if(req.query.localidade != null){
+        if(!isNaN(req.query.localidade)){
+            sql +=  " where T.inscricoesAbertas = 0 and T.terminado = 0 and idLocalidade = " + req.query.localidade;
+
+        }
+        else {sql += " where T.inscricoesAbertas = 0 and T.terminado = 0 " }
+    }
+    else {
+        sql += " where T.inscricoesAbertas = 0 and T.terminado = 0 "
+    }
+
+    //Filtro de Federado
+    if(req.query.federado != null){
+        if(!isNaN(req.query.federado)){
+            sql += " and T.isFederado = " + req.query.federado;
+        }
+    }
+    //Filtro de Desporto
+    if(req.query.desporto != null){
+        if(!isNaN(req.query.desporto)){
+            sql += " and T.idDesporto = " + req.query.desporto;
+        }
+    }
+
+    sql += ";";
+    data.query(sql).then(re => {
+        if(re.length != 0){
+            re.map((r) => {
+                r.dataTorneio = r.dataTorneio.toLocaleDateString();
+                switch (r.tipoTorneio) {
+                    case 0: r.nometipoTorneio = "Liga"
+                        break;
+                    case 1: r.nometipoTorneio = "Torneio de Eliminatórias"
+                        break;
+                    case 2: r.nometipoTorneio = "Torneio com fase de grupos e eliminatórias";
+                        break;
+                    case 3: r.nometipoTorneio = "Liga com duas mãos";
+                        break;
+                    case 4: r.nometipotorneio = "Torneio de Eliminatórias com duas mãos";
+                        break;
+                    case 5: r.nometipoTorneio = "Torneio com fase de grupos com duas mãos e eliminatórias";
+                        break;
+                    case 6: r.nometipoTorneio = "Torneio com fase de grupos e eliminatórias com duas mãos";
+                        break;
+                    case 7: r.nometipoTorneio = "Torneio com fase de grupos e eliminatórias, ambos com duas mãos";
+                        break;
+                    default: console.log("default");
+                }
+            })
+            res.send(re);
+        }
+        else {
+            res.status(404).send("Não existem torneios disponíveis");
+        }
+    });
+});
+
+
+
+
+
 router.get("/:id/calendario/grupos", (req,res) => {
     const idTorneio = req.params.id;
     let sql = "select tipoTorneio from Torneio where idTorneio = " + idTorneio + ";";
@@ -719,9 +791,11 @@ router.get("/:id",isOrganizador,(req,res) => {
 
 //Inicializo com inscricoesAbertas a 1 (inscrições abertas) e com terminado a 0
 router.post("/registo",isAuth,(req,res) => {
-    console.log(req.body.dataTorneio)
-    let sql = `Insert into torneio (nomeTorneio, idOrganizador, idDesporto, isFederado, dataTorneio,inscricoesAbertas,escalao,tipoTorneio,terminado,Espaco_idEspaco,tamEquipa)
-                    values ("${req.body.nomeTorneio}",${req.userId}, ${req.body.idDesporto}, ${req.body.isFederado}, "${req.body.dataTorneio}", 1, ${req.body.escalao}, ${req.body.tipoTorneio}, 0, ${req.body.Espaco_idEspaco},${req.body.tamEquipa})`
+    let dataT = `${req.body.dataTorneio.split("T")[0]} ${req.body.dataTorneio.split("T")[1]}:00`
+    console.log(dataT)
+    let sql = `Insert into torneio (nomeTorneio, idOrganizador, idDesporto, isFederado, dataTorneio,inscricoesAbertas,escalao,tipoTorneio,terminado,Espaco_idEspaco,tamEquipa,genero)
+                    values ("${req.body.nomeTorneio}",${req.userId}, ${req.body.idDesporto}, ${req.body.isFederado},"${dataT}", 1, ${req.body.escalao}, ${req.body.tipoTorneio}, 0, ${req.body.Espaco_idEspaco},${req.body.tamEquipa},${req.body.genero})`
+    console.log(sql)
         data.query(sql)
         .then(re => {
             let sql1 = `select t.idTorneio from torneio as t where t.nomeTorneio = "${req.body.nomeTorneio}" and t.idOrganizador= ${req.userId} and t.idDesporto =${req.body.idDesporto} and t.isFederado = ${req.body.isFederado} and t.dataTorneio = "${req.body.dataTorneio}"

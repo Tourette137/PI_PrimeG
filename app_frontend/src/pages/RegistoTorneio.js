@@ -21,6 +21,7 @@ export function RegistoTorneio() {
     const [tipoTorneio,setTipoTorneio] = useState();
     const [espaco,setEspaco] = useState();
     const [localidade,setLocalidade] = useState("");
+    const [genero,setGenero] = useState();
 
     //Variáveis para depois criarmos o espaço se ele pretender
 
@@ -114,7 +115,8 @@ export function RegistoTorneio() {
                 "escalao": escalao,
                 "tipoTorneio": tipoTorneio,
                 "Espaco_idEspaco": espaco,
-                "tamEquipa": inputtamEquipaRef.current.value
+                "tamEquipa": inputtamEquipaRef.current.value,
+                "genero": genero
             }
             axios.post(`${API_URL}/torneios/registo`, bodyMessage,{headers: headers})
                 .then(response => {
@@ -144,11 +146,13 @@ export function RegistoTorneio() {
                         "escalao": escalao,
                         "tipoTorneio": tipoTorneio,
                         "Espaco_idEspaco": idEspaco,
-                        "tamEquipa": inputtamEquipaRef.current.value
+                        "tamEquipa": inputtamEquipaRef.current.value,
+                        "genero": genero
                     }
                     axios.post(`${API_URL}/torneios/registo`,bodyMessage,{headers:headers})
                     .then(response => {
                         let idTorneio = response.data.idTorneio
+                        console.log(idTorneio)
                         navigate(`/torneios/${idTorneio}`)
                     })
                     .catch(e => console.log(e))
@@ -172,7 +176,7 @@ export function RegistoTorneio() {
                 <br/>
                 
                 <label>Data: </label>
-                <input ref={inputDataTorneioRef} id="date" type="date" placeholder="Data do Torneio" required></input>
+                <input ref={inputDataTorneioRef} id="date" type="datetime-local" placeholder="Data do Torneio" required></input>
                 
                 <br/>
 
@@ -196,12 +200,31 @@ export function RegistoTorneio() {
 
                 <br/>
 
+
+                <label>Tipo do torneio: </label>
+                <select value={tipoTorneio} id="tipoTorneio" name="tipoTorneio" onChange={e => setTipoTorneio(e.target.value)} required>
+                    <option value="">Indique o tipo de torneio pretendido</option>                    
+                    <option value="0">Liga</option>
+                    <option value="1">Torneio de Eliminatórias</option>
+                    <option value="2">Torneio com fase de grupos e eliminatórias</option>
+                    <option value="3">Liga com duas mãos</option>
+                    <option value="4">Torneio de Eliminatórias com duas mãos</option>
+                    <option value="5">Torneio com fase de grupos com duas mãos e eliminatórias</option>
+                    <option value="6">Torneio com fase de grupos e eliminatórias com duas mãos</option>
+                    <option value="7">Torneio com fase de grupos e eliminatórias, ambos com duas mãos</option>
+                </select>
+
+
+                <br/>
+
+
                 <label>Federado: </label>
                 <select value={federado} id="federado" name="Federado" onChange={e => setFederado(e.target.value)} required>
                     <option value="">Indique se pretende que o torneio seja federado</option>
                     <option value="1">Federado</option>
                     <option value="0">Não Federado</option>
                 </select>
+
 
                 <br/>
 
@@ -229,19 +252,17 @@ export function RegistoTorneio() {
                 </select>
 
                 <br/>
-
-                <label>Tipo do torneio: </label>
-                <select value={tipoTorneio} id="tipoTorneio" name="tipoTorneio" onChange={e => setTipoTorneio(e.target.value)} required>
-                    <option value="">Indique o tipo de torneio pretendido</option>                    
-                    <option value="0">Liga</option>
-                    <option value="1">Torneio de Eliminatórias</option>
-                    <option value="2">Torneio com fase de grupos e eliminatórias</option>
-                    <option value="3">Liga com duas mãos</option>
-                    <option value="4">Torneio de Eliminatórias com duas mãos</option>
-                    <option value="5">Torneio com fase de grupos com duas mãos e eliminatórias</option>
-                    <option value="6">Torneio com fase de grupos e eliminatórias com duas mãos</option>
-                    <option value="7">Torneio com fase de grupos e eliminatórias, ambos com duas mãos</option>
+                
+                <label>Género: </label>
+                <select value={genero} id="genero" name="Genero" onChange={e => setGenero(e.target.value)} required>
+                    <option value="">Indique o género pretendido</option>
+                    <option value="0">Masculino</option>
+                    <option value="1">Feminino</option>
+                    <option value="2">Indiferente</option>
                 </select>
+
+                <br/>
+
 
                 <br/>
 
