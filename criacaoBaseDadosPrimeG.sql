@@ -256,6 +256,7 @@ CREATE TABLE IF NOT EXISTS `primeG`.`Equipa` (
   `ranking` INT NULL,
   `nomeEquipa` VARCHAR(45) NOT NULL,
   `escalao` INT NOT NULL,
+  `clube` VARCHAR(45) NULL,
   PRIMARY KEY (`idEquipa`))
 ENGINE = InnoDB;
 

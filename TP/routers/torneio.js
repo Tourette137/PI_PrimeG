@@ -540,6 +540,15 @@ router.get("/:id/SorteioElim", (req,res) => {
     });
 });
 
+router.get("/:idTorneio/inscritos",(req,res) => {
+    var idTorneio = req.params.idTorneio
+
+    var sql = data.getEquipasFromElim(idTorneio);
+    data.query(sql).then(inscritos => {
+      console.log(inscritos);
+    })
+})
+
 router.get("/:id/calendario/eliminatorias", (req,res) => {
     const idTorneio = req.params.id;
     let sql = "select tipoTorneio from Torneio where idTorneio = " + idTorneio + ";";
@@ -748,7 +757,7 @@ function getClassificacaoElim(idTorneio,res) {
 //Get de um torneio
 router.get("/:id",isOrganizador,(req,res) => {
     const idTorneio = req.params.id;
-    let sql = "select T.idTorneio,T.nomeTorneio,T.terminado,T.isFederado,T.dataTorneio,T.escalao,T.tipoTorneio,T.tamEquipa,D.nomeDesporto,L.Nome, T.idOrganizador from torneio as T " +
+    let sql = "select T.idTorneio,T.nomeTorneio,T.terminado,T.isFederado,T.dataTorneio,T.escalao,T.tipoTorneio,T.tamEquipa,D.nomeDesporto,L.Nome, T.idOrganizador,T.inscricoesAbertas from torneio as T " +
               "join Espaco as E on T.Espaco_idEspaco = E.idEspaco " +
               "join Localidade as L on E.Localidade_idLocalidade = L.idLocalidade " +
               "join Desporto as D on T.idDesporto = D.idDesporto " +
@@ -860,13 +869,14 @@ router.post("/:id/gestao/gerirInscricao",isAuth,(req,res) => {
 // Fechar inscrições
 router.post("/:id/gestao/fecharInscricoes",isAuth,(req,res) => {
     var idTorneio = req.params.id;
+    var tipo = req.body.tipo;
     let sql = `Select idOrganizador from Torneio where idTorneio = ${idTorneio}`
     data.query(sql).then(re => {
         if (re.length != 0) {
             if (re[0].idOrganizador == req.userId) {
                 let sql1 = "update torneio " +
-                        "set inscricoesAbertas = 0 " +
-                        "where idTorneio = " + idTorneio +";"
+                        "set inscricoesAbertas = " + tipo
+                        " where idTorneio = " + idTorneio +";"
                 data.query(sql1).then(re => {
                     if(re != 0){
                         res.send("Inscrições fechadas");
@@ -885,8 +895,6 @@ router.post("/:id/gestao/fecharInscricoes",isAuth,(req,res) => {
         }
     })
 })
-
-
 
 /*Pedido vai vir com:
         Groupsize
@@ -919,7 +927,7 @@ router.post("/:id/gestao/criarFaseGrupos",isAuth,(req,res) => {
                 var duracao = req.body.duracao
                 //var mao = req.body.mao Não é preciso, vai-se buscar ao tipo
                 var mao = parseInt(getMaos(re[0].tipoTorneio,"grupos"));
-                var sql2 = "select E.idEquipa, E.nomeEquipa, E.ranking,T.dataTorneio,DE.numeroMesas from Equipa as E"+
+                var sql2 = "select E.idEquipa, E.nomeEquipa,E.clube E.ranking,T.dataTorneio,DE.numeroMesas from Equipa as E"+
                             " inner join Torneio_has_Equipa as TH on E.idEquipa = TH.Equipa_idEquipa"+
                             " inner join Torneio as T on TH.Torneio_idTorneio = T.idTorneio"+
                             " join Espaco as Es on T.Espaco_idEspaco = Es.idEspaco "+

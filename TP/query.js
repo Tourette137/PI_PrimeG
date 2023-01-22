@@ -25,7 +25,7 @@ function getJogosParaSorteio(idTorneio){
 }
 
 function getEquipasFromElim(idTorneio){
-  return "select E.idEquipa, E.ranking from Equipa as E"+
+  return "select E.idEquipa, E.ranking,E.clube from Equipa as E"+
               " inner join Torneio_has_Equipa as TH on E.idEquipa = TH.Equipa_idEquipa"+
 						  " inner join Torneio as T on TH.Torneio_idTorneio = T.idTorneio"+
               " where T.idTorneio = "+ idTorneio + " and TH.pendente=1;"

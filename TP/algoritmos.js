@@ -767,14 +767,22 @@ function sortear(jogadores,idsJogos){
     })
   }
 
-  function apuradosGrupo(nApuradosGrupo,classificacao,numeroGrupo,apurados){
+  function apuradosGrupo(nApuradosGrupo,classificacao,numeroGrupo,apurados,inscritos){
     let l = classificacao.split(':')
     let equipas = l[1].split('|')
 
     for (var i = 0; i < nApuradosGrupo; i++) {
       let campos = equipas[i].split('-')
+      var id = parseInt(campos[1])
       //BUSCAR CLUBE????
-      apurados.push({idEquipa:parseInt(campos[1]),ranking:numeroGrupo,posicao:i+1})
+      var index = inscritos.map(c => c.idEquipa).indexOf(id);
+      var clube = null
+      if(index == -1)
+        console.log("escachou nos clubes");
+      else {
+        clube = inscritos[index].clube
+      }
+      apurados.push({idEquipa:id,clube:clube,ranking:numeroGrupo,posicao:i+1})
     }
   }
 
@@ -783,11 +791,14 @@ function sortear(jogadores,idsJogos){
     data.query(sql).then(rank => {
       console.log(rank);
       var apurados = []
-      for (var i = 0; i < rank.length; i++) {
-        apuradosGrupo(nApuradosGrupo,rank[i].classificacaoGrupo,rank[i].numeroGrupo,apurados)
-      }
-      console.log(apurados)
-      sortearElim(apurados,idTorneio,tipoSorteio,res,callback)
+      var sql = data.getEquipasFromElim(idTorneio);
+      data.query(sql).then(inscritos => {
+        for (var i = 0; i < rank.length; i++) {
+          apuradosGrupo(nApuradosGrupo,rank[i].classificacaoGrupo,rank[i].numeroGrupo,apurados,inscritos)
+        }
+        console.log(apurados)
+        sortearElim(apurados,idTorneio,tipoSorteio,res,callback)
+      })
     })
   }
 
