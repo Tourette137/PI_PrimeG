@@ -502,24 +502,27 @@ router.get("/:id/calendario/grupos", (req,res) => {
 });
 
 function getCalendarioGrupos(idTorneio,res) {
-    let sql = "select J.idJogo,G.numeroGrupo,J.hora,J.ronda,J.numeroCampo from Grupo as G " +
+    let sql = "select J.idJogo,G.numeroGrupo,J.hora,J.ronda,J.numeroCampo,J.idEtapa from Grupo as G " +
               "join FaseGrupos as FG on G.faseGrupos_idFaseGrupos = FG.idFaseGrupos " +
               "join Torneio as T on T.idTorneio = FG.Torneio_idTorneio " +
               "join Jogo as J on J.Grupo_idGrupo = G.idGrupo " +
-              "where idTorneio = " + idTorneio + ";"
+              "where idTorneio = " + idTorneio + " order by J.hora;"
     data.query(sql).then(re => {
         if(re.length != 0) {
-            grupos = []
-            re.map((r) => {
-                let jogos = [];
-                let index = grupos.map(g => g.numero).indexOf(r.numeroGrupo);
-                if (index == -1){
-                  grupos.push({tipo:1,numero:r.numeroGrupo, jogos:[]});
-                  index = grupos.map(g => g.numero).indexOf(r.numeroGrupo);
-                }
-                grupos[index].jogos.push({hora:r.hora,ronda:r.ronda,campo:r.numeroCampo})
-            })
-            res.send(grupos);
+            // grupos = []
+            // re.map((r) => {
+            //     let jogos = [];
+            //     let index = grupos.map(g => g.numero).indexOf(r.numeroGrupo);
+            //     if (index == -1){
+            //       grupos.push({tipo:1,numero:r.numeroGrupo, jogos:[]});
+            //       index = grupos.map(g => g.numero).indexOf(r.numeroGrupo);
+            //     }
+            //     grupos[index].jogos.push({hora:r.hora,ronda:r.ronda,campo:r.numeroCampo})
+            // })
+            // res.send(grupos);
+            re['tipo'] = 1
+            console.log(re);
+            res.send(re);
         }
         else {
             res.status(404).send("Calendario não encontrado")
@@ -545,16 +548,57 @@ router.get("/:idTorneio/inscritos",(req,res) => {
 
     var sql = data.getEquipasFromElim(idTorneio);
     data.query(sql).then(inscritos => {
-      console.log(inscritos);
+      res.send(inscritos)
     })
 })
+
+router.get("/:idTorneio/inscricoes",(req,res) => {
+    var idTorneio = req.params.idTorneio
+
+    var sql = data.getInscricoes(idTorneio);
+    data.query(sql).then(inscritos => {
+      res.send(inscritos)
+    })
+})
+
+//ver numero de apurados-----------------------------------------------------
+//tipo torneio é verificado no front Torneio.js
+router.get("/:idTorneio/apurados",(req,res) => {
+    var idTorneio = req.params.idTorneio
+    var sql = "select terminado from FaseGrupos where Torneio_idTorneio = "+idTorneio+";"
+    data.query(sql).then(re => {
+      if(re.length!=0 && re[0].terminado == 1){
+        getEquipasFromGrupos(2,idTorneio,res)
+      }
+      else{
+          res.status(400).send("O torneio não contém grupos.")
+      }
+    })
+})
+
+function getEquipasFromGrupos(nApuradosGrupo,idTorneio,res){
+  var sql = data.getApuradosFromGrupos(idTorneio)
+  data.query(sql).then(rank => {
+    //console.log(rank);
+    var apurados = []
+    var sql = data.getEquipasFromElim(idTorneio);
+    data.query(sql).then(inscritos => {
+      for (var i = 0; i < rank.length; i++) {
+        algoritmos.apuradosGrupo(nApuradosGrupo,rank[i].classificacaoGrupo,rank[i].numeroGrupo,apurados,inscritos)
+      }
+      //console.log(apurados)
+      res.send(apurados)
+    })
+  })
+}
+
 
 router.get("/:id/calendario/eliminatorias", (req,res) => {
     const idTorneio = req.params.id;
     let sql = "select tipoTorneio from Torneio where idTorneio = " + idTorneio + ";";
     data.query(sql).then(re => {
         if(re.length!=0){
-            if (re[0].tipoTorneio !== 1 && re[0].tipoTorneio !== 4) {
+            if (re[0].tipoTorneio !== 0 && re[0].tipoTorneio !== 3) {
                 getCalendarioElim(idTorneio,res);
             }
             else{
@@ -568,24 +612,27 @@ router.get("/:id/calendario/eliminatorias", (req,res) => {
 });
 
 function getCalendarioElim(idTorneio,res) {
-    let sql = "select J.idJogo,E.nomeEtapa,E.numeroEtapa,J.hora,J.ronda,J.numeroCampo from Etapa as E " +
+    let sql = "select J.idJogo,E.nomeEtapa,E.numeroEtapa,J.hora,J.ronda,J.numeroCampo,J.idEtapa from Etapa as E " +
               "join Eliminatoria as El on El.idEliminatoria = E.Eliminatoria_idEliminatoria " +
               "join Torneio as T on T.idTorneio = El.Torneio_idTorneio " +
               "join Jogo as J on J.idEtapa = E.idEtapa " +
-              "where idTorneio = " + idTorneio + ";"
+              "where idTorneio = " + idTorneio + " order by J.hora;"
     data.query(sql).then(re => {
         if(re.length != 0) {
-            etapas = []
-            re.map((r) => {
-                let jogos = [];
-                let index = etapas.map(e => e.numero).indexOf(r.numeroEtapa);
-                if (index == -1){
-                  etapas.push({tipo:2,numero:r.numeroEtapa,nome:r.nomeEtapa, jogos:[]});
-                  index = etapas.map(g => g.numero).indexOf(r.numeroEtapa);
-                }
-                etapas[index].jogos.push({hora:r.hora,campo:r.numeroCampo,ronda:r.ronda})
-            })
-            res.send(etapas);
+            // etapas = []
+            // re.map((r) => {
+            //     let jogos = [];
+            //     let index = etapas.map(e => e.numero).indexOf(r.numeroEtapa);
+            //     if (index == -1){
+            //       etapas.push({tipo:2,numero:r.numeroEtapa,nome:r.nomeEtapa, jogos:[]});
+            //       index = etapas.map(g => g.numero).indexOf(r.numeroEtapa);
+            //     }
+            //     etapas[index].jogos.push({hora:r.hora,campo:r.numeroCampo,ronda:r.ronda})
+            // })
+            // res.send(etapas);
+            re['tipo'] = 2
+            console.log(re);
+            res.send(re);
         }
         else {
             res.status(404).send("Calendario não encontrado")
@@ -636,7 +683,26 @@ function getClassificacaoGrupo(idTorneio,res) {
                 let aux2 = aux3[1].split('|');
                 let tipoClassificacao = parseInt(aux3[0]);
                 for (var i = 0; i< aux2.length; i++) {
-                    aux1.push(aux2[i]);
+                  let campos = aux2[i].split('-');
+                  let equipa = {};
+                  equipa.idEquipa = parseInt(campos[1])
+                  equipa.nomeEquipa = campos[0]
+                  equipa.pontos = parseInt(campos[2])
+                  equipa.vitorias = parseInt(campos[3])
+                  if(tipoClassificacao == 1){
+                    equipa.empates = parseInt(campos[4])
+                    equipa.derrotas = parseInt(campos[5])
+                    equipa.golosMarcados = parseInt(campos[6])
+                    equipa.golosSofridos = parseInt(campos[7])
+                  }
+                  else if (tipoClassificacao == 2) {
+                    equipa.derrotas = parseInt(campos[4])
+                    equipa.setsGanhos = parseInt(campos[5])
+                    equipa.setsPerdidos = parseInt(campos[6])
+                    equipa.pontosGanhos = parseInt(campos[7])
+                    equipa.pontoPerdidos = parseInt(campos[8])
+                  }
+                    aux1.push(equipa);
                 }
                 r.classificacaoGrupo = aux1;
                 r["tipoClassificacao"] = tipoClassificacao;
@@ -681,10 +747,10 @@ function getClassificacaoElim(idTorneio,res) {
                     if (re.length != 0) {
                         let sql1 = ""
                         for (let i = 0; i<re.length; i++) {
-                            if (re[i].idOponente1 != undefined) {
+                            if (re[i].idOponente1 != undefined && re[i].idOponente1 != -1) {
                                 sql1 += `Select idEquipa,nomeEquipa from Equipa where idEquipa = ${re[i].idOponente1};`
                             }
-                            if (re[i].idOponente2 != undefined) {
+                            if (re[i].idOponente2 != -1 && re[i].idOponente2 != undefined) {
                                 sql1 += `Select idEquipa,nomeEquipa from Equipa where idEquipa = ${re[i].idOponente2};`
                             }
                         }
@@ -693,7 +759,7 @@ function getClassificacaoElim(idTorneio,res) {
                                 //Põe os nomes das equipas na resposta.
                                 if (re1.length != 0) {
                                     re.map ((r) => {
-                                        if (r.idOponente1 != undefined) {
+                                        if (r.idOponente1 != undefined && r.idOponente1 != -1) {
                                             for (let i = 0; i< re1.length; i++) {
                                                 if (r.idOponente1 == re1[i][0].idEquipa) {
                                                     r["nomeEquipa1"] = re1[i][0].nomeEquipa;
@@ -701,7 +767,7 @@ function getClassificacaoElim(idTorneio,res) {
                                                 }
                                             }
                                         }
-                                        if (r.idOponente2 != undefined) {
+                                        if (r.idOponente2 != undefined && r.idOponente2 != -1) {
                                             for (let i = 0; i< re1.length; i++) {
                                                 if (r.idOponente2 == re1[i][0].idEquipa) {
                                                     r["nomeEquipa2"] = re1[i][0].nomeEquipa;
@@ -821,7 +887,6 @@ router.post("/registo",isAuth,(req,res) => {
         .catch(e => { res.status(400).send({ error: e }) })
 })
 
-
 // aceitar/rejeitar inscrições
 // pendente a 0 => tá pendente
 // pendente a 1 => aceita a inscrição
@@ -909,6 +974,13 @@ router.post("/:id/gestao/fecharInscricoes",isAuth,(req,res) => {
 //                        se o tipo for grupos + eliminatórias, precisamos de perguntar quantos passam de cada grupo (quando ele fechar o grupo)
 //                        ver a situação dos grupos com duas mãos (acho que o 4 n tem algoritmo de duas mãos)
 
+// tipo sorteio
+// 0: random
+// 1: random + 1 cabeca de serie
+// 2: random + 2 cabeca de serie
+// 3: por clubes
+// 4: por clubes + 1 cabeca de serie
+// 5: por clubes + 2 cabeca de serie
 
 //Verificar se o número de grupos que ele indica é possível => númeroinscritos/tamGrupos >2
 //Verificar se o número de pessoas que passam por grupo é possível
@@ -916,6 +988,7 @@ router.post("/:id/gestao/fecharInscricoes",isAuth,(req,res) => {
 // Gera a fase de grupos
 router.post("/:id/gestao/criarFaseGrupos",isAuth,(req,res) => {
     var idTorneio = req.params.id;
+    var tipoSorteio = req.body.tipoSorteio;
     let sql = `Select idOrganizador,inscricoesAbertas,tipoTorneio from Torneio where idTorneio = ${idTorneio};`
     data.query(sql).then(re => {
         if (re.length != 0) {
@@ -927,7 +1000,7 @@ router.post("/:id/gestao/criarFaseGrupos",isAuth,(req,res) => {
                 var duracao = req.body.duracao
                 //var mao = req.body.mao Não é preciso, vai-se buscar ao tipo
                 var mao = parseInt(getMaos(re[0].tipoTorneio,"grupos"));
-                var sql2 = "select E.idEquipa, E.nomeEquipa,E.clube E.ranking,T.dataTorneio,DE.numeroMesas from Equipa as E"+
+                var sql2 = "select E.idEquipa, E.nomeEquipa,E.clube, E.ranking,T.dataTorneio,DE.numeroMesas from Equipa as E"+
                             " inner join Torneio_has_Equipa as TH on E.idEquipa = TH.Equipa_idEquipa"+
                             " inner join Torneio as T on TH.Torneio_idTorneio = T.idTorneio"+
                             " join Espaco as Es on T.Espaco_idEspaco = Es.idEspaco "+
@@ -949,7 +1022,7 @@ router.post("/:id/gestao/criarFaseGrupos",isAuth,(req,res) => {
                         for (let i= 0;i< numeroCampos;i++) {
                             campos[i] = i+1
                         }
-                        algoritmos.gerarGrupos(idTorneio,groupSize,inscritos,dataTorneio,horaInicial,minutosInicial,intervalo,duracao,campos,mao,res,function callback() {res.send("Fase de grupos criada com sucesso")})
+                        algoritmos.gerarGrupos(idTorneio,groupSize,inscritos,dataTorneio,horaInicial,minutosInicial,intervalo,duracao,campos,mao,tipoSorteio,res,function callback() {res.send("Fase de grupos criada com sucesso")})
                     }
                     else {
                         res.status(404).send("O Torneio não tem inscritos para se realizar o sorteio")
@@ -976,7 +1049,34 @@ router.post("/:id/gestao/criarFaseGrupos",isAuth,(req,res) => {
     })
 })
 
-
+// Gera a fase de grupos
+router.post("/:id/gestao/sortearFaseGrupos",isAuth,(req,res) => {
+    var idTorneio = req.params.id;
+    var tipoSorteio = req.body.tipoSorteio;
+    let sql = `Select idOrganizador from Torneio where idTorneio = ${idTorneio};`
+    data.query(sql).then(re => {
+        if (re.length != 0) {
+            //Usar a flag de federado para ver que algoritmo usar => para já só usamos default.
+            if (re[0].idOrganizador == req.userId ) {
+                var sql2 = data.getEquipasFromElim(idTorneio)
+                data.query(sql2).then(inscritos => {
+                    if (inscritos.length != 0){
+                        algoritmos.updateGrupos(inscritos,tipoSorteio,idTorneio,function callback() {res.send("Fase de grupos sorteada com sucesso")})
+                    }
+                    else {
+                        res.status(404).send("O Torneio não tem inscritos para se realizar o sorteio")
+                    }
+                })
+            }
+            else {
+                  res.status(501).send("O utilizador não é o organizador deste torneio")
+            }
+        }
+        else {
+            res.status(404).send("O Torneio não existe")
+        }
+    })
+})
 
 
 // Cria a fase eliminatória de um torneio só com eliminatórias
@@ -1112,7 +1212,7 @@ router.post("/:idTorneio/gestao/sortearEliminatoriasFromGrupos",isAuth,(req,res)
                 where idTorneio = ${idTorneio};`
     data.query(sql).then(re => {
         if (re.length != 0) {
-            if (re[0].idOrganizador == req.userId && re[0].gerado == 0 && verificaElimComGrupos(re[0].tipoTorneio) == 1) {
+            if (re[0].idOrganizador == req.userId && (re[0].gerado == 0 || re[0].gerado == 2) && verificaElimComGrupos(re[0].tipoTorneio) == 1) {
                 algoritmos.equipasFromGrupos(nApuradosGrupo,idTorneio,tipoSorteio,res,function callback() {res.send("Eliminatórias sorteadas com sucesso")})
             }
             else {
@@ -1121,7 +1221,6 @@ router.post("/:idTorneio/gestao/sortearEliminatoriasFromGrupos",isAuth,(req,res)
                 }
                 else {
                     if(verificaElimComGrupos(re[0].tipoTorneio) == 0) {
-                        console.log(re[0].tipoTorneio)
                         res.status(501).send("O torneio não é de eliminatórias e de grupos")
                     }
                     else {
@@ -1142,14 +1241,16 @@ router.post("/:idTorneio/gestao/sortearEliminatoriasFromGrupos",isAuth,(req,res)
 router.post("/:idTorneio/gestao/sortearEliminatorias",isAuth,(req,res) => {
     var idTorneio = req.params.idTorneio
     var tipoSorteio = req.body.tipoSorteio
-    let sql = `Select T.idOrganizador, E.gerado from Torneio as T join Eliminatoria as E on E.Torneio_idTorneio = T.idTorneio
+    let sql = `Select T.idOrganizador,T.tipoTorneio, E.gerado from Torneio as T join Eliminatoria as E on E.Torneio_idTorneio = T.idTorneio
                 where idTorneio = ${idTorneio};`
     data.query(sql).then(re => {
         if (re.length != 0) {
-            if (re[0].idOrganizador == req.userId && re[0].gerado == 0 && verificaElimSemGrupos(re[0].tipoTorneio) == 1) {
+          console.log(re[0].idOrganizador);
+          console.log(req.userId);
+            if (re[0].idOrganizador == req.userId && (re[0].gerado == 0  || re[0].gerado == 2)  && verificaElimSemGrupos(re[0].tipoTorneio) == 1) {
                 var sql = data.getEquipasFromElim(idTorneio);
                 data.query(sql).then(inscritos => {
-                    algoritmos.sortearElim(inscritos,idTorneio,tipoSorteio,res,function callback() {res.send("Eliminatórias sorteadas com sucesso")})
+                    algoritmos.sortearElim(inscritos,idTorneio,tipoSorteio,2,res,function callback() {res.send("Eliminatórias sorteadas com sucesso")})
                 })
             }
             else {

@@ -139,7 +139,6 @@ function grupoJImpar(teams,jogos) {
           gruposDisp.splice(pos, 1);
         }
     }
-    return grupos
   }
 
   function initClassificacao(equipas,tipo){
@@ -165,7 +164,7 @@ function grupoJImpar(teams,jogos) {
     var sql = ""
     for(var round = 0;round < n;round++){
        for (let match = 0; match <jornadaSize; match++){
-           var id1 = (mao == 1) ? jornadas[round][match].id1 : jornadas[round][match].id2
+          var id1 = (mao == 1) ? jornadas[round][match].id1 : jornadas[round][match].id2
           var id2 = (mao == 1) ? jornadas[round][match].id2 :  jornadas[round][match].id1
           var jogo = jogos[round][match]
           sql +=  "update Jogo "+
@@ -194,8 +193,15 @@ function grupoJImpar(teams,jogos) {
         for (var i=0; i < grupos2.length; i++)
           grupos.push({numeroGrupo:i+1,jogadores:[],disponivel:grupos2[i].nParticipantes,});
 
-        if(option == -1){
-          grupos = sortearGruposRandom(jogadores,grupos)
+        //posiciona cabecas de serie (nenhum, 1º ou 1º e 2º) e sorteia o resto aleatorio
+        if(option < 3){
+          if(option !== 0)
+            jogadores = sortearCabecasSerie(jogadores,grupos,option)
+          sortearGruposRandom(jogadores,grupos)
+        }
+        else {//option 3 sortear por clubes | 4 e 5 sortear por clubes + 1 ou 2 cabecas de serie)
+          var clubes = organizarClubes(jogadores,grupos,option - 3)
+          sortearGrupos(grupos,option,clubes)
         }
 
         var sql3 = "select nomeDesporto from desporto as d "+
@@ -301,7 +307,7 @@ function grupoJImpar(teams,jogos) {
     return sql
   }
 
-  function gerarGrupos(tid,groupSize,inscritos,dataTorneio,horaInicial,minutosInicial,intervalo,duracao,campos,mao,res,callback){
+  function gerarGrupos(tid,groupSize,inscritos,dataTorneio,horaInicial,minutosInicial,intervalo,duracao,campos,mao,tipoSorteio,res,callback){
     var total = inscritos.length
     var gruposLen = Math.floor( total / groupSize);
     var extra = total % groupSize,grupos = [],gruposSize = []
@@ -353,7 +359,7 @@ function grupoJImpar(teams,jogos) {
             }
             sql3 = sql3.replace(/.$/,";")
             data.query(sql3).then(res1 => {
-              updateGrupos(inscritos,-1,tid,callback)
+              updateGrupos(inscritos,tipoSorteio,tid,callback)
             })
           })
         })
@@ -439,7 +445,7 @@ function grupoJImpar(teams,jogos) {
     setsGanhos2 = 0
     let sp2 = resultado.split('|')
     if(sp2.length > 1){
-      for(i=0; sp2.length > 0; i++){
+      for(i=0; i < 0; i++){
         let pontos = sp2[i].split('-')
         if(parseInt(pontos[0])>parseInt(pontos[1])) setsGanhos1 += 1
         else setsGanhos2 += 1
@@ -732,12 +738,28 @@ function sortear(jogadores,idsJogos){
   }
 
 
-  //tipoSorteio -> 1 - aleatório
-  // **** -> 2 - clubes
-  // **** -> 3 - ranking
-  // DEPOIS VÊ-SE
+  //tipoSorteio de grupos
+  // 1 - aleatório
+  // 2 - dividir 1º e 2º com ranking do 1º do grupo
+  // 3 - dividir 1º e 2º e afastar clubes com ranking do 1º do grupo
+
+  //tipoSorteio sem grupos
+  // 1 - aleatório
+  // 2 - aleatório + 2 rank
+  // 3 - aleatorio + 4 rank
+  // 4 - aleatorio + 8 rank
+  // 5 - aleatorio + 16 rank
+
+  // 6 - clubes
+  // 7 - clubes + 2 rank
+  // 8 - clubes + 4 rank
+  // 9 - clubes + 8 rank
+  // 10 - clubes + 16 rank
+
+  // rank max = inscritos/2 caso contrário rebenta
+  // futuramente adicionar 32 rank e 64 rank
   // gerado fica a 2 até ser fechado no front
-  function sortearElim(inscritos,idTorneio,tipoSorteio,res,callback){
+  function sortearElim(inscritos,idTorneio,tipoSorteio,tipo2,res,callback){
     //DEPOIS PRECISAMOS USAR O TIPO SORTEIO PARA OS DIFERENTES TIPOS EXISTENTES
     let sql1  = `Select idEliminatoria from Eliminatoria as E join Torneio as T on
                 T.idTorneio = E.Torneio_idTorneio where T.idTorneio = ${idTorneio};`
@@ -755,7 +777,25 @@ function sortear(jogadores,idsJogos){
                       idsJogos2.push(ids[i].idJogo)
                     }
                   }
-                  var jogos = sortear(inscritos.map(x => x.idEquipa),idsJogos)
+                  var jogos = [];
+
+                  if(tipoSorteio == 1)
+                    jogos = sortear(inscritos.map(x => x.idEquipa),idsJogos)
+                  else {
+                    var mapa = [],nivel = 0,op = 0;
+                    if(tipo2 == 1){  // from grupos
+                      op = tipoSorteio - 1
+                    }
+                    else {
+                      op = (tipoSorteio > 5) ? 2 : 1
+                      nivel = (op == 1) ? (tipoSorteio - 2) : (tipoSorteio - 7)
+                    }
+                    mapa = sorteioEliminatorias(inscritos,nivel,tipo2,op)
+                    jogos = mapaToJogos(mapa,idsJogos)
+                    console.log(mapa);
+                  }
+
+
                   var sql3 = data.updateJogos(jogos)
                   if(idsJogos2.length > 0)
                     sql3 += data.updateJogos(gerar2Mao(jogos,idsJogos2))
@@ -774,6 +814,7 @@ function sortear(jogadores,idsJogos){
     for (var i = 0; i < nApuradosGrupo; i++) {
       let campos = equipas[i].split('-')
       var id = parseInt(campos[1])
+      var nome = campos[0]
       //BUSCAR CLUBE????
       var index = inscritos.map(c => c.idEquipa).indexOf(id);
       var clube = null
@@ -782,7 +823,7 @@ function sortear(jogadores,idsJogos){
       else {
         clube = inscritos[index].clube
       }
-      apurados.push({idEquipa:id,clube:clube,ranking:numeroGrupo,posicao:i+1})
+      apurados.push({idEquipa:id,nomeEquipa:nome,clube:clube,ranking:numeroGrupo,posicao:i+1})
     }
   }
 
@@ -797,7 +838,7 @@ function sortear(jogadores,idsJogos){
           apuradosGrupo(nApuradosGrupo,rank[i].classificacaoGrupo,rank[i].numeroGrupo,apurados,inscritos)
         }
         console.log(apurados)
-        sortearElim(apurados,idTorneio,tipoSorteio,res,callback)
+        sortearElim(apurados,idTorneio,tipoSorteio,1,res,callback)
       })
     })
   }
@@ -850,6 +891,389 @@ function sortear(jogadores,idsJogos){
     return vencedor
   }
 
+  function sortearCabecasSerie(jogadores,grupos,option){
+    var gruposLen = grupos.length;
+  	var jogadores2 = []
+    //organiza jogadores por clubes
+    for (var i=0; i< jogadores.length; i++){
+      var j = jogadores[i]
+      var pos = -1;
+
+       if(j.ranking <= gruposLen){
+         grupos[j.ranking - 1].jogadores.push(j);
+         grupos[j.ranking - 1].disponivel--;
+         pos = j.ranking - 1;
+       }
+       else if(option == 2 && j.ranking <= gruposLen * 2){
+          pos = gruposLen * 2 - j.ranking
+          grupos[pos].jogadores.push(j);
+          grupos[pos].disponivel--;
+       }
+
+      if(pos == -1)
+        jogadores2.push(j);
+  	}
+      return jogadores2;
+  }
+
+  function sortearGrupos(grupos,option,clubes){
+    var clubesSize = clubes.length;
+    clubes.sort((a,b) => b.size - a.size);
+
+    var gruposDisp = createList(grupos.length);
+    var rondaDisp = createList(grupos.length);
+    var ronda = option
+    //percorre clubes e insere nos grupos começando pelos com mais jogadores
+    for (var i=0; i < clubesSize; i++){
+      var sizeC = clubes[i].size - clubes[i].sorteados.length;
+      for (var i2=0; i2 < sizeC; i2++){
+        if(rondaDisp.length==0){
+          ronda++
+          rondaDisp = grupos.filter(x => x.jogadores.length == ronda && x.disponivel > 0).map(x => x.numeroGrupo-1)
+        }
+
+        var j = clubes[i].jogadores[i2]
+        var l = rondaDisp.filter(x => clubes[i].sorteados.indexOf(x) == -1);
+        if(l.length == 0){
+          l = gruposDisp.filter(x => clubes[i].sorteados.indexOf(x) == -1);}
+        if(l.length == 0){
+          l = rondaDisp
+        }
+        if(l.length == 0){
+          l = gruposDisp
+        }
+
+        var pos = l[generate(l)];//console.log(gruposDisp)
+        grupos[pos].jogadores.push(j);
+        grupos[pos].disponivel--;
+        if(grupos[pos].disponivel == 0){
+          var index = gruposDisp.indexOf(pos);
+          gruposDisp.splice(index, 1);
+        }
+
+        var index = rondaDisp.indexOf(pos);
+        rondaDisp.splice(index, 1);
+
+        clubes[i].sorteados.push(pos);
+      }
+    }
+    return grupos;
+  }
+
+  // organiza jogadores por clube
+  // option
+  // 0 sem rank
+  // 1 insere 1º do grupo por rank
+  // 2 insere 1º e 2º do grupo por rank
+  function organizarClubes(jogadores,grupos,option){
+    var clubes=[],gruposLen = grupos.length;
+
+    //organiza jogadores por clubes
+    for (var i=0; i< jogadores.length; i++){
+      var j = jogadores[i]
+      var clube = j.clube
+      var pos = -1;
+      var i2 = clubes.map(e => e.clube).indexOf(clube);
+
+    	if(i2 == -1){
+        clubes.push({clube:clube, size:1,jogadores:[],sorteados:[]});
+        i2 = clubes.map(e => e.clube).indexOf(clube);
+      }
+      else
+        clubes[i2].size +=1;
+
+      //caso se use ranking adicionar diretamente
+      if(option > 0){
+        if(j.ranking <= gruposLen){
+          grupos[j.ranking - 1].jogadores.push(j);
+          grupos[j.ranking - 1].disponivel--;
+          pos = j.ranking - 1;
+        }
+        else if(option == 2 && j.ranking <= gruposLen * 2){
+          pos = gruposLen * 2 - j.ranking
+          grupos[pos].jogadores.push(j);
+          grupos[pos].disponivel--;
+        }
+      }
+
+      if(pos == -1)
+        clubes[i2].jogadores.push(j);
+      else
+        clubes[i2].sorteados.push(pos);
+      }
+      return clubes;
+  }
+
+  //1 0 size-1
+  //2 size/2-1 size/2
+  //3 size/4-1 size/4 size-size/4 size-size/4-1
+  //4 size/8-1 size/8 3*size/8-1 3*size/8 size-3*size/8-1 size-3*size/8 size-size/8 size-size/8-1
+  function posGrupo(size,nivel){
+    var base = size/(2*(Math.pow(2,nivel-1)));
+    var posicoes = (nivel == 1) ? (new Array(base-1,base)) :
+                    ((nivel == 2) ? (new Array(base-1,base,size-base-1,size-base)) :
+                    (new Array(base-1,base,3*base-1,3*base,size-3*base-1,size-3*base,size-base,size-base-1)))
+
+    return posicoes;
+  }
+
+  function dividirNiveis(jogadores,mapa,clubes1,clubes2,primeiros,grupos,segundos,tipo,nivel){
+    var mapSize = mapa.length
+    // preencher primeiros por niveis
+    for (var i=0; i< jogadores.length; i++){
+      var j = jogadores[i];
+
+      if((tipo == 1 && j.posicao == 1) || (tipo == 2 && j.ranking > 0)){
+        var p = -1;
+        var index = 0;
+
+        if(j.ranking == 1){
+          mapa[0].jogador = {idEquipa:j.idEquipa ,clube:j.clube,rank:j.ranking};
+          clubes1.push({clube:j.clube, size:1,jogadores:[],sorteados:[0]});
+          p=1;
+        } else if (j.ranking == 2) {
+          mapa[mapSize-1].jogador = {idEquipa:j.idEquipa ,clube:j.clube,rank:j.ranking};
+          if(tipo == 2)
+            clubes1.push({clube:j.clube, size:1,jogadores:[],sorteados:[mapSize-1]});
+          else {
+            clubes2.push({clube:j.clube, size:1,jogadores:[],sorteados:[mapSize-1]});
+          }
+          p=2;
+        } else {
+          index = (j.ranking < 5) ? 1 : ((j.ranking < 9) ? 2 : ((j.ranking < 17) ? 3 : 4));
+
+          if(tipo == 1 || index <= nivel){
+            primeiros[index-1].jogadores.push(j);
+            primeiros[index-1].size++;
+          } else {
+            segundos.push(j);
+          }
+        }
+        if(tipo == 1)
+          grupos.push({grupo:j.ranking,pos:p})
+      }
+      else
+        segundos.push(j);
+    }
+    if(mapSize - jogadores.length > 0){
+      var j = {idEquipa:-1,nomeEquipa:'----',clube:'----',ranking:-1,posicao:-1}
+      var s = (tipo == 1) ? ((mapSize - jogadores.length) / 2) : (mapSize - jogadores.length)
+      for (var i=0; i< s; i++){
+        segundos.push(j)
+      }
+    }
+  }
+
+  function sortearPrimeiros(primeiros,mapa,listPos,grupos,par,tipo){
+    var mapSize = mapa.length
+    par[0].push({clube:"----", size:0,jogadores:[],sorteados:[]});
+    par[1].push({clube:"----", size:0,jogadores:[],sorteados:[]});
+    //sortear primeiros
+    for (var i=0; i < primeiros.length; i++){
+      var nivel = primeiros[i],posicoes = posGrupo(mapSize,i+1); //posicoes deste nivel
+
+      for (var i2=0; i2 < nivel.size; i2++){
+        var j = nivel.jogadores[i2],index = generate(posicoes),pos = posicoes[index];
+        //adicionar no mapa
+        mapa[pos].jogador = {idEquipa:j.idEquipa ,clube:j.clube,rank:j.ranking};
+        posicoes.splice(index,1);
+        //remover das posiçoes validas
+        var p = listPos.indexOf(pos);
+        listPos.splice(p,1);
+
+        var m = (pos < mapSize/2 || tipo == 2) ? 0 : 1
+        //adicionar posição no array grupos
+        if(tipo == 1){
+          var g = grupos.map(e => e.grupo).indexOf(j.ranking);
+          grupos[g].pos = m + 1;
+        }
+        //adicionar posicao nos clubes
+        var i3 = par[m].map(e => e.clube).indexOf(j.clube);
+        if(i3 == -1)
+          par[m].push({clube:j.clube, size:1,jogadores:[],sorteados:[pos]});
+        else {
+          par[m][i3].sorteados.push(pos);
+          par[m][i3].size++;
+        }
+      }
+      //preencher posiçoes deste nivel vazias
+      for (var i2=0; i2 < posicoes.length; i2++){
+        var j2 = {idEquipa:-1,clube:'----',rank:-1}
+        var pos2 = posicoes[i2]
+        mapa[pos2].jogador = j2
+        p = listPos.indexOf(pos2);
+        listPos.splice(p,1);
+        var m2 = (pos2 < mapSize/2 || tipo == 2) ? 0 : 1
+        var i4 = par[m2].map(e => e.clube).indexOf(j2.clube);
+        par[m2][i4].sorteados.push(pos2);
+        par[m2][i4].size++;
+      }
+    }
+  }
+
+  function sortearSegundos(par,listPos,mapa,tipo){
+    var mapSize = mapa.length
+    //percorrer clubes sortear segundos
+    for (var c=0; c< 2; c++){
+      for (var i=0; i< par[c].length; i++){
+        var sizeclube = par[c][i].jogadores.length,s = 0;
+        if (sizeclube > 0){
+          var l = (tipo == 2) ? createList(mapSize) : ((c == 0) ? createList(mapSize/2) : createList(mapSize/2).map(v => v+mapSize/2));
+          for(s=0; Math.pow(2, s) < par[c][i].size; s++);
+          var npartes = Math.pow(2, s),sizePartes = (tipo == 1) ? (mapSize/2/npartes) : (mapSize/npartes);
+          var chunks = chunkArrayInGroups(l,sizePartes);
+          chunksDisp(chunks,par[c][i].sorteados)
+
+          //sortear jogadores do clube
+          for (var i2=0; i2< sizeclube; i2++){
+            var j = par[c][i].jogadores[i2];
+            var posicoesD = chunks.flat().filter(x => listPos.indexOf(x) > -1);
+            if(posicoesD.length == 0){
+              if(sizePartes == mapSize/2)
+                posicoesD = l.filter(x => listPos.indexOf(x) > -1)
+              else {
+                sizePartes *= 2
+                chunks = chunkArrayInGroups(l,sizePartes);
+                chunksDisp(chunks,par[c][i].sorteados);
+                posicoesD = chunks.flat().filter(x => listPos.indexOf(x) > -1);
+              }
+            }
+            if(posicoesD.length == 0)
+              posicoesD = listPos;
+
+            var pos = generate(posicoesD);
+            var value = posicoesD[pos];
+            const index = listPos.indexOf(value);
+            if (index > -1)
+              listPos.splice(index, 1);
+            par[c][i].sorteados.push(value);
+            chunksDisp(chunks,[value]);
+            mapa[value].jogador =  {idEquipa:j.idEquipa ,clube:j.clube,rank:j.ranking};
+          }
+        }
+      }
+    }
+  }
+
+  function chunksDisp(chunks,sorteados){
+    var list = posicoesDisp(chunks,sorteados);
+    for(var i=0; i < list.length; i++)
+       chunks.splice(list[i]-i, 1);
+  }
+
+  function sortearSegundos2(par,listPos,mapa,tipo){
+    var mapSize = mapa.length
+    //percorrer clubes sortear segundos
+    for (var c=0; c< 2; c++){
+      for (var i=0; i< par[c].length; i++){
+        var sizeclube = par[c][i].jogadores.length;
+        if (sizeclube > 0){
+          var l = (tipo == 2) ? createList(mapSize) : ((c == 0) ? createList(mapSize/2) : createList(mapSize/2).map(v => v+mapSize/2));
+          //sortear jogadores do clube
+          for (var i2=0; i2< sizeclube; i2++){
+            var j = par[c][i].jogadores[i2];
+            var posicoesD = l.filter(x => listPos.indexOf(x) > -1);
+            var pos = generate(posicoesD);
+            var value = posicoesD[pos];
+            const index = listPos.indexOf(value);
+            if (index > -1)
+              listPos.splice(index, 1);
+            mapa[value].jogador =  {idEquipa:j.idEquipa ,clube:j.clube,rank:j.ranking};
+          }
+        }
+      }
+    }
+  }
+
+  function nivelToSize(nivel,total){
+    var mapSize = 0;
+    for(mapSize = 1; mapSize < total; mapSize*=2);
+    if(mapSize == 32) return 3;
+    if(mapSize == 16) return 2;
+    if(mapSize == 8) return 1;
+    if(mapSize == 4) return 0;
+  }
+
+  // nivel 0-2rank|1-4rank|2-8rank|3-16rank
+  // tipo 1-fromGrupos 2-semGrupos
+  // op 1-separar clubes  2-sem restriçoes
+
+  // 1 criar mapa vazio
+  // 2 dividir primeiros por rank e segundos por clube
+  // 3 sortear primeiros guardar posição nos grupos e nos clubes1 e 2
+  // 4 dividir segundos em 2 metades preencher clubes1 e clubes2
+  // 5 sortear segundos comecar pelo clube que tem mais
+  function sorteioEliminatorias(jogadores,nivel,tipo,op){
+    var total = jogadores.length,mapSize = 1,i2=0;
+    var primeiros=[],mapa=[],segundos=[],grupos = [],clubes1 = [],clubes2 = [];
+    nivel = (tipo == 1) ? nivelToSize(nivel,total) : nivel
+
+    // inicializar primeiros
+    for(mapSize = 1; mapSize < total; mapSize*=2){
+      if(i2 < nivel)
+        primeiros.push({nivel:i2,jogadores:[],size:0});
+      i2++;
+    }
+    // inicializar mapa
+     for(i2 = 0; i2 < mapSize; i2++)
+       mapa.push({pos:i2,jogador:{nomeEquipa:"undefined",grupo:-1}});
+
+    dividirNiveis(jogadores,mapa,clubes1,clubes2,primeiros,grupos,segundos,tipo,nivel);
+    //console.log(mapa.map(x=> x.pos + ":"+ x.jogador.clube + " - " +x.jogador.rank));
+    var par = [clubes1,clubes2]; //jogadores das 2 metades do mapa divididos por clubes
+    var listPos = createList(mapSize-1);
+    listPos.splice(0,1);
+
+    sortearPrimeiros(primeiros,mapa,listPos,grupos,par,tipo);
+
+    //dividir segundos por metades e por clubes
+    for (var i=0; i < segundos.length; i++){
+      var j = segundos[i],g = 0,metade = 0;
+      if(j.idEquipa == -1){
+        var s1 = par[0][par[0].map(c => c.clube).indexOf(j.clube)].size;
+        var s2 = par[1][par[1].map(c => c.clube).indexOf(j.clube)].size;
+        metade = (s1 > s2) ? 1 : 0
+      }
+      else {
+        g = grupos.map(e => e.grupo).indexOf(j.ranking);
+        metade = (tipo == 2 || grupos[g].pos == 2) ? 0 : 1;
+      }
+
+      var index = par[metade].map(c => c.clube).indexOf(j.clube);
+      if(index == -1)
+        par[metade].push({clube:j.clube, size:1,jogadores:[j],sorteados:[]});
+      else {
+        par[metade][index].jogadores.push(j);
+        par[metade][index].size++;
+      }
+    }
+
+    //ordenar por length sorteados e size em caso de igualdade
+    for (var c=0; c< 2; c++){
+      par[c].sort(function(a, b) {
+        if (a.sorteados.length < b.sorteados.length) return 1;
+        if (a.sorteados.length > b.sorteados.length) return -1;
+        return b.size - a.size;
+      });
+    }
+    if(op == 2)
+      sortearSegundos(par,listPos,mapa,tipo);
+    else {
+      sortearSegundos2(par,listPos,mapa,tipo);
+    }
+    console.log(mapa.map(x=> x.pos + ":"+ x.jogador.clube + " - " +x.jogador.rank));
+    return mapa
+  }
+
+  //recebe jogos da ronda e atualiza com a sorteio gerado
+  function mapaToJogos(mapa,idsJogos){
+    var jogos = [],ronda = 0;
+    for(var i=0,ronda = 0;i<mapa.length;i+=2,ronda++){
+      jogos.push({idJogo:idsJogos[ronda],idOponente1:mapa[i].jogador.idEquipa,idOponente2:mapa[i+1].jogador.idEquipa})
+    }
+    return jogos
+  }
+
   module.exports = {
     gerarGrupos,
     gerarEliminatorias,
@@ -857,5 +1281,7 @@ function sortear(jogadores,idsJogos){
     equipasFromGrupos,
     getVencedor,
     atualizaClassificacao,
-    calculaVencedor2Maos
+    calculaVencedor2Maos,
+    apuradosGrupo,
+    updateGrupos
   }

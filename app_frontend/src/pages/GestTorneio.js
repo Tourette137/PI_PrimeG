@@ -1,24 +1,20 @@
 import {Link} from 'react-router-dom';
 import {useState, useEffect} from 'react';
-import GrupoDisplay from "./GrupoDisplay.jsx";
+import GrupoDisplay from "../components/GrupoDisplay.js";
 import ElimDisplay from "./ElimDisplay.jsx";
 import axios from 'axios';
-
+import InscritosDisplay from "../components/ListaInscritos.js";
 
 const API_URL="http://localhost:3000"
 
-export function GestTorneio(props) {
+export function GestTorneio({ id,terminado,tipoTorneio, ...props }) {
 
     const [classificacaoGrupo,setClassificacaoGrupo] = useState([]);
     const [classificacaoElim,setClassificacaoElim] = useState([]);
-
-
-    const id = props.id;
-    const tipoTorneio = props.tipoTorneio;
+    const [elimSize,setElimSize] = useState(0);
 
     const [tipo1,setTipo1] = useState("grupos");
     const [fecharSorteio,setFecharSorteio] = useState(0);
-
 
     // variaveis criar elim
     const [inputDuracaoJogo,setInputDuracaoJogo] = useState();
@@ -26,6 +22,30 @@ export function GestTorneio(props) {
     const [inputDataElim,setInputDataElim] = useState();
     const [groupSize,setGroupSize] = useState();
     const [tipoSorteio,setTipoSorteio] = useState();
+    const [inscritos,setInscritos] = useState([]);
+    const [apurados,setApurados] = useState([]);
+
+    const searchApurados = async () => {
+      const response = await fetch (`${API_URL}/torneios/${id}/apurados`);
+      if (response.status === 200) {
+          const data = await response.json();
+          setApurados(data);
+      }
+      else {
+          setApurados([]);
+      }
+    }
+
+    const searchInscritos = async () => {
+      const response = await fetch (`${API_URL}/torneios/${id}/inscritos`);
+      if (response.status === 200) {
+          const data = await response.json();
+          setInscritos(data);
+      }
+      else {
+          setInscritos([]);
+      }
+    }
 
     // Função que vai buscar a classificação dos grupos.
     const searchGrupos = async () => {
@@ -39,67 +59,64 @@ export function GestTorneio(props) {
         }
       }
 
- 
-
-      const searchSorteio = async () => {
-          const response = await fetch (`${API_URL}/torneios/${id}/SorteioElim`);
-          if (response.status === 200) {
-              const data = await response.json();
-              console.log(data);
-              setFecharSorteio(data.gerado);
-          }
-          else {
-              setFecharSorteio(1);
-          }
-      }
+    const searchSorteio = async () => {
+        const response = await fetch (`${API_URL}/torneios/${id}/SorteioElim`);
+        if (response.status === 200) {
+            const data = await response.json();
+            setFecharSorteio(data.gerado);
+        }
+        else {
+            setFecharSorteio(1);
+        }
+    }
 
     // Função que vai buscar a classificação das eliminatórias.
     const searchElim = async () => {
         const response = await fetch (`${API_URL}/torneios/${id}/classificacao/eliminatorias`);
         if (response.status === 200) {
             const data = await response.json();
-            console.log(data);
             setClassificacaoElim(data);
+            setElimSize(data.length)
             searchSorteio()
         }
         else {
             setClassificacaoElim([]);
         }
-      }
+    }
 
-      const handleFecharSorteio = async (e) => {
-          e.preventDefault();
-          const headers = {
+    const handleFecharSorteio = async (e) => {
+        e.preventDefault();
+        const headers = {
               "authorization": "Bearer " +localStorage.getItem("token")
-          }
-          axios.post(`${API_URL}/torneios/${id}/gestao/fecharSorteioElim`, {},{headers: headers})
+        }
+        axios.post(`${API_URL}/torneios/${id}/gestao/fecharSorteioElim`, {},{headers: headers})
               .then(response => {
                 setFecharSorteio(1);
-          }).catch(e => console.log(e))
-      }
+        }).catch(e => console.log(e))
+    }
 
-      const handleGrupo = async (e) => {
-          e.preventDefault();
-          const headers = {
+    const handleGrupo = async (e) => {
+        e.preventDefault();
+        const headers = {
               "authorization": "Bearer " +localStorage.getItem("token")
-          }
-          const bodyGrupo = {
+        }
+        const bodyGrupo = {
               "duracao" : parseInt(inputDuracaoJogo),
               "intervalo" : parseInt(inputIntervaloEtapas),
               "groupSize" : parseInt(groupSize)
-          }
-          axios.post(`${API_URL}/torneios/${id}/gestao/criarFaseGrupos`, bodyGrupo,{headers: headers})
+        }
+        axios.post(`${API_URL}/torneios/${id}/gestao/criarFaseGrupos`, bodyGrupo,{headers: headers})
               .then(response => {
                 searchGrupos();
-          }).catch(e => console.log(e))
-      }
+        }).catch(e => console.log(e))
+    }
 
-      const handleElim = async (e) => {
-          e.preventDefault();
-          const headers = {
+    const handleElim = async (e) => {
+        e.preventDefault();
+        const headers = {
               "authorization": "Bearer " +localStorage.getItem("token")
-          }
-          if(tipoTorneio === 1 || tipoTorneio === 4){
+        }
+        if(tipoTorneio === 1 || tipoTorneio === 4){
             const bodyElim = {
               "duracao" : inputDuracaoJogo,
               "intervalo" : inputIntervaloEtapas
@@ -108,9 +125,8 @@ export function GestTorneio(props) {
                 .then(response => {
                   searchElim();
             }).catch(e => console.log(e))
-          }
-          else {
-            console.log(inputDataElim);
+        }
+        else {
             const bodyElimG = {
               "duracao" : inputDuracaoJogo,
               "intervalo" : inputIntervaloEtapas,
@@ -121,20 +137,15 @@ export function GestTorneio(props) {
                 .then(response => {
                   searchElim();
             }).catch(e => console.log(e))
-          }
-      }
+        }
+    }
 
-      const handleSorteio = async (e) => {
+    const handleSorteio = async (e) => {
           e.preventDefault();
-          const headers = {
-              "authorization": "Bearer " +localStorage.getItem("token")
-          }
+          const headers = {"authorization": "Bearer " +localStorage.getItem("token")}
 
           if(tipoTorneio === 1 || tipoTorneio === 4){
-              const bodyElim = {
-                "tipoSorteio" : tipoSorteio
-              };
-              axios.post(`${API_URL}/torneios/${id}/gestao/sortearEliminatorias`, bodyElim,{headers: headers})
+              axios.post(`${API_URL}/torneios/${id}/gestao/sortearEliminatorias`,  {"tipoSorteio" : tipoSorteio},{headers: headers})
                   .then(response => {
                     searchElim();
               }).catch(e => console.log(e))
@@ -148,20 +159,31 @@ export function GestTorneio(props) {
                     searchElim();
               }).catch(e => console.log(e))
           }
-      }
+    }
+
+    const handleSorteioGrupo = async (e) => {
+        e.preventDefault();
+        const headers = {"authorization": "Bearer " +localStorage.getItem("token")}
+        axios.post(`${API_URL}/torneios/${id}/gestao/sortearFaseGrupos`, {"tipoSorteio" : tipoSorteio},{headers: headers})
+              .then(response => {
+                searchGrupos();
+        }).catch(e => console.log(e))
+    }
 
 
     // Vai buscar os grupos e as eliminatórias.
     useEffect(() => {
       searchGrupos();
       searchElim();
+      searchInscritos();
+      searchApurados();
     },[])
 
 
 
 
     return(
-        <>
+        <div className = "mb-32">
         <div onChange={e=>setTipo1(e.target.value)}>
             <input type="radio" value="eliminatorias" name="tipoamostrar" checked={("eliminatorias"===tipo1) ? "checked" : ""}/> Eliminatorias
             <input type="radio" value="grupos" name="tipoamostrar" checked={("grupos"===tipo1) ? "checked" : ""}/> Grupos
@@ -173,13 +195,37 @@ export function GestTorneio(props) {
             (classificacaoGrupo?.length > 0
             ? (
               <div>
+                <div className="inscritos">
+                  <InscritosDisplay inscritos = {inscritos} titulo = "Inscritos"/>
+                </div>
                 <div className="grupos">
-                  <h1> Fase de Grupos: </h1>
+                  <h1 className = "text-center pt-10 text-2xl font-bold">Fase de Grupos</h1>
+
                   <br/>
                   <ul>
                   {classificacaoGrupo.map((grupo) => (
                     <li><GrupoDisplay grupo = {grupo}/></li>
                   ))}
+
+                  {terminado === 0 // permitir gerar novo sorteio caso o torneio não tenha começado
+                    ?  (
+                        <form onSubmit={handleSorteioGrupo}>
+                          <label>Tipo Sorteio: </label>
+                            <select value={tipoSorteio} id="tipoSorteio" name="TipoSorteio" onChange={e => setTipoSorteio(e.target.value)} required>
+                                <option value="">Indique o tipo de sorteio</option>
+                                <option value="0">Sorteio sem restrições</option>
+                                <option value="1">Sorteio com 1 cabeça de série</option>
+                                <option value="2">Sorteio com 2 cabeça de série</option>
+                                <option value="3">Sorteio por clubes</option>
+                                <option value="4">Sorteio por clubes com 1 cabeça de série</option>
+                                <option value="5">Sorteio por clubes com 2 cabeça de série</option>
+                            </select>
+                            <button>Sortear Grupos</button>
+                        </form>
+                      )
+                    : (null)
+                  }
+
                   </ul>
                 </div>
               </div>
@@ -192,6 +238,9 @@ export function GestTorneio(props) {
                 )
               : (
                 <div className="empty_grupos">
+                    <div className="inscritos">
+                      <InscritosDisplay inscritos = {inscritos} titulo = "Inscritos"/>
+                    </div>
                     <h2>Criar fase de grupos!</h2>
                     <form onSubmit={handleGrupo}>
                         <div>
@@ -204,6 +253,16 @@ export function GestTorneio(props) {
                                 <option value="6">6</option>
                             </select>
                             <br/>
+                            <label>Tipo Sorteio: </label>
+                            <select value={tipoSorteio} id="tipoSorteio" name="TipoSorteio" onChange={e => setTipoSorteio(e.target.value)} required>
+                                <option value="">Indique o tipo de sorteio</option>
+                                <option value="0">Sorteio sem restrições</option>
+                                <option value="1">Sorteio com 1 cabeça de série</option>
+                                <option value="2">Sorteio com 2 cabeças de série</option>
+                                <option value="3">Sorteio por clubes</option>
+                                <option value="4">Sorteio por clubes com 1 cabeça de série</option>
+                                <option value="5">Sorteio por clubes com 2 cabeças de série</option>
+                            </select>
                             <br/>
                             <label>Duração jogo: </label>
                                 <input value={inputDuracaoJogo} id="duracaoJogo" type="number" onChange={(e) => setInputDuracaoJogo(e.target.value)} required></input>
@@ -222,36 +281,59 @@ export function GestTorneio(props) {
             )
 
         :
-            (classificacaoElim?.length > 0
+            (elimSize > 0
             ? (
-              <div>
+              <div className="mb-8">
+                  <div className="inscritos">
+                    <InscritosDisplay inscritos = {apurados} titulo = "Apurados"/>
+                  </div>
                   <div className="eliminatorias">
                     <h1> Fase Eliminatória: </h1>
-                    <ul>
-                    {classificacaoElim.map((classificacaoElim) => (
-                      <li><ElimDisplay elim = {classificacaoElim}/></li>
-                    ))}
-                    </ul>
+                    <ElimDisplay className="" elim = {classificacaoElim} elimSize = {elimSize}/>
                   </div>
 
                   {(fecharSorteio === 0 || fecharSorteio === 2)
-                  ? (
-                      <form onSubmit={handleSorteio}>
-                        <label>Tipo Sorteio: </label>
-                          <select value={tipoSorteio} id="tipoSorteio" name="TipoSorteio" onChange={e => setTipoSorteio(e.target.value)} required>
-                              <option value="">Indique o tipo de sorteio</option>
-                              <option value="-1">Sorteio sem restrições</option>
-                          </select>
-                          <button>Sortear Eliminatorias</button>
-                      </form>
+                  ? ( ((tipoTorneio === 2 || tipoTorneio > 4)
+                      ? (
+                          <form onSubmit={handleSorteio}>
+                            <label>Tipo Sorteio: </label>
+                              <select value={tipoSorteio} id="tipoSorteio" name="TipoSorteio" onChange={e => setTipoSorteio(e.target.value)} required>
+                                  <option value="">Indique o tipo de sorteio</option>
+                                  <option value="1">Sorteio sem restrições</option>
+                                  <option value="2">Separar 1º e 2º do grupo</option>
+                                  <option value="3">Separar 1º e 2º do grupo e mesmo clube</option>
+                              </select>
+                              <button>Sortear Eliminatorias</button>
+                          </form>
+                      )
+                      : (
+                        <form onSubmit={handleSorteio}>
+                          <label>Tipo Sorteio</label>
+                            <select value={tipoSorteio} id="tipoSorteio" name="TipoSorteio" onChange={e => setTipoSorteio(e.target.value)} required>
+                                <option value="">Indique o tipo de sorteio</option>
+                                <option value="1">Sorteio sem restrições</option>
+                                <option value="2">Sorteio sem restrições + 2 por ranking</option>
+                                <option value="3">Sorteio sem restrições + 4 por ranking</option>
+                                <option value="4">Sorteio sem restrições + 8 por ranking</option>
+                                <option value="5">Sorteio sem restrições + 16 por ranking</option>
+                                <option value="6">separar do mesmo clube</option>
+                                <option value="7">2 por ranking + separar do mesmo clube</option>
+                                <option value="8">4 por ranking + separar do mesmo clube</option>
+                                <option value="9">8 por ranking + separar do mesmo clube</option>
+                                <option value="10">16 por ranking + separar do mesmo clube</option>
+                            </select>
+                            <button className="p-2 text-black border-2 border-black hover:bg-black hover:text-white">Sortear Eliminatorias</button>
+                        </form>
+                      )
                     )
+                  )
                   :
                     (<> Sorteio Fechado </>)
                   }
 
                   {fecharSorteio === 2
                     ?
-                      (<button onClick={handleFecharSorteio}>Fechar Sorteio</button>)
+                      (<button className="p-2 text-black border-2 hover:bg-black hover:text-white" onClick={handleFecharSorteio}>Fechar Sorteio</button>)
                     :
                       (<></>)
                   }
@@ -265,6 +347,9 @@ export function GestTorneio(props) {
                 )
               : (
                 <div className="empty_eliminatorias">
+                  <div className="inscritos">
+                    <InscritosDisplay inscritos = {inscritos} titulo = "Inscritos"/>
+                  </div>
                     <h2>Criar fase eliminatória!</h2>
                     <form onSubmit={handleElim}>
                         <div>
@@ -287,6 +372,6 @@ export function GestTorneio(props) {
               )
             )
         }
-        </>
+        </div>
     )
 }

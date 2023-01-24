@@ -1,11 +1,8 @@
 import {useRef, useState,useEffect} from 'react';
 import {useNavigate } from 'react-router-dom'
 import axios from 'axios';
-import {NavbarDynamic} from '../components/NavbarDynamic.js';
 
 const API_URL="http://localhost:3000"
-
-
 
 export function RegistoTorneio() {
 
@@ -38,7 +35,7 @@ export function RegistoTorneio() {
     const [espacosFav,setEspacosFav] = useState(true)
     const [localidades,setLocalidades] = useState([]);
 
-    
+
     const navigate = useNavigate();
 
     //Função que vai buscar os desportos da Base de Dados
@@ -163,21 +160,20 @@ export function RegistoTorneio() {
 
     }
 
-    
+
     return (
         <>
-        <NavbarDynamic/>
         <h1>Registo de Torneio</h1>
         <form onSubmit={handleRegisto}>
             <div>
                 <label>Nome: </label>
                 <input ref={inputnomeTorneioRef} id="nomeTorneio" type="nomeTorneio" placeholder="Nome do Torneio" required></input>
-                
+
                 <br/>
-                
+
                 <label>Data: </label>
                 <input ref={inputDataTorneioRef} id="date" type="datetime-local" placeholder="Data do Torneio" required></input>
-                
+
                 <br/>
 
                 <label>Desporto: </label>
@@ -203,7 +199,7 @@ export function RegistoTorneio() {
 
                 <label>Tipo do torneio: </label>
                 <select value={tipoTorneio} id="tipoTorneio" name="tipoTorneio" onChange={e => setTipoTorneio(e.target.value)} required>
-                    <option value="">Indique o tipo de torneio pretendido</option>                    
+                    <option value="">Indique o tipo de torneio pretendido</option>
                     <option value="0">Liga</option>
                     <option value="1">Torneio de Eliminatórias</option>
                     <option value="2">Torneio com fase de grupos e eliminatórias</option>
@@ -252,7 +248,7 @@ export function RegistoTorneio() {
                 </select>
 
                 <br/>
-                
+
                 <label>Género: </label>
                 <select value={genero} id="genero" name="Genero" onChange={e => setGenero(e.target.value)} required>
                     <option value="">Indique o género pretendido</option>
@@ -268,7 +264,7 @@ export function RegistoTorneio() {
 
                 <label>Número de Elementos por Equipa: </label>
                     <input ref={inputtamEquipaRef} id="tamEquipa" type="tamEquipa" placeholder="Tamanho da Equipa" required></input>
-                    
+
                     <br/>
 
                 <br/>
@@ -280,7 +276,7 @@ export function RegistoTorneio() {
 
                 {espacosFav ?
                     (desporto !== "" && localidade !== "" ?
-                        (espacos?.length > 0 
+                        (espacos?.length > 0
                         ? (
                         <select value={espaco} id="espaco" name="Espaco" onChange={e => setEspaco(e.target.value)} required>
                             <option value="">Indique o espaço pretendido</option>
@@ -293,27 +289,27 @@ export function RegistoTorneio() {
                         )
                         :
                         (<h3>Selecione um desporto e uma localidade!</h3>)
-                    ) 
+                    )
                 : ( <>
                     <label>Nome do Espaço: </label>
                     <input ref={inputnomeEspacoRef} id="nomeEspaco" type="nomeEspaco" placeholder="Nome do Espaço" required></input>
-                    
+
                     <br/>
 
                     <label>Nome da Rua: </label>
                     <input ref={inputruaEspacoRef} id="ruaEspaco" type="ruaEspaco" placeholder="Nome da Rua" required></input>
-                    
+
                     <br/>
 
                     <label>Contacto do Espaço: </label>
                     <input ref={inputContactoEspacoRef} id="contactoEspaco" type="contactoEspaco" placeholder="Contacto do Espaço" required></input>
-                    
+
                     <br/>
 
                     <label>Numéro de campos do Espaço: </label>
                     <input ref={inputNMesasRef} id="nMesasEspaco" type="nMesasEspaco" placeholder="Número de campos" required></input>
 
-                    </>)   
+                    </>)
                 }
             </div>
             <button>Registar</button>

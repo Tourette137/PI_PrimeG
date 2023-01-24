@@ -1,5 +1,9 @@
 import {Link,Route,Routes} from 'react-router-dom';
 import PrivateRoutes from './utils/PrivateRoutes'
+import {QueryClientProvider} from '@tanstack/react-query'
+import queryClient from './requests'
+import {LocalidadesFavoritas} from './pages/LocalidadesFavoritas.js';
+import {DesportosFavoritos} from './pages/DesportosFavoritos.js';
 
 import {Torneios} from './pages/Torneios.js';
 import {Gestao} from './pages/Gestao.js';
@@ -28,7 +32,7 @@ import './App.css'
 function App() {
 
   return (
-    <>
+    <QueryClientProvider client = {queryClient}>
       <NavbarDynamic/>
 
       <Routes>
@@ -56,13 +60,15 @@ function App() {
                 <Route element = {<PerfilHistorico/>} path="/perfil/historico" exact/>
                 <Route element = {<PerfilHistoricoJogos/>} path="/perfil/historicoJogos" exact/>
                 <Route element = {<PerfilNotificacoes/>} path="/perfil/notificacoes" exact/>
+                <Route element = {<LocalidadesFavoritas/>} path="/perfil/localidadesFavoritas" exact/>
+                <Route element = {<DesportosFavoritos/>} path="/perfil/desportosFavoritos" exact/>
                 <Route element = {<RegistoTorneio/>} path="/torneios/registo" exact/>
                 <Route element = {<RegistoEspaco/>} path="/espacos/registo" exact/>
           </Route>
       </Routes>
 
 
-    </>
+    </QueryClientProvider>
 
 
   );

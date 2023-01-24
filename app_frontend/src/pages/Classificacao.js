@@ -1,16 +1,15 @@
 import {useState,useEffect} from 'react';
 import {useParams} from 'react-router-dom'
-import GrupoDisplay from "./GrupoDisplay.jsx";
+import GrupoDisplay from "../components/GrupoDisplay.js";
 import ElimDisplay from "./ElimDisplay.jsx";
-import {NavbarDynamic} from '../components/NavbarDynamic.js';
-
 
 const API_URL="http://localhost:3000"
 
 export function Classificacao() {
-    const {id} = useParams()    
+    const {id} = useParams()
     const [classificacaoGrupo,setClassificacaoGrupo] = useState([]);
     const [classificacaoElim,setClassificacaoElim] = useState([]);
+    const [elimSize,setElimSize] = useState(0);
 
     // Função que vai buscar a classificação dos grupos.
     const searchGrupos = async () => {
@@ -32,6 +31,7 @@ export function Classificacao() {
             const data = await response.json();
             console.log(data)
             setClassificacaoElim(data);
+            setElimSize(data.length)
         }
         else {
             setClassificacaoElim([]);
@@ -48,13 +48,11 @@ export function Classificacao() {
 
     return(
         <>
-        <NavbarDynamic/>
-
         <h1>Classificação:</h1>
 
         <br/>
 
-        {classificacaoGrupo?.length > 0 
+        {classificacaoGrupo?.length > 0
         ? (
         <div className="grupos">
           <h1> Fase de Grupos: </h1>
@@ -65,7 +63,7 @@ export function Classificacao() {
           ))}
           </ul>
         </div>
-        ) 
+        )
         : (
         <div className="empty_grupos">
             <h2>Este torneio não contém fase de grupos!</h2>
@@ -74,17 +72,10 @@ export function Classificacao() {
 
         <br/>
 
-        {classificacaoElim?.length > 0 
+        {elimSize > 0
         ? (
-        <div className="eliminatorias">
-          <h1> Fase Eliminatória: </h1>
-          <ul>
-          {classificacaoElim.map((elim) => (
-            <li><ElimDisplay elim = {elim}/></li>
-          ))}
-          </ul>
-        </div>
-        ) 
+        <ElimDisplay elim = {classificacaoElim} elimSize = {elimSize}/>
+        )
         : (
         <div className="empty_eliminatorias">
             <h2>Este torneio não contém fase eliminatória!</h2>

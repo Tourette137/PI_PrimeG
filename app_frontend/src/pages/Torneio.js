@@ -2,9 +2,9 @@
 
 import {useParams} from 'react-router-dom'
 import {useState,useEffect} from 'react';
-import TorneioDisplay from "./TorneioDisplay.jsx";
+import TorneioDisplay from '../components/TorneioCard.js';
+import InscritosDisplay from "../components/ListaInscritos.js";
 import {Link} from 'react-router-dom';
-import {NavbarDynamic} from '../components/NavbarDynamic.js';
 
 const API_URL="http://localhost:3000"
 
@@ -13,6 +13,31 @@ export function Torneio() {
     const [torneio,setTorneio] = useState("");
     const [gestao,setGestao] = useState(0);
     const [tipoTorneio,setTipoTorneio] = useState();
+    const [inscritos,setInscritos] = useState([]);
+    const [apurados,setApurados] = useState([]);
+
+    const searchInscritos = async () => {
+      const response = await fetch (`${API_URL}/torneios/${id}/inscritos`);
+      if (response.status === 200) {
+          const data = await response.json();
+          setInscritos(data);
+      }
+      else {
+          setInscritos([]);
+      }
+    }
+
+    const searchApurados = async () => {
+      console.log("aaaa");
+      const response = await fetch (`${API_URL}/torneios/${id}/apurados`);
+      if (response.status === 200) {
+          const data = await response.json();
+          setApurados(data);
+      }
+      else {
+          setApurados([]);
+      }
+    }
 
     // Vai à API buscar a informação do torneio para dar display na página principal
     const searchTorneio = async () => {
@@ -30,13 +55,13 @@ export function Torneio() {
         else {
             response = await fetch (`${API_URL}/torneios/${id}`);
         }
-        
+
         const data = await response.json();
         if (response.status === 200) {
             console.log(data)
             if(data.isOrganizador) {
                 setGestao(1);
-            } 
+            }
             setTorneio(data);
             setTipoTorneio(data.tipoTorneio);
         }
@@ -49,16 +74,17 @@ export function Torneio() {
     //Search inicial do torneio
     useEffect(() => {
         searchTorneio();
+        searchInscritos();
+        searchApurados();
     },[])
 
     return(
         <>
-        <NavbarDynamic/>
             <h1>Página do torneio {id}</h1>
 
             <li><Link to={`/${id}/jogos`}
                  state={{ tipoTorneio : tipoTorneio }}>Jogos</Link></li>
-            {torneio.terminado != 0
+            {torneio.terminado != -1 //a classificaçao é criada antes do torneio começar
             ?
             (<li><Link to={"/" + id + "/classificacao"}>Classificação</Link></li>)
             : (null)
@@ -71,7 +97,17 @@ export function Torneio() {
             }
         {torneio !== ""
         ? (<div className = "Torneio">
-          <TorneioDisplay torneio = {torneio}/>
+            <TorneioDisplay torneio = {torneio}/>
+            <InscritosDisplay inscritos = {inscritos} titulo = "Inscritos"/>
+
+            {apurados?.length > 0
+            ? (
+              <>
+              <InscritosDisplay inscritos = {apurados} titulo = "Apurados"/>
+              </>
+              )
+            : (null)
+            }
           </div>
         )
         : (<div className="empty">

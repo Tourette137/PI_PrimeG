@@ -25,10 +25,17 @@ function getJogosParaSorteio(idTorneio){
 }
 
 function getEquipasFromElim(idTorneio){
-  return "select E.idEquipa, E.ranking,E.clube from Equipa as E"+
+  return "select E.idEquipa,E.nomeEquipa, E.ranking,E.clube from Equipa as E"+
               " inner join Torneio_has_Equipa as TH on E.idEquipa = TH.Equipa_idEquipa"+
 						  " inner join Torneio as T on TH.Torneio_idTorneio = T.idTorneio"+
               " where T.idTorneio = "+ idTorneio + " and TH.pendente=1;"
+}
+
+function getInscricoes(idTorneio){
+  return "select E.idEquipa,E.nomeEquipa, E.ranking,E.clube from Equipa as E"+
+              " inner join Torneio_has_Equipa as TH on E.idEquipa = TH.Equipa_idEquipa"+
+						  " inner join Torneio as T on TH.Torneio_idTorneio = T.idTorneio"+
+              " where T.idTorneio = "+ idTorneio + " and TH.pendente=0;"
 }
 
 function getApuradosFromGrupos(idTorneio) {
@@ -126,5 +133,6 @@ module.exports = {
   getJogoEtapaSeguinte,
   updateJogoO1,
   updateJogoO2,
-  updateClassificacaoGrupo
+  updateClassificacaoGrupo,
+  getInscricoes
 }

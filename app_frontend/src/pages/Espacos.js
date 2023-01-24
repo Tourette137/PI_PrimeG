@@ -1,6 +1,6 @@
 //Página que lista todo o tipo de Espacos com os filtros adequados.
 import {useState,useEffect} from 'react';
-import EspacoDisplay from "./EspacoDisplay.jsx";
+import EspacoCard from '../components/EspacoCard.js';
 import {Link,Route,Routes} from 'react-router-dom';
 import {useNavigate } from 'react-router-dom';
 import {NavbarDynamic} from '../components/NavbarDynamic.js';
@@ -100,10 +100,10 @@ console.log(pedido);
     }
 
     return(
-        <>
-        <NavbarDynamic/>
+        <div className="text-center">
        {/*Aqui seleciona o tipo de espaco que quer mostrar.*/}
-        <h1>Espaços disponíveis </h1>
+        <h1 className = "text-center p-4 text-6xl font-bold">Espaços</h1>
+
 
          <div onChange={handleTipo}>
              <input type="radio" value="disponiveis" name="espacos" checked={("disponiveis"===tipo) ? "checked" : ""} /> Todos
@@ -136,12 +136,10 @@ console.log(pedido);
 
         {espacos?.length > 0
         ? (
-        <div className="container">
-          <ul>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 place-content-center">
           {espacos.map((espaco) => (
-            <li><Link to ={"/espacos/" + espaco.idEspaco}><EspacoDisplay nome = {espaco.nome} localidade = {espaco.Nome} desporto = {espaco.nomeDesporto} rua = {espaco.rua} contacto = {espaco.contacto} numeroMesas={espaco.numeroMesas} /></Link></li>
+            <Link to ={"/espacos/" + espaco.idEspaco}><EspacoCard nome = {espaco.nome} rua = {espaco.rua} contacto = {espaco.contacto}/></Link>
           ))}
-          </ul>
         </div>
         )
         : (
@@ -154,6 +152,6 @@ console.log(pedido);
         <button onClick ={handleRegisto}>Registe aqui o seu espaço</button>
      </footer>
 
-        </>
+        </div>
     )
 }
