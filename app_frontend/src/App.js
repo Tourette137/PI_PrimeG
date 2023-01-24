@@ -20,6 +20,9 @@ import {PerfilFavoritos} from './pages/PerfilFavoritos.js';
 import {PerfilHistorico} from './pages/PerfilHistorico.js';
 import {PerfilHistoricoJogos} from './pages/PerfilHistoricoJogos.js';
 import {PerfilNotificacoes} from './pages/PerfilNotificacoes.js';
+import {LocalidadesFavoritas} from './pages/LocalidadesFavoritas.js';
+import {DesportosFavoritos} from './pages/DesportosFavoritos.js';
+
 
 import {NavbarDynamic} from './components/NavbarDynamic.js';
 
@@ -56,6 +59,8 @@ function App() {
                 <Route element = {<PerfilHistorico/>} path="/perfil/historico" exact/>
                 <Route element = {<PerfilHistoricoJogos/>} path="/perfil/historicoJogos" exact/>
                 <Route element = {<PerfilNotificacoes/>} path="/perfil/notificacoes" exact/>
+                <Route element = {<LocalidadesFavoritas/>} path="/perfil/localidadesFavoritas" exact/>
+                <Route element = {<DesportosFavoritos/>} path="/perfil/desportosFavoritos" exact/>
                 <Route element = {<RegistoTorneio/>} path="/torneios/registo" exact/>
                 <Route element = {<RegistoEspaco/>} path="/espacos/registo" exact/>
           </Route>

@@ -38,6 +38,31 @@ router.get("/", (req, res) => {
     })
 })
 
+//Imprimir todas as localidades
+router.get("/allLocalidades", (req, res) => {
+    let sql = "Select idLocalidade, Nome from Localidade;"
+    data.query(sql)
+        .then(re => { res.send(re) })
+        .catch(e => { res.status(500).jsonp({ error: e }) })
+})
+
+//Imprimir todas as localidades favoritas
+router.get("/localidadesFav", isAuth, (req, res) => {
+    let sql = `Select L.Nome from Localidade as L
+                JOIN localFav as LF on LF.Localidade_idLocalidade = L.idLocalidade
+                WHERE LF.Utilizador_idUtilizador = ${req.userId};`
+    data.query(sql)
+        .then(re => { res.send(re) })
+        .catch(e => { res.status(500).jsonp({ error: e }) })
+})
+
+//Imprimir todos os desportos
+router.get("/allDesportos", (req, res) => {
+    let sql = "Select idDesporto, nomeDesporto from Desporto;"
+    data.query(sql)
+        .then(re => { res.send(re) })
+        .catch(e => { res.status(500).jsonp({ error: e }) })
+})
 
 //Registo de um utilizador 
 router.post("/registo", upload.single('fotoPerfil'), (req, res) => {

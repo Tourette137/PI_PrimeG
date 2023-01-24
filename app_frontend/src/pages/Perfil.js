@@ -146,6 +146,8 @@ export function Perfil() {
 
 
             <div className="butoesAcceptBack gridButtons container" style={{ margin: "0 0 30px 0" }}>
+                <button className="buttonBlack"><Link to="/perfil/localidadesFavoritas">Localidades Favoritas</Link></button>
+                <button className="buttonBlack"><Link to="/perfil/desportosFavoritos">Desportos Favoritos</Link></button>
                 <button className="buttonBlack"><Link to="/perfil/inscrito">Torneios Inscrito</Link></button>
                 <button className="buttonBlack"><Link to="/perfil/favoritos">Torneios Favoritos</Link></button>
                 <button className="buttonBlack"><Link to="/perfil/historico">Historico Torneios</Link></button>

@@ -1,6 +1,6 @@
 import {useState,useEffect} from 'react';
 import {useParams,useNavigate,useLocation} from 'react-router-dom'
-import {NavbarDynamic} from './NavbarDynamic.js';
+import {NavbarDynamic} from '../components/NavbarDynamic.js';
 import {Calendario} from './Calendario.js'
 import {GestJogos} from './GestJogos.js'
 import {GestTorneio} from './GestTorneio.js';
