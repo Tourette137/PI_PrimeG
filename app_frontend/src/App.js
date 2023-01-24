@@ -24,6 +24,9 @@ import {PerfilFavoritos} from './pages/PerfilFavoritos.js';
 import {PerfilHistorico} from './pages/PerfilHistorico.js';
 import {PerfilHistoricoJogos} from './pages/PerfilHistoricoJogos.js';
 import {PerfilNotificacoes} from './pages/PerfilNotificacoes.js';
+import {LocalidadesFavoritas} from './pages/LocalidadesFavoritas.js';
+import {DesportosFavoritos} from './pages/DesportosFavoritos.js';
+
 
 import {NavbarDynamic} from './components/NavbarDynamic.js';
 

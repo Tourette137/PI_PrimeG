@@ -1,0 +1,77 @@
+.login-info-form {
+    padding-top: 180px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+}
+.login-info-form h1 {
+    font-size: 55px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+.login-info-form .campoDados {
+    display: inline-block;
+    padding: 40px 0px 10px 0px;
+}
+.login-info-form input {
+    font-size: 16px;
+    width: 350px;
+    padding: 5px 10px;
+    margin-bottom: 10px;
+    border: 1px solid gray;
+    border-radius: 4px;
+}
+.login-info-form .registerLink {
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: none;
+    padding-bottom: 0.1rem;
+    position: relative;
+    cursor: pointer;
+}
+.login-info-form .registerLink::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 2px;
+    background-color: black;
+    transition: 0.25s ease-out;
+}
+.login-info-form .registerLink:hover::before {
+    width: 100%;
+}
+.paragensFavoritas {
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+}
+.paragensFavoritas hr {
+    position: relative;
+    width: 100%;
+    border-width: 3px;
+    color: grey;
+}
+.paragensFavoritas h3 {
+    font-size: 16;
+    margin: -10px 0px;
+}
+.paragensFavoritas .informacaoParagem {
+    display: inline-block;
+}
+.paragensFavoritas .informacaoParagem .deleteButton {
+    width: 25px;
+    height: 25px;
+    padding: 5px 5px 5px 5px;
+    margin-top: -2px;
+    margin-left: 5px;
+    text-decoration: none;
+}
+.paragensFavoritas img {
+    align-content: center;
+    align-items: center;
+}

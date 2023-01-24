@@ -68,6 +68,3 @@ select * from torneio_has_equipa;
 select * from utilizador;
 select * from equipa_has_utilizador;
 select * from DesportosFav;
-
-
-
