@@ -1,0 +1,111 @@
+/*.radio-list{
+    display: flex;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    overflow: hidden;
+    border-radius: 10px;
+}
+.radio-item{
+    display: flex;
+    margin-right: 20px;
+    justify-content: center;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    font-size: 1.4rem;
+    cursor: pointer;
+    background-color: orange;
+    transition: background-color 0.5s;
+    border-radius: 10px;
+}
+
+.radio-item:hover{
+    background-color: orangered;
+}
+
+input[type="radio"] {
+    left: -999em;
+    position: absolute;
+}*/
+
+.viagem-form {
+    scale: 0.8;
+    display: block;
+    text-align: center;
+    width: 80%;
+    margin-left:10%;
+}
+.viagem-form h2 {
+    font-size: 25px;
+    font-weight: 700;
+}
+.viagem-form form {
+    padding-top: 20px;
+}
+.viagem-form input[type="radio"] {
+    display: none;
+}
+.viagem-form label {
+    position: relative;
+    color: var(--title-color);;
+    font-size: 20px;
+    border: 2px solid var(--title-color);
+    border-radius: 5px;
+    padding: 10px 10px;
+    display: flex;
+    cursor: pointer;
+    margin-bottom: 20px;
+    background: transparent;
+}
+.viagem-form label:before {
+    content: "";
+    height: 25px;
+    width: 25px;
+    border: 3px solid var(--title-color);
+    border-radius: 50%;
+    align-items: center;
+    margin-right: 20px;
+    margin-top: 2px;
+}
+.viagem-form input[type="radio"]:checked + label {
+    background: linear-gradient(90deg, #ff5500, #f8b028);
+    color: white;
+    transition: background-color .7s ease;
+    transition: color .7s ease;
+    border: 2px solid;
+    border-image: linear-gradient(90deg, #ff5500, #f8b028) 16px;
+}
+.viagem-form input[type="radio"]:checked + label:before {
+    height: 25px;
+    width: 25px;
+    border: 8px solid white;
+    background: linear-gradient(90deg, #ff5500, #f8b028);
+    transition: border .3s ease-in;
+}
+
+@media screen and (max-width: 1100px) {
+    .viagem-form {
+        width: 90%;
+        margin-left: 5%;
+    }
+}
+
+@media screen and (max-width: 950px) {
+    .viagem-form {
+        width: 96%;
+        margin-left: 2%;
+    }
+}
+
+@media screen and (max-width: 850px) {
+
+    .w3-quarter {
+        width: 50%;
+    }
+
+    .viagem-form {
+        width: 100%;
+        margin-left: 0%;
+    }
+    
+}

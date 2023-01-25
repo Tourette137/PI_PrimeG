@@ -1,45 +1,55 @@
 import React from 'react'
+import Card from 'react-bootstrap/Card';
+import {
+    MDBCard,
+    MDBCardBody,
+    MDBCardTitle,
+    MDBCardText,
+    MDBCardImage,
+    MDBBtn
+  } from 'mdb-react-ui-kit';
+import '../components/containerTorneios.css'
 
 const TorneioDisplay = ({torneio}) => {
     return (
-        <div className="torneio">
-            <div>
+        <div className="torneioDisplay">
+            <div className='nome'>
             <p>Nome: {torneio.nomeTorneio}</p>
             </div>
 
-            <div>
-            {torneio.isFederado ?
-                (<p>Tipo: Federado</p>)
-            :   (<p>Tipo: Amador</p>) 
-            }
-            </div>
-
-            <div>
+            <div className='data'>
                 <p>Data: {torneio.dataTorneio}</p>
             </div>
 
-            <div>
-                <p>Escalão: {torneio.escalao}</p>
-            </div>
-
-            <div>
-                <p>Tipo do Torneio: {torneio.nometipoTorneio}</p>
-            </div>
-
-            <div>
+            <div className='desporto'>
                 <p>Desporto: {torneio.nomeDesporto}</p>
             </div>
 
-            <div>
-                <p>Localidade: {torneio.Nome}</p>
+            <div className='escalao'>
+                <p>Escalão: {torneio.escalao}</p>
             </div>
 
-            <div>
+            <div className='localidade'>
+                <p>Localidade: {torneio.Nome}</p>
+            </div>
+            
+            <div className='federado'>
+            {torneio.isFederado ?
+                (<p> Federado </p>)
+            :   (<p> Amador </p>) 
+            }
+            </div>
+
+            <div className='tipoTorneio'>
+                <p>Tipo do Torneio: {torneio.nometipoTorneio}</p>
+            </div>
+
+            <div className='elementos'>
                 <p>Elementos por equipa: {torneio.tamEquipa}</p>
             </div>
 
         </div>
-    )
+    );
 }
 
 export default TorneioDisplay;

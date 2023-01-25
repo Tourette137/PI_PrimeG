@@ -4,6 +4,9 @@ import TorneioDisplay from "./TorneioDisplay.jsx";
 import {Link,Route,Routes} from 'react-router-dom';
 import {useNavigate } from 'react-router-dom';
 import {NavbarDynamic} from '../components/NavbarDynamic.js';
+import '../components/RadioForm.css';
+import '../components/selectForm.css';
+import '../components/containerTorneios.css';
 
 const API_URL="http://localhost:3000"
 export function Torneios() {
@@ -111,52 +114,79 @@ export function Torneios() {
         navigate("/torneios/registo")
     }
 
+
     return(
         <>
         <NavbarDynamic/>
        {/*Aqui seleciona o tipo de torneio que quer mostrar.*/}
-        <h1>Torneios disponíveis </h1>
-
-        <div onChange={handleTipo}>
-            <input type="radio" value="disponiveis" name="torneios" checked={("disponiveis"===tipo) ? "checked" : ""} /> Disponíves
-            <input type="radio" value="emBreve" name="torneios" checked={("emBreve"===tipo) ? "checked" : ""}/> Em Breve
-            <input type="radio" value="aDecorrer" name="torneios" checked={("aDecorrer"===tipo) ? "checked" : ""}/> A Decorrer
-            <input type="radio" value="encerrados" name="torneios" checked={("encerrados"===tipo) ? "checked" : ""}/> Encerrados
+        <div className='titulo'> 
+          <h1>Torneios</h1>
         </div>
-        <br/>
-        <br/>
+          <div className="viagem-form w3-mobile radio-list" onChange={handleTipo}>
+              <form>
+                <div className="w3-row-padding w3-mobile">
+                  <div className = "w3-quarter w3-center w3-mobile radio-item"> 
+                    <input type="radio" id="disponiveis" value="disponiveis" name="torneios" checked={("disponiveis"===tipo) ? "checked" : ""}/>
+                    <label for="disponiveis" style={{justifyContent:"center"}}>Disponiveis</label><br/>  
+                  </div>
 
-        <form>
-        <label>Localidade: </label>
-            <select onChange={handleLocalidade}>
-                <option defaultValue="Todas">Todas</option>
-                {localidades.map((localidade) => (
-                    <option value ={localidade.idLocalidade}>{localidade.Nome}</option>
-                ))}
-            </select>
-            <br/>
-            <br/>
-        <label>Desporto: </label>
-            <select onChange={handleDesporto}>
-                <option defaultValue="Todos">Todos</option>
-                {desportos.map((desporto) => (
-                    <option value ={desporto.idDesporto}>{desporto.nomeDesporto}</option>
-                ))}
-            </select>
-            <br/>
-            <br/>
-            <label>Federado: </label>
-            <select onChange={handleFederado}>
-                <option defaultValue="Indiferente">Indiferente</option>
-                <option value="1">Sim</option>
-                <option value="0">Não</option>
-            </select>
-        </form>
+                  <div className = "w3-quarter w3-center w3-mobile radio-item"> 
+                    <input type="radio" id="emBreve" value="emBreve" name="torneios" checked={("emBreve"===tipo) ? "checked" : ""}/>
+                    <label for="emBreve" style={{justifyContent:"center"}}>Em Breve</label><br/>  
+                  </div>
+                  
+                  <div className = "w3-quarter w3-center w3-mobile radio-item">
+                    <input type="radio" id="aDecorrer" value="aDecorrer" name="torneios" checked={("aDecorrer"===tipo) ? "checked" : ""}/>
+                    <label for="aDecorrer" style={{justifyContent:"center"}}>Decorrer</label><br/>  
+                  </div>
+                  
+                  <div className = "w3-quarter w3-center w3-mobile radio-item">
+                    <input type="radio" id="encerrados" value="encerrados" name="torneios" checked={("encerrados"===tipo) ? "checked" : ""}/>
+                    <label for="encerrados" style={{justifyContent:"center"}}>Encerrados</label><br/>  
+                  </div>
+                </div>
+              </form>
 
+          </div>
+
+        <div className='filtros'>
+          <form>
+          <label className='label'>Localidade: </label>
+            <div className = "select">
+              <select onChange={handleLocalidade}>
+                  <option defaultValue="Todas">Indiferente</option>
+                  {localidades.map((localidade) => (
+                      <option value ={localidade.idLocalidade}>{localidade.Nome}</option>
+                  ))}
+              </select>
+            </div>
+          <label className='label'>Desporto: </label>
+            <div className = "select">
+              <select onChange={handleDesporto}>
+                  <option defaultValue="Todos">Indiferente</option>
+                  {desportos.map((desporto) => (
+                      <option value ={desporto.idDesporto}>{desporto.nomeDesporto}</option>
+                  ))}
+              </select>
+            </div>
+          <label className='label'>Federado: </label>
+            <div className = "select">
+              <select onChange={handleFederado}>
+                  <option defaultValue="Indiferente">Indiferente</option>
+                  <option value="1">Sim</option>
+                  <option value="0">Não</option>
+              </select>
+            </div>
+          </form>
+        </div>
+        
+        <div className='botaoregisto'> 
+          <button onClick ={handleRegisto}>Registe aqui o seu torneio</button>
+        </div>
         
         {torneios?.length > 0 
         ? (
-        <div className="container">
+        <div className="containerTorneios">
           <ul>
           {torneios.map((torneio) => (
             <li><Link to={"/torneios/" + torneio.idTorneio}><TorneioDisplay torneio = {torneio}/></Link></li>
@@ -170,9 +200,7 @@ export function Torneios() {
         </div>
      )}
 
-     <footer> 
-          <button onClick ={handleRegisto}>Registe aqui o seu torneio</button>
-     </footer>
+    
 
         </>
     )
