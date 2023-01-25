@@ -1,13 +1,4 @@
 import React from 'react'
-import Card from 'react-bootstrap/Card';
-import {
-    MDBCard,
-    MDBCardBody,
-    MDBCardTitle,
-    MDBCardText,
-    MDBCardImage,
-    MDBBtn
-  } from 'mdb-react-ui-kit';
 import '../components/containerTorneios.css'
 
 const TorneioDisplay = ({torneio}) => {
@@ -32,11 +23,11 @@ const TorneioDisplay = ({torneio}) => {
             <div className='localidade'>
                 <p>Localidade: {torneio.Nome}</p>
             </div>
-            
+
             <div className='federado'>
             {torneio.isFederado ?
                 (<p> Federado </p>)
-            :   (<p> Amador </p>) 
+            :   (<p> Amador </p>)
             }
             </div>
 

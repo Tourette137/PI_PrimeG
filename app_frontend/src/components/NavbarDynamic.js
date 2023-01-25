@@ -21,6 +21,7 @@ export function NavbarDynamic() {
         </li>
 
     return(
+      <div className="mb-16">
         <header className="header">
             <nav className="nav container">
                 <Link to="/" className="nav__logo">
@@ -93,5 +94,6 @@ export function NavbarDynamic() {
 
             </nav>
         </header>
+      </div>
     )
 }

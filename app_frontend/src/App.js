@@ -2,8 +2,6 @@ import {Link,Route,Routes} from 'react-router-dom';
 import PrivateRoutes from './utils/PrivateRoutes'
 import {QueryClientProvider} from '@tanstack/react-query'
 import queryClient from './requests'
-import {LocalidadesFavoritas} from './pages/LocalidadesFavoritas.js';
-import {DesportosFavoritos} from './pages/DesportosFavoritos.js';
 
 import {Torneios} from './pages/Torneios.js';
 import {Gestao} from './pages/Gestao.js';
