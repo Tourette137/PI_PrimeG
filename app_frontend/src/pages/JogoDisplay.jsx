@@ -1,5 +1,6 @@
 import React from 'react'
 import {useState,useEffect} from 'react';
+import JogoCard from "../components/JogoCard.js";
 
 const JogoDisplay = ({jogo}) => {
     const API_URL="http://localhost:3000/equipa"
@@ -60,7 +61,7 @@ const JogoDisplay = ({jogo}) => {
                 resultadofinal += aux2[1];
                 resultadofinal += " ";
                 resultadofinal += nomeEquipa2;
-            }     
+            }
         });
     }
     else {
@@ -70,7 +71,7 @@ const JogoDisplay = ({jogo}) => {
         resultadofinal += " ";
         resultadofinal += nomeEquipa2;}
 
-    
+
     let isGroup = ""
     if(jogo.Grupo_idGrupo===null || typeof jogo.Grupo_idGrupo === undefined){
         isGroup = false;
@@ -79,25 +80,7 @@ const JogoDisplay = ({jogo}) => {
         isGroup = true;
     }
     return (
-        <div className="jogo">
-            <div>
-            {isGroup 
-                ? <p>Grupo: {jogo.numeroGrupo}</p>
-                : <p>Eliminatória: {jogo.nomeEtapa}</p>
-            }
-            </div>
-            <div>
-            <p>Número Campo: {jogo.numeroCampo}</p>
-            </div>
-
-            <div>
-                <p>Data: {jogo.hora}</p>
-            </div>
-
-            <div>
-                <p>Resultado: {resultadofinal}</p>
-            </div>
-        </div>
+        <JogoCard jogo = {jogo} isGroup = {isGroup} nomeEquipa1 = {nomeEquipa1} nomeEquipa2 = {nomeEquipa2}/>
     )
 }
 

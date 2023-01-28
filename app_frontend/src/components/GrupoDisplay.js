@@ -6,29 +6,29 @@ const GrupoDisplay = ({grupo}) => {
           <div class="container px-4 mx-auto">
             <div class="pt-6 bg-white overflow-hidden border border-coolGray-100 rounded-md shadow-dashboard">
               <h2 class="px-6 mb-4 text-lg text-coolGray-900 font-semibold">Grupo {grupo.numeroGrupo}</h2>
-              <div class="px-6 overflow-x-auto">
+              <div class="px-6 pb-6">
                 <table class="w-full">
                   <tbody>
                     <tr class="whitespace-nowrap h-11 bg-gray-100 bg-opacity-80">
-                    <th class="px-4 font-semibold text-xs text-coolGray-500 uppercase text-left rounded-l-md">
+                    <th class="px-4 font-semibold text-xs text-orange-500 uppercase text-left rounded-l-md">
                       <p>Equipa</p>
                     </th>
-                    <th class="whitespace-nowrap px-4 font-semibold text-xs text-coolGray-500 uppercase text-center">P</th>
-                    <th class="whitespace-nowrap px-4 font-semibold text-xs text-coolGray-500 uppercase text-center">V</th>
-                    <th class="whitespace-nowrap px-4 font-semibold text-xs text-coolGray-500 uppercase text-center">D</th>
+                    <th class="whitespace-nowrap px-4 font-semibold text-xs text-orange-500 uppercase text-center">P</th>
+                    <th class="whitespace-nowrap px-4 font-semibold text-xs text-orange-500 uppercase text-center">V</th>
+                    <th class="whitespace-nowrap px-4 font-semibold text-xs text-orange-500 uppercase text-center">D</th>
                     {grupo.tipoClassificacao == 1
                       ? (
                         <>
-                        <th class="whitespace-nowrap px-4 font-semibold text-xs text-coolGray-500 uppercase text-center">E</th>
-                        <th class="whitespace-nowrap px-4 font-semibold text-xs text-coolGray-500 uppercase text-center">GM</th>
-                        <th class="whitespace-nowrap px-4 font-semibold text-xs text-coolGray-500 uppercase text-center">GS</th>
+                        <th class="whitespace-nowrap px-4 font-semibold text-xs text-orange-500 uppercase text-center">E</th>
+                        <th class="whitespace-nowrap px-4 font-semibold text-xs text-orange-500 uppercase text-center">GM</th>
+                        <th class="whitespace-nowrap px-4 font-semibold text-xs text-orange-500 uppercase text-center">GS</th>
                         </>
                       ) : (
                         <>
-                        <th class="whitespace-nowrap px-4 font-semibold text-xs text-coolGray-500 uppercase text-center">sG</th>
-                        <th class="whitespace-nowrap px-4 font-semibold text-xs text-coolGray-500 uppercase text-center">sP</th>
-                        <th class="whitespace-nowrap px-4 font-semibold text-xs text-coolGray-500 uppercase text-center">pG</th>
-                        <th class="whitespace-nowrap px-4 font-semibold text-xs text-coolGray-500 uppercase text-center">pP</th>
+                        <th class="whitespace-nowrap px-4 font-semibold text-xs text-orange-500 uppercase text-center">sG</th>
+                        <th class="whitespace-nowrap px-4 font-semibold text-xs text-orange-500 uppercase text-center">sP</th>
+                        <th class="whitespace-nowrap px-4 font-semibold text-xs text-orange-500 uppercase text-center">pG</th>
+                        <th class="whitespace-nowrap px-4 font-semibold text-xs text-orange-500 uppercase text-center">pP</th>
                         </>
                       )
                     }

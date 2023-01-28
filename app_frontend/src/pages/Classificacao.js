@@ -48,15 +48,13 @@ export function Classificacao() {
 
     return(
         <>
-        <h1>Classificação:</h1>
-
-        <br/>
+        <div className='titulo'>
+          <h1>Classificacao</h1>
+        </div>
 
         {classificacaoGrupo?.length > 0
         ? (
         <div className="grupos">
-          <h1> Fase de Grupos: </h1>
-          <br/>
           <ul>
           {classificacaoGrupo.map((grupo) => (
             <li><GrupoDisplay grupo = {grupo}/></li>

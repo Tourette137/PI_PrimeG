@@ -2,9 +2,11 @@
 
 import {useParams} from 'react-router-dom'
 import {useState,useEffect} from 'react';
-import TorneioDisplay from '../components/TorneioCard.js';
+//import TorneioDisplay from '../components/TorneioCard.js';
+import TorneioDisplay from './TorneioDisplay.jsx';
 import InscritosDisplay from "../components/ListaInscritos.js";
 import {Link} from 'react-router-dom';
+import CalendarioDisplay from "../components/CalendarioDisplay.js";
 
 const API_URL="http://localhost:3000"
 
@@ -15,6 +17,24 @@ export function Torneio() {
     const [tipoTorneio,setTipoTorneio] = useState();
     const [inscritos,setInscritos] = useState([]);
     const [apurados,setApurados] = useState([]);
+    const [calendarioGrupos,setCalendarioGrupos] = useState([]);
+    const [calendarioElim,setCalendarioElim] = useState([]);
+    const [loading1,setLoading1] = useState(false);
+    const [loading2,setLoading2] = useState(false);
+    const [jogos,setJogos] = useState([]);
+
+    const searchJogos = async () => {
+        let pedido = API_URL + "/torneios/" + id + "/jogosPorComecar";
+
+        const response = await fetch (pedido);
+        if (response.status === 200) {
+            const data = await response.json();
+            setJogos(data);
+        }
+        else {
+          setJogos([]);
+        }
+    }
 
     const searchInscritos = async () => {
       const response = await fetch (`${API_URL}/torneios/${id}/inscritos`);
@@ -25,6 +45,7 @@ export function Torneio() {
       else {
           setInscritos([]);
       }
+      setLoading2(false);
     }
 
     const searchApurados = async () => {
@@ -37,6 +58,30 @@ export function Torneio() {
       else {
           setApurados([]);
       }
+    }
+
+    const searchCalendarioGrupos = async () => {
+        const response = await fetch (`${API_URL}/torneios/${id}/calendario/grupos`);
+        if (response.status === 200) {
+            const data = await response.json();
+            setCalendarioGrupos(data);
+            console.log(data);
+        }
+        else {
+            setCalendarioGrupos([]);
+        }
+    }
+
+    const searchCalendarioElim = async () => {
+        const response = await fetch (`${API_URL}/torneios/${id}/calendario/eliminatorias`);
+        if (response.status === 200) {
+            const data = await response.json();
+            setCalendarioElim(data);
+            console.log(data);
+        }
+        else {
+            setCalendarioElim([]);
+        }
     }
 
     // Vai à API buscar a informação do torneio para dar display na página principal
@@ -68,19 +113,30 @@ export function Torneio() {
         else {
             setTorneio([]);
         }
-      }
+        setLoading1(false);
+    }
       console.log(gestao)
 
     //Search inicial do torneio
     useEffect(() => {
-        searchTorneio();
-        searchInscritos();
-        searchApurados();
+      setLoading1(true);
+      setLoading2(true);
+      searchTorneio();
+      searchInscritos();
+      searchApurados();
+      searchCalendarioGrupos();
+      searchCalendarioElim();
+      searchJogos();
     },[])
+
+    if(loading1 || loading2)
+      return (<div>LOADING!!!</div>)
 
     return(
         <>
-            <h1>Página do torneio {id}</h1>
+            <div className='titulo'>
+              <h1>{torneio.nomeTorneio}</h1>
+            </div>
 
             <li><Link to={`/${id}/jogos`}
                  state={{ tipoTorneio : tipoTorneio }}>Jogos</Link></li>
@@ -97,8 +153,15 @@ export function Torneio() {
             }
         {torneio !== ""
         ? (<div className = "Torneio">
-            <TorneioDisplay torneio = {torneio}/>
-            <InscritosDisplay inscritos = {inscritos} titulo = "Inscritos"/>
+            {calendarioGrupos?.length > 0
+            ? (
+              <TorneioDisplay torneio = {torneio} inscritos = {inscritos} calendario={calendarioGrupos.splice(0,5)} tipo = "1" jogos = {jogos}/>
+              )
+            : (<TorneioDisplay torneio = {torneio} inscritos = {inscritos} calendario={calendarioElim.splice(0,5)} tipo = "2" jogos = {jogos}/>
+            )
+            }
+
+
 
             {apurados?.length > 0
             ? (

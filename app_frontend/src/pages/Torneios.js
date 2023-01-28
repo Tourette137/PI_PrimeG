@@ -1,6 +1,7 @@
 //Página que lista todo o tipo de torneios com os filtros adequados.
 import {useState,useEffect} from 'react';
-import TorneioDisplay from "./TorneioDisplay.jsx";
+//import TorneioDisplay from "./TorneioDisplay.jsx";
+import TorneioDisplay from "../components/TorneioCard.js";
 import {Link,Route,Routes} from 'react-router-dom';
 import {useNavigate } from 'react-router-dom';
 import {NavbarDynamic} from '../components/NavbarDynamic.js';
@@ -15,7 +16,7 @@ export function Torneios() {
     const [localidade,setLocalidade] = useState("");
     const [desporto,setDesporto] = useState("");
     const [torneios,setTorneios] = useState([]);
-    
+
     const [tipo,setTipo] = useState("disponiveis");
     const [localidades,setLocalidades] = useState([]);
     const [desportos,setDesportos] = useState([]);
@@ -39,7 +40,7 @@ export function Torneios() {
               pedido += `?desporto=${desporto}`;
             }
           }
-        } 
+        }
         const response = await fetch(pedido);
         if (response.status === 200) {
             const data = await response.json();
@@ -119,37 +120,37 @@ export function Torneios() {
         <>
         <NavbarDynamic/>
        {/*Aqui seleciona o tipo de torneio que quer mostrar.*/}
-        <div className='titulo'> 
+        <div className='titulo'>
           <h1>Torneios</h1>
         </div>
           <div className="viagem-form w3-mobile radio-list" onChange={handleTipo}>
               <form>
                 <div className="w3-row-padding w3-mobile">
-                  <div className = "w3-quarter w3-center w3-mobile radio-item"> 
+                  <div className = "w3-quarter w3-center w3-mobile radio-item">
                     <input type="radio" id="disponiveis" value="disponiveis" name="torneios" checked={("disponiveis"===tipo) ? "checked" : ""}/>
-                    <label for="disponiveis" style={{justifyContent:"center"}}>Disponiveis</label><br/>  
+                    <label for="disponiveis" style={{justifyContent:"center"}}>Disponiveis</label><br/>
                   </div>
 
-                  <div className = "w3-quarter w3-center w3-mobile radio-item"> 
+                  <div className = "w3-quarter w3-center w3-mobile radio-item">
                     <input type="radio" id="emBreve" value="emBreve" name="torneios" checked={("emBreve"===tipo) ? "checked" : ""}/>
-                    <label for="emBreve" style={{justifyContent:"center"}}>Em Breve</label><br/>  
+                    <label for="emBreve" style={{justifyContent:"center"}}>Em Breve</label><br/>
                   </div>
-                  
+
                   <div className = "w3-quarter w3-center w3-mobile radio-item">
                     <input type="radio" id="aDecorrer" value="aDecorrer" name="torneios" checked={("aDecorrer"===tipo) ? "checked" : ""}/>
-                    <label for="aDecorrer" style={{justifyContent:"center"}}>Decorrer</label><br/>  
+                    <label for="aDecorrer" style={{justifyContent:"center"}}>Decorrer</label><br/>
                   </div>
-                  
+
                   <div className = "w3-quarter w3-center w3-mobile radio-item">
                     <input type="radio" id="encerrados" value="encerrados" name="torneios" checked={("encerrados"===tipo) ? "checked" : ""}/>
-                    <label for="encerrados" style={{justifyContent:"center"}}>Encerrados</label><br/>  
+                    <label for="encerrados" style={{justifyContent:"center"}}>Encerrados</label><br/>
                   </div>
                 </div>
               </form>
 
           </div>
-
-        <div className='filtros'>
+        <div className="flex flex-wrap w-full">
+        <div className='filtros lg:w-1/3 mx-auto'>
           <form>
           <label className='label'>Localidade: </label>
             <div className = "select">
@@ -178,29 +179,28 @@ export function Torneios() {
               </select>
             </div>
           </form>
+          <div className='botaoregisto bg-white hover:bg-gray-200'>
+            <button className="p-4 bg-white text-xl border-2 border-black hover:bg-gray-200" onClick ={handleRegisto}>Registe aqui o seu torneio</button>
+          </div>
         </div>
-        
-        <div className='botaoregisto'> 
-          <button onClick ={handleRegisto}>Registe aqui o seu torneio</button>
-        </div>
-        
-        {torneios?.length > 0 
+
+
+        {torneios?.length > 0
         ? (
-        <div className="containerTorneios">
-          <ul>
-          {torneios.map((torneio) => (
-            <li><Link to={"/torneios/" + torneio.idTorneio}><TorneioDisplay torneio = {torneio}/></Link></li>
-          ))}
-          </ul>
+        <div className="flex flex-wrap place-content-center w-full lg:w-2/3">
+
+        {torneios.map((torneio) => (
+          <Link to={"/torneios/" + torneio.idTorneio}><TorneioDisplay torneio = {torneio}/></Link>
+        ))}
         </div>
-        ) 
+        )
         : (
         <div className="empty">
-            <h2>Não existem torneios!</h2>
+            <h2 className="text-4xl">Não existem torneios!</h2>
         </div>
      )}
+     </div>
 
-    
 
         </>
     )
