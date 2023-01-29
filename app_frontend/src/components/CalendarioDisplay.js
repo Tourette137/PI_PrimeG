@@ -1,6 +1,9 @@
 import React from 'react'
+import {useState,useEffect} from 'react';
 
 const CalendarioDisplay = ({calendario,tipo}) => {
+    const [showAll,setShowAll] = useState(5);
+
     return (
       <section class="bg-coolGray-50 py-4">
         <div class="container px-4 mx-auto">
@@ -8,30 +11,20 @@ const CalendarioDisplay = ({calendario,tipo}) => {
             <div class="flex flex-wrap items-center justify-between -m-2 mb-6">
               <div class="w-auto p-2">
                 <p class="font-semibold text-lg text-coolGray-900">
-                Schedule
+                Calendário
                 {tipo === "1"
                   ?
-                    (<p>Grupos </p>)
+                    " grupos"
                   :
-                    (<p>Eliminatórias</p>)
+                    " eliminatórias"
                 }
                 </p>
               </div>
-              <div class="w-auto p-2">
-                <div class="flex flex-wrap -m-2">
-                  <div class="w-auto p-2">
-                    <button class="px-3 py-1 text-xs font-medium text-darkCoolGray-500 bg-darkCoolGray-100 rounded-full">Today</button>
-                  </div>
-                  <div class="w-auto p-2">
-                    <button class="px-3 py-1 text-xs font-medium text-darkCoolGray-500 bg-transparent rounded-full">Tomorrow</button>
-                  </div>
-                </div>
-              </div>
+
             </div>
             <div class="flex flex-wrap -m-2">
 
-
-            {calendario.map((jogo) => (
+            {calendario.slice(0,showAll).map((jogo) => (
 
               <div class="w-full p-2">
 
@@ -70,9 +63,16 @@ const CalendarioDisplay = ({calendario,tipo}) => {
                 <div class="border-b border-coolGray-100"></div>
               </div>
 
-              ))}
+            ))}
+
               <div class="w-full p-2">
-                <button class="px-4 py-1 mt-1 font-medium text-sm text-coolGray-500 hover:text-coolGray-600 border border-coolGray-200 hover:border-coolGray-300 rounded-md shadow-button">See all schedules</button>
+              {showAll != 5
+              ? (
+                <button class="px-4 py-1 mt-1 font-medium text-sm text-coolGray-500 hover:text-coolGray-600 border border-coolGray-200 hover:border-coolGray-300 rounded-md shadow-button" onClick={evt => setShowAll(5)}>Hidde all schedules</button>
+              )
+              : (
+                <button class="px-4 py-1 mt-1 font-medium text-sm text-coolGray-500 hover:text-coolGray-600 border border-coolGray-200 hover:border-coolGray-300 rounded-md shadow-button" onClick={evt => setShowAll(calendario?.length)}>See all schedules</button>
+              )}
               </div>
             </div>
           </div>

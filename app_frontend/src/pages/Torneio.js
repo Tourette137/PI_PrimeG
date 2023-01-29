@@ -138,19 +138,6 @@ export function Torneio() {
               <h1>{torneio.nomeTorneio}</h1>
             </div>
 
-            <li><Link to={`/${id}/jogos`}
-                 state={{ tipoTorneio : tipoTorneio }}>Jogos</Link></li>
-            {torneio.terminado != -1 //a classificaçao é criada antes do torneio começar
-            ?
-            (<li><Link to={"/" + id + "/classificacao"}>Classificação</Link></li>)
-            : (null)
-            }
-            {gestao == 1
-            ?
-            <li><Link to={`/${id}/gestao`}
-                state={{tipoTorneio : tipoTorneio}}>Gestão</Link></li>
-            : (null)
-            }
         {torneio !== ""
         ? (<div className = "Torneio">
             {calendarioGrupos?.length > 0
@@ -161,16 +148,62 @@ export function Torneio() {
             )
             }
 
+            <section class="py-3">
+              <div class="container px-4 mx-auto">
+              <div class="flex flex-wrap my-6 -mx-3">
+
+              {apurados?.length > 0
+              ? (
+                <div class="w-full lg:w-1/2 px-3 mb-6 lg:mb-0">
+                  <div class="h-full p-6 bg-gray-100 rounded-xl">
+                      <InscritosDisplay inscritos = {apurados} titulo = "Apurados"/>
+                  </div>
+                </div>
+                )
+              : (null)
+              }
 
 
-            {apurados?.length > 0
-            ? (
-              <>
-              <InscritosDisplay inscritos = {apurados} titulo = "Apurados"/>
-              </>
-              )
-            : (null)
-            }
+                <div class="w-full lg:w-1/2 px-3">
+                  <div class="h-full px-6 pt-6 pb-8 bg-white rounded-xl">
+                    <div class="w-full mt-6 pb-4 overflow-x-auto">
+                    <section class="py-20 md:py-28 bg-white">
+                      <div class="container px-4 mx-auto">
+                        <div class="max-w-4xl mx-auto text-center">
+                          <h2 class="mb-4 text-3xl md:text-4xl font-heading font-bold">
+                          {gestao == 1
+                          ?
+                          "Gestão"
+                          : "Incrições"
+                          }
+                          </h2>
+
+                          {gestao == 1
+                          ?
+                          (<>
+                            <p class="mb-6 text-lg md:text-xl font-heading font-medium text-coolGray-500">Personalize o torneio a seu gosto!</p>
+                            <a class="inline-block py-3 px-7 w-full md:w-auto text-lg leading-7 text-green-50 bg-orange-500 hover:bg-orange-600 font-medium text-center focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50 border border-transparent rounded-md shadow-sm" href={`/${id}/gestao`}>-></a>
+                          </>)
+                          :
+                          (<>
+                            <p class="mb-6 text-lg md:text-xl font-heading font-medium text-coolGray-500">Increva-se neste torneio!</p>
+                            <a class="inline-block py-3 px-7 w-full md:w-auto text-lg leading-7 text-green-50 bg-orange-500 hover:bg-orange-600 font-medium text-center focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50 border border-transparent rounded-md shadow-sm" href={`/${id}/`}>Inscrever></a>
+                          </>)
+                          }
+                          </div>
+                      </div>
+                    </section>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+              </div>
+            </section>
+
+
+
+
           </div>
         )
         : (<div className="empty">

@@ -72,7 +72,7 @@ export function Jogos() {
         showOptions = true;
     }
     console.log(tipoTorneio);
-    // 
+    //
     // {showOptions
     //     ? <form>
     //         <label>Filtro: </label>
@@ -119,7 +119,7 @@ export function Jogos() {
                     </div>
                   </div>
                   <div class="h-1 w-full mb-4 rounded-full bg-blue-500"></div>
-                  <a class="w-full hover:bg-gray-700 transition duration-200" href="#">
+                  <a class="w-full hover:bg-gray-700 transition duration-200">
                   {(tipo === "jogosPorComecar"
                     ? ((jogos2.map((jogo) => (
                       <JogoDisplay jogo = {jogo}/>
@@ -159,7 +159,7 @@ export function Jogos() {
                     </div>
                   </div>
                   <div class="h-1 w-full mb-4 rounded-full bg-orange-500"></div>
-                  <a class="w-full hover:bg-gray-700 transition duration-200" href="#">
+                  <a class="w-full hover:bg-gray-700 transition duration-200">
                   {(tipo === "jogosEncerrados"
                     ? ((jogos3.map((jogo) => (
                       <JogoDisplay jogo = {jogo}/>
@@ -199,7 +199,7 @@ export function Jogos() {
                     </div>
                   </div>
                   <div class="h-1 w-full mb-4 rounded-full bg-green-500"></div>
-                  <a class="w-full hover:bg-gray-700 transition duration-200" href="#">
+                  <a class="w-full hover:bg-gray-700 transition duration-200">
                   {(tipo === "jogosaDecorrer"
                     ? ((jogos1.map((jogo) => (
                       <JogoDisplay jogo = {jogo}/>

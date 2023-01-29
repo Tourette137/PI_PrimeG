@@ -242,10 +242,10 @@ export function GestTorneio({ id,terminado,tipoTorneio, ...props }) {
                       <InscritosDisplay inscritos = {inscritos} titulo = "Inscritos"/>
                     </div>
                     <h2>Criar fase de grupos!</h2>
-                    <form onSubmit={handleGrupo}>
+                    <form className="bg-white border border-gray-200 w-min rounded-xl p-6 mx-auto" onSubmit={handleGrupo}>
                         <div>
-                            <label>Tamanho dos grupo: </label>
-                            <select value={groupSize} id="groupSize" name="GroupSize" onChange={e => setGroupSize(e.target.value)} required>
+                            <label className="text-black font-bold w-auto">Tamanho dos grupo: </label>
+                            <select className="w-auto relative py-2 pl-2 pr-6 cursor-pointer bg-transparent text-xs text-gray-500 font-semibold appearance-none outline-none" value={groupSize} id="groupSize" name="GroupSize" onChange={e => setGroupSize(e.target.value)} required>
                                 <option value="">Indique o tamanho de cada grupo</option>
                                 <option value="3">3</option>
                                 <option value="4">4</option>
@@ -253,8 +253,10 @@ export function GestTorneio({ id,terminado,tipoTorneio, ...props }) {
                                 <option value="6">6</option>
                             </select>
                             <br/>
-                            <label>Tipo Sorteio: </label>
-                            <select value={tipoSorteio} id="tipoSorteio" name="TipoSorteio" onChange={e => setTipoSorteio(e.target.value)} required>
+
+                              <label className="text-black font-bold w-auto">Novo sorteio </label>
+
+                                <select className="w-auto relative py-2 pl-2 pr-6 cursor-pointer bg-transparent text-xs text-gray-500 font-semibold appearance-none outline-none" value={tipoSorteio} id="tipoSorteio" name="TipoSorteio" onChange={e => setTipoSorteio(e.target.value)} required>
                                 <option value="">Indique o tipo de sorteio</option>
                                 <option value="0">Sorteio sem restrições</option>
                                 <option value="1">Sorteio com 1 cabeça de série</option>
@@ -288,28 +290,28 @@ export function GestTorneio({ id,terminado,tipoTorneio, ...props }) {
                     <InscritosDisplay inscritos = {apurados} titulo = "Apurados"/>
                   </div>
                   <div className="eliminatorias">
-                    <h1> Fase Eliminatória: </h1>
-                    <ElimDisplay className="" elim = {classificacaoElim} elimSize = {elimSize}/>
+                    <ElimDisplay className="" elim = {classificacaoElim} elimSize = {elimSize} tipo={1}/>
                   </div>
 
                   {(fecharSorteio === 0 || fecharSorteio === 2)
                   ? ( ((tipoTorneio === 2 || tipoTorneio > 4)
                       ? (
-                          <form onSubmit={handleSorteio}>
-                            <label>Tipo Sorteio: </label>
-                              <select value={tipoSorteio} id="tipoSorteio" name="TipoSorteio" onChange={e => setTipoSorteio(e.target.value)} required>
+                          <form className="bg-white border border-gray-200 w-min rounded-xl p-6 mx-auto" onSubmit={handleSorteio}>
+                            <label className="text-black font-bold w-auto">Novo sorteio </label>
+
+                              <select className="w-auto relative py-2 pl-2 pr-6 cursor-pointer bg-transparent text-xs text-gray-500 font-semibold appearance-none outline-none" value={tipoSorteio} id="tipoSorteio" name="TipoSorteio" onChange={e => setTipoSorteio(e.target.value)} required>
                                   <option value="">Indique o tipo de sorteio</option>
                                   <option value="1">Sorteio sem restrições</option>
                                   <option value="2">Separar 1º e 2º do grupo</option>
                                   <option value="3">Separar 1º e 2º do grupo e mesmo clube</option>
                               </select>
-                              <button>Sortear Eliminatorias</button>
+                              <button className="mt-4 bg-orange-500 p-2 text-white rounded-xl">Sortear Eliminatorias</button>
                           </form>
                       )
                       : (
-                        <form onSubmit={handleSorteio}>
-                          <label>Tipo Sorteio</label>
-                            <select value={tipoSorteio} id="tipoSorteio" name="TipoSorteio" onChange={e => setTipoSorteio(e.target.value)} required>
+                        <form  className="bg-white border border-gray-200 w-min rounded-xl p-6 mx-auto" onSubmit={handleSorteio}>
+                          <label className="text-black font-bold w-auto">Tipo Sorteio</label>
+                            <select className="w-auto relative py-2 pl-2 pr-6 cursor-pointer bg-transparent text-xs text-gray-500 font-semibold appearance-none outline-none" value={tipoSorteio} id="tipoSorteio" name="TipoSorteio" onChange={e => setTipoSorteio(e.target.value)} required>
                                 <option value="">Indique o tipo de sorteio</option>
                                 <option value="1">Sorteio sem restrições</option>
                                 <option value="2">Sorteio sem restrições + 2 por ranking</option>
@@ -322,7 +324,7 @@ export function GestTorneio({ id,terminado,tipoTorneio, ...props }) {
                                 <option value="9">8 por ranking + separar do mesmo clube</option>
                                 <option value="10">16 por ranking + separar do mesmo clube</option>
                             </select>
-                            <button className="p-2 text-black border-2 border-black hover:bg-black hover:text-white">Sortear Eliminatorias</button>
+                            <button cclassName="my-4 bg-orange-500 p-2 text-white rounded-xl">Sortear Eliminatorias</button>
                         </form>
                       )
                     )
@@ -333,7 +335,7 @@ export function GestTorneio({ id,terminado,tipoTorneio, ...props }) {
 
                   {fecharSorteio === 2
                     ?
-                      (<button className="p-2 text-black border-2 hover:bg-black hover:text-white" onClick={handleFecharSorteio}>Fechar Sorteio</button>)
+                      (<button className="p-2 bg-white rounded-xl mt-2 text-black border-2 border-black hover:bg-black hover:text-white" onClick={handleFecharSorteio}>Fechar Sorteio</button>)
                     :
                       (<></>)
                   }

@@ -52,9 +52,9 @@ const TorneioDisplay = ({torneio,inscritos,calendario,tipo,jogos}) => {
             <p class="text-xs font-semibold text-gray-500">
             {torneio.inscricoesAbertas === 1
             ? (
-              "Inscrições abertas"
+              `Inscrições abertas (${inscritos?.length})`
               )
-            : "Inscrições fechadas"
+            :   `Inscrições fechadas (${inscritos?.length})`
             }
             </p>
           </div>
@@ -156,10 +156,13 @@ const TorneioDisplay = ({torneio,inscritos,calendario,tipo,jogos}) => {
 
 
       <div class="w-full lg:w-1/3 px-3">
-        <div class="h-full p-6 bg-gray-100 rounded-xl">
+        <Link to={`/${torneio.idTorneio}/calendario`}>
+        <div class="h-full p-6 bg-gray-100 hover:bg-gray-200 rounded-xl">
           <CalendarioDisplay calendario = {calendario} tipo = {tipo}/>
         </div>
+        </Link>
       </div>
+
 
     </div>
 
@@ -176,35 +179,24 @@ const TorneioDisplay = ({torneio,inscritos,calendario,tipo,jogos}) => {
 
 
       <div class="w-full lg:w-1/2 px-3">
-        <div class="h-full px-6 pt-6 pb-8 bg-gray-100 rounded-xl">
-          <div class="flex flex-wrap -mx-4 -mb-4 justify-between items-center">
-            <div class="w-auto px-4 mb-4">
-              <h4 class="text-gray-400 font-bold tracking-wide">Gestão</h4>
-            </div>
-            <div class="w-auto px-4 mb-4">
-              <a class="inline-block p-1 text-gray-300 hover:text-gray-200" href="#">
-                <svg width="18" height="4" viewBox="0 0 18 4" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M2 3C2.55228 3 3 2.55228 3 2C3 1.44772 2.55228 1 2 1C1.44772 1 1 1.44772 1 2C1 2.55228 1.44772 3 2 3Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                  <path d="M9 3C9.55228 3 10 2.55228 10 2C10 1.44772 9.55228 1 9 1C8.44772 1 8 1.44772 8 2C8 2.55228 8.44772 3 9 3Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                  <path d="M16 3C16.5523 3 17 2.55228 17 2C17 1.44772 16.5523 1 16 1C15.4477 1 15 1.44772 15 2C15 2.55228 15.4477 3 16 3Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                </svg>
-              </a>
-            </div>
-          </div>
+        <Link to={`/${torneio.idTorneio}/classificacao`}>
+        <div class="h-full px-6 pt-6 pb-8 bg-white hover:bg-gray-100 rounded-xl">
           <div class="w-full mt-6 pb-4 overflow-x-auto">
-          <section class="py-20 md:py-28 bg-white">
+          <section class="py-20 md:py-28">
             <div class="container px-4 mx-auto">
               <div class="max-w-4xl mx-auto text-center">
                 <h2 class="mb-4 text-3xl md:text-4xl font-heading font-bold">Classificação</h2>
                 <p class="mb-6 text-lg md:text-xl font-heading font-medium text-coolGray-500">Siga aqui a classificação do torneio</p>
-                <a class="inline-block py-3 px-7 w-full md:w-auto text-lg leading-7 text-green-50 bg-orange-500 hover:bg-green-600 font-medium text-center focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 border border-transparent rounded-md shadow-sm" href="#">-></a>
               </div>
             </div>
           </section>
           </div>
         </div>
+        </Link>
       </div>
+
     </div>
+
   </div>
 </section>
 

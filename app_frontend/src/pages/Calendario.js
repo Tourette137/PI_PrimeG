@@ -1,6 +1,7 @@
 import {Link} from 'react-router-dom';
 import {useState, useEffect} from 'react';
 import CalendarioDisplay from "../components/CalendarioDisplay.js";
+import {useParams} from 'react-router-dom'
 
 const API_URL="http://localhost:3000"
 
@@ -8,7 +9,8 @@ export function Calendario(props) {
 
     const [calendarioGrupos,setCalendarioGrupos] = useState([]);
     const [calendarioElim,setCalendarioElim] = useState([]);
-    const id = props.id;
+
+    const {id} = useParams()
     const tipoTorneio = props.tipoTorneio;
 
     const searchCalendarioGrupos = async () => {
@@ -42,6 +44,9 @@ export function Calendario(props) {
 
     return(
         <>
+          <div className='titulo'>
+            <h1>Calendário</h1>
+          </div>
           <CalendarioDisplay calendario = {calendarioGrupos} tipo = "1"/>
           <CalendarioDisplay calendario = {calendarioElim} tipo = "2"/>
         </>
