@@ -68,7 +68,7 @@ const TorneioDisplay = ({torneio,inscritos,calendario,tipo,jogos}) => {
                 <h4 class="text-2xl text-gray-800 font-bold tracking-wide">{torneio.nomeDesporto}</h4>
               </div>
               <div class="w-auto p-2">
-                <div class="inline-flex px-2 h-7 items-center justify-center text-orange-100 bg-orange-900 rounded-full">
+                <div class="inline-flex px-2 h-7 items-center justify-center text-orange-100 bg-orange-500 rounded-full">
 
                   <span class="text-xs font-medium">{escalao}</span>
                 </div>

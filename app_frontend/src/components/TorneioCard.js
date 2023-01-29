@@ -1,6 +1,24 @@
 import React from 'react'
 
 const TorneioCard = ({torneio}) => {
+  const escalao = (torneio.escalao == 0) ? "Seniores" :
+                  (torneio.escalao == 1) ? "Sub-21" :
+                  (torneio.escalao == 2) ? "Sub-20" :
+                  (torneio.escalao == 3) ? "Sub-19" :
+                  (torneio.escalao == 4) ? "Sub-18" :
+                  (torneio.escalao == 5) ? "Sub-17" :
+                  (torneio.escalao == 6) ? "Sub-16" :
+                  (torneio.escalao == 7) ? "Sub-15" :
+                  (torneio.escalao == 8) ? "Sub-14" :
+                  (torneio.escalao == 9) ? "Sub-13" :
+                  (torneio.escalao == 10) ? "Sub-12" :
+                  (torneio.escalao == 11) ? "Sub-11" :
+                  (torneio.escalao == 12) ? "Sub-10" :
+                  (torneio.escalao == 13) ? "Sub-9" :
+                  (torneio.escalao == 14) ? "Sub-8" :
+                  (torneio.escalao == 15) ? "Sub-7" :
+                  (torneio.escalao == 16) ? "Sub-6" :
+                  "Sub-5"
     return (
       <div className= "w-full m-4">
         <div className="flex-wrap p-4 md:flex mx-auto hover:bg-gray-200 shadow-2xl shadow-gray-300 rounded-2xl md:h-[200px] md:w-[700px] w-[350px] h-[400px] bg-white">
@@ -11,10 +29,9 @@ const TorneioCard = ({torneio}) => {
                 />
             </div>
             <div className="w-[320px] md:w-[450px] md:h-[175px] h-[190px]  mt-4 md:mt-1 mx-auto text-left">
-                <h1 className="text-xl font-bold text-center">{torneio.nomeTorneio}</h1>
-                <div class="py-2 px-4 bg-orange-400 text-white w-min rounded-full uppercase">
-                  {torneio.nomeDesporto}
-                </div>
+                <h1 className="text-4xl font-bold text-center">{torneio.nomeTorneio}</h1>
+
+
                 <div class="w-auto p-2">
                   <div class="flex flex-wrap items-center">
                     <div class="w-auto mr-1">
@@ -27,6 +44,7 @@ const TorneioCard = ({torneio}) => {
                     </div>
                   </div>
                 </div>
+
                 <div class="w-auto p-2">
                   <div class="flex flex-wrap items-center">
                     <div class="w-auto mr-1">
@@ -39,10 +57,51 @@ const TorneioCard = ({torneio}) => {
                     </div>
                   </div>
                 </div>
-                <p>Elementos por equipa: {torneio.tamEquipa}</p>
-                <p>Tipo do Torneio: {torneio.nometipoTorneio}</p>
-                <p>Escalão: {torneio.escalao}</p>
-            </div>
+
+                <div class="pt-2 mt-2 border-t border-gray-200">
+                  <div class="flex flex-wrap items-center">
+
+                    <div class="w-auto p-2">
+                      <div class="inline-flex px-2 h-7 items-center justify-center text-orange-100 bg-orange-500 rounded-full">
+
+                        <span class="text-xs font-medium">{escalao}</span>
+                      </div>
+                    </div>
+                    <div class="w-auto p-2">
+                      <div class="inline-flex px-2 h-7 items-center justify-center text-blue-100 bg-blue-500 rounded-full">
+
+                        <span class="text-xs font-medium">{torneio.nomeDesporto}</span>
+                      </div>
+                    </div>
+                    <div class="w-auto p-2">
+                      <div class="inline-flex px-2 h-7 items-center justify-center text-green-100 bg-green-500 rounded-full">
+
+                        <span class="text-xs font-medium">
+                        {torneio.isFederado === 1
+                        ? (
+                          "Federado"
+                          )
+                        : "Amador"
+                        }
+                        </span>
+                      </div>
+                    </div>
+                    <div class="w-auto p-2">
+                      <div class="inline-flex px-2 h-7 items-center justify-center text-gray-100 bg-black rounded-full">
+
+                        <span class="text-xs font-medium">
+                        {torneio.tamEquipa === 1
+                        ? (
+                          "Individual"
+                          )
+                        : "Equipas"
+                        }
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
         </div>
       </div>
     )
