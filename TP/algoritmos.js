@@ -789,12 +789,9 @@ function sortear(jogadores,idsJogos){
                     else {
                       op = (tipoSorteio > 5) ? 2 : 1
                       nivel = (op == 1) ? (tipoSorteio - 2) : (tipoSorteio - 7)
-                      console.log(op);
-                      console.log(nivel);
                     }
                     mapa = sorteioEliminatorias(inscritos,nivel,tipo2,op)
                     jogos = mapaToJogos(mapa,idsJogos)
-                    console.log(mapa);
                   }
 
 

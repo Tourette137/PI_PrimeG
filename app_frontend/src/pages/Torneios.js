@@ -153,7 +153,7 @@ export function Torneios() {
           <form>
           <label className='label'>Localidade: </label>
             <div className = "select">
-              <select onChange={handleLocalidade}>
+              <select className="pl-4 text-black" onChange={handleLocalidade}>
                   <option defaultValue="Todas">Indiferente</option>
                   {localidades.map((localidade) => (
                       <option value ={localidade.idLocalidade}>{localidade.Nome}</option>
@@ -162,7 +162,7 @@ export function Torneios() {
             </div>
           <label className='label'>Desporto: </label>
             <div className = "select">
-              <select onChange={handleDesporto}>
+              <select className="pl-4 text-black" onChange={handleDesporto}>
                   <option defaultValue="Todos">Indiferente</option>
                   {desportos.map((desporto) => (
                       <option value ={desporto.idDesporto}>{desporto.nomeDesporto}</option>
@@ -171,7 +171,7 @@ export function Torneios() {
             </div>
           <label className='label'>Federado: </label>
             <div className = "select">
-              <select onChange={handleFederado}>
+              <select className="pl-4 text-black" onChange={handleFederado}>
                   <option defaultValue="Indiferente">Indiferente</option>
                   <option value="1">Sim</option>
                   <option value="0">Não</option>

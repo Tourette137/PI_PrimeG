@@ -44,9 +44,7 @@ export function Calendario(props) {
 
     return(
         <>
-          <div className='titulo'>
-            <h1>Calendário</h1>
-          </div>
+
           <CalendarioDisplay calendario = {calendarioGrupos} tipo = "1"/>
           <CalendarioDisplay calendario = {calendarioElim} tipo = "2"/>
         </>

@@ -27,7 +27,13 @@ export function Torneio() {
     const [jogos,setJogos] = useState([]);
 
     const searchJogos = async () => {
-        let pedido = API_URL + "/torneios/" + id + "/jogosPorComecar";
+        let tipo = "/jogosPorComecar";
+        if(torneio.terminado == 1)
+          tipo = "/jogosaDecorrer";
+        else if (torneio.terminado == 2)
+          tipo = "/jogosEncerrados";
+
+        let pedido = API_URL + "/torneios/" + id + tipo;
 
         const response = await fetch (pedido);
         if (response.status === 200) {
@@ -37,7 +43,7 @@ export function Torneio() {
         else {
           setJogos([]);
         }
-        setLoading3(false);
+        setLoading1(false);
     }
 
     const searchInscritos = async () => {
@@ -86,6 +92,7 @@ export function Torneio() {
         else {
             setCalendarioElim([]);
         }
+        setLoading3(false);
     }
 
     // Vai à API buscar a informação do torneio para dar display na página principal
@@ -107,17 +114,18 @@ export function Torneio() {
 
         const data = await response.json();
         if (response.status === 200) {
-            console.log(data)
             if(data.isOrganizador) {
                 setGestao(1);
             }
             setTorneio(data);
             setTipoTorneio(data.tipoTorneio);
+            searchJogos();
         }
         else {
             setTorneio([]);
+              setLoading1(false);
         }
-        setLoading1(false);
+
     }
 
 
@@ -133,7 +141,7 @@ export function Torneio() {
       searchApurados();
       searchCalendarioGrupos();
       searchCalendarioElim();
-      searchJogos();
+
     },[])
 
     if(loading1 || loading2  || loading3  || loading4 || loading5)

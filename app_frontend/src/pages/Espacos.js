@@ -102,36 +102,50 @@ console.log(pedido);
     return(
         <div className="text-center">
        {/*Aqui seleciona o tipo de espaco que quer mostrar.*/}
-        <h1 className = "text-center p-4 text-6xl font-bold">Espaços</h1>
+        <div className='titulo'>
+          <h1>Espaços</h1>
+        </div>
 
+        <div className="viagem-form" onChange={handleTipo}>
+            <form>
+              <div className="w3-row-padding w3-mobile">
+                <div className = "w3-center w3-mobile radio-item">
+                  <input type="radio" id="disponiveis" value="disponiveis" name="espacos" checked={("disponiveis"===tipo) ? "checked" : ""}/>
+                  <label for="disponiveis" style={{justifyContent:"center"}}>Todos</label><br/>
+                </div>
 
-         <div onChange={handleTipo}>
-             <input type="radio" value="disponiveis" name="espacos" checked={("disponiveis"===tipo) ? "checked" : ""} /> Todos
-             <input type="radio" value="favoritos" name="espacos" checked={("favoritos"===tipo) ? "checked" : ""} /> Favoritos
-         </div>
-        <br/>
-        <br/>
+                <div className = "w3-center w3-mobile radio-item">
+                  <input type="radio" id="favoritos" value="favoritos" name="espacos" checked={("favoritos"===tipo) ? "checked" : ""}/>
+                  <label for="favoritos" style={{justifyContent:"center"}}>Favoritos</label><br/>
+                </div>
 
-        <form>
-        <label>Localidade: </label>
-            <select onChange={handleLocalidade}>
-                <option defaultValue="Todas">Todas</option>
-                {localidades.map((localidade) => (
-                    <option value ={localidade.idLocalidade}>{localidade.Nome}</option>
-                ))}
-            </select>
-            <br/>
-            <br/>
-        <label>Desporto: </label>
-            <select onChange={handleDesporto}>
-                <option defaultValue="Todos">Todos</option>
-                {desportos.map((desporto) => (
-                    <option value ={desporto.idDesporto}>{desporto.nomeDesporto}</option>
-                ))}
-            </select>
-            <br/>
-            <br/>
-        </form>
+              </div>
+            </form>
+        </div>
+
+        <div className='w-full mb-8'>
+          <form>
+          <label className='w-auto mx-auto text-xl font-bold'>Localidade </label>
+            <div className = "select mx-auto">
+              <select className="pl-4 text-black" onChange={handleLocalidade}>
+                  <option defaultValue="Todas">Indiferente</option>
+                  {localidades.map((localidade) => (
+                      <option value ={localidade.idLocalidade}>{localidade.Nome}</option>
+                  ))}
+              </select>
+            </div>
+          <label className='w-auto mx-auto text-xl font-bold'>Desporto </label>
+            <div className = "select mx-auto">
+              <select  className="pl-4 text-black" onChange={handleDesporto}>
+                  <option defaultValue="Todos">Indiferente</option>
+                  {desportos.map((desporto) => (
+                      <option value ={desporto.idDesporto}>{desporto.nomeDesporto}</option>
+                  ))}
+              </select>
+            </div>
+          </form>
+        </div>
+
 
 
         {espacos?.length > 0
@@ -146,12 +160,11 @@ console.log(pedido);
         <div className="empty">
             <h2>Não existem espaços!</h2>
         </div>
-     )}
+      )}
+      <div className='botaoregisto bg-white hover:bg-gray-200 mx-auto'>
+        <button className="p-4 bg-white text-xl border-2 border-black hover:bg-gray-200" onClick ={handleRegisto}>Registe aqui o seu espaço</button>
+      </div>
 
-     <footer>
-        <button onClick ={handleRegisto}>Registe aqui o seu espaço</button>
-     </footer>
-
-        </div>
+    </div>
     )
 }

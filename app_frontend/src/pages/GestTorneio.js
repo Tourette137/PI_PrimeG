@@ -299,7 +299,7 @@ export function GestTorneio({ id,terminado,tipoTorneio, ...props }) {
                                 <input className="w-full relative py-2 pl-2 pr-6 cursor-pointer bg-transparent text-xs text-gray-500 font-semibold appearance-none outline-none border border-black"  value={inputDuracaoJogo} id="duracaoJogo" type="number" onChange={(e) => setInputDuracaoJogo(e.target.value)} required></input>
                                 <br/>
                             <br/>
-                            <label className="text-gray-700 font-bold w-full">Intervalo entre jornadas </label>
+                            <label className="text-gray-700 font-bold w-full">Intervalo entre jornadas (min) </label>
                                 <input className="w-full relative py-2 pl-2 pr-6 cursor-pointer bg-transparent text-xs text-gray-500 font-semibold appearance-none outline-none border border-black" value={inputIntervaloEtapas} id="intervaloEtapa" type="number" onChange={(e) => setInputIntervaloEtapas(e.target.value)} required></input>
                                 <br/>
                             <br/>
@@ -385,7 +385,7 @@ export function GestTorneio({ id,terminado,tipoTorneio, ...props }) {
                           </span>
                           <span class="text-sm leading-5 text-red-900 font-medium ml-3">Este torneio não contém fase eliminatória ou criar fase de grupos primeiro!</span>
                         </div>
-                        
+
                       </div>
                     </div>
                   </div>
@@ -405,11 +405,11 @@ export function GestTorneio({ id,terminado,tipoTorneio, ...props }) {
                             <input className="w-full relative py-2 pl-2 pr-6 cursor-pointer bg-transparent text-xs text-gray-500 font-semibold appearance-none outline-none border border-black"  value={inputDataElim} id="datetime-local" type="datetime-local" onChange={(e) => setInputDataElim(e.target.value)} required></input>
                             <br/>
                             <br/>
-                            <label className="text-gray-700 font-bold w-full mt-2">Duração jogo </label>
+                            <label className="text-gray-700 font-bold w-full mt-2">Duração jogo (min) </label>
                                 <input className="w-full relative py-2 pl-2 pr-6 cursor-pointer bg-transparent text-xs text-gray-500 font-semibold appearance-none outline-none border border-black"  value={inputDuracaoJogo} id="duracaoJogo" type="number" onChange={(e) => setInputDuracaoJogo(e.target.value)} required></input>
                                 <br/>
                             <br/>
-                            <label className="text-gray-700 font-bold w-full mt-2">Intervalo entre etapas </label>
+                            <label className="text-gray-700 font-bold w-full mt-2">Intervalo entre etapas (min) </label>
                                 <input className="w-full relative py-2 pl-2 pr-6 cursor-pointer bg-transparent text-xs text-gray-500 font-semibold appearance-none outline-none border border-black"  value={inputIntervaloEtapas} id="intervaloEtapa" type="number" onChange={(e) => setInputIntervaloEtapas(e.target.value)} required></input>
                                 <br/>
                             <br/>

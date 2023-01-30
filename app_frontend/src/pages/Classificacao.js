@@ -142,7 +142,7 @@ export function Classificacao() {
                     </div>
                   </div>
                   <div class="h-1 w-full mb-4 rounded-full bg-orange-500"></div>
-                  <a class="w-full hover:bg-gray-700 transition duration-200">
+                  <a class="w-full hover:bg-gray-700 transition duration-200 bg-black">
                     {(tipo === "eliminatorias"
                       ?
                       (<ElimDisplay elim = {classificacaoElim} elimSize = {elimSize} tipo = {1}/>)

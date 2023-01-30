@@ -130,7 +130,19 @@ const TorneioDisplay = ({torneio,inscritos,calendario,tipo,jogos}) => {
               <div class={`w-full mx-auto h-full px-3 pt-6 pb-24  rounded-xl`}>
                 <div class="flex items-center justify-between mb-3">
                   <div class="flex items-center">
-                    <h3 class="text-lg text-black font-semibold mr-2">Por começar</h3>
+                    <h3 class="text-lg text-black font-semibold mr-2">
+                    {torneio.terminado === 0
+                    ? (
+                      "Por começar"
+                      )
+                    : (torneio.terminado === 1
+                    ? (
+                      "A decorrer"
+                      )
+                    : "Terminado"
+                    )
+                    }
+                    </h3>
                     <span class="inline-flex items-center justify-center w-6 h-7 rounded-full bg-gray-600 text-xs font-medium text-gray-100">{jogos?.length}</span>
                   </div>
                   <div>
