@@ -445,7 +445,7 @@ function grupoJImpar(teams,jogos) {
     setsGanhos2 = 0
     let sp2 = resultado.split('|')
     if(sp2.length > 1){
-      for(i=0; i < 0; i++){
+      for(i=0; i < sp2.length; i++){
         let pontos = sp2[i].split('-')
         if(parseInt(pontos[0])>parseInt(pontos[1])) setsGanhos1 += 1
         else setsGanhos2 += 1

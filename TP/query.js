@@ -1,17 +1,17 @@
 const mysql = require('mysql');
 const config = require('./config');
 
+const pool  = mysql.createPool(config.db);
+
 function query(sql) {
-  const connection = mysql.createConnection(config.db);
   return new Promise((resolve, reject) => {
-    connection.query(sql, function(error,data){
+    pool.query(sql, function(error,data){
       if(error)
         reject(error)
       else
         resolve(data);
-    })
-  })
-  connection.end();
+    });
+  });
 }
 
 function getJogosParaSorteio(idTorneio){

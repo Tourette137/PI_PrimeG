@@ -22,10 +22,23 @@ export function Gestao() {
     const isOrganizador = data?.isOrganizador;
 
 
+    const searchTorneio = async () => {
+      let response = await fetch (`${API_URL}/torneios/${id}`);
+      if (response.status === 200) {
+        const data = await response.json();
+        setTorneio(data);
+      }
+    }
+
+
     useEffect(() => {
       if (!isLoading && !error) {
-        if (!isOrganizador)
+        if (!isOrganizador){
           navigate(`/torneios/${id}`);
+        }
+        else {
+          searchTorneio();
+        }
       }
     }, [isLoading, error, isOrganizador, id]);
 
@@ -51,7 +64,7 @@ export function Gestao() {
             <GestTorneio id = {parseInt(id)}  tipoTorneio = {data.tipoTorneio} terminado = {data.terminado}/>
             :(("calendario"===tipo)?
               <Calendario id = {parseInt(id)}  tipoTorneio = {data.tipoTorneio}/>
-              : <GestJogos/>
+              : <GestJogos idTorneio={parseInt(id)} tipoTorneio={torneio.tipoTorneio} desporto={torneio.nomeDesporto} />
             )
           )
         }
