@@ -30,9 +30,9 @@ const CalendarioDisplay = ({calendario,tipo}) => {
 
                 {tipo === "2"
                   ?
-                    (<h3 class="mb-1 font-medium text-lg text-coolGray-900 text-left">{jogo.nomeEtapa}  Jogo {jogo.ronda}</h3>)
+                    (<h3 class="mb-1 text-sm font-bold text-coolGray-900 text-left">{jogo.nomeEtapa}  Jogo {jogo.ronda}</h3>)
                   :
-                    (<h3 class="mb-1 font-medium text-lg text-coolGray-900 text-left">Grupo {jogo.numeroGrupo} Jornada {jogo.ronda}</h3>)
+                    (<h3 class="mb-1 text-sm font-bold text-coolGray-900 text-left">Grupo {jogo.numeroGrupo} Jornada {jogo.ronda}</h3>)
                 }
                 <div class="flex flex-wrap items-center pb-4 -m-2">
                   <div class="w-auto p-2">

@@ -195,8 +195,8 @@ function grupoJImpar(teams,jogos) {
 
         //posiciona cabecas de serie (nenhum, 1º ou 1º e 2º) e sorteia o resto aleatorio
         if(option < 3){
-          if(option !== 0)
-            jogadores = sortearCabecasSerie(jogadores,grupos,option)
+          if(option != 0){
+            jogadores = sortearCabecasSerie(jogadores,grupos,option)}
           sortearGruposRandom(jogadores,grupos)
         }
         else {//option 3 sortear por clubes | 4 e 5 sortear por clubes + 1 ou 2 cabecas de serie)
@@ -589,7 +589,7 @@ function grupoJImpar(teams,jogos) {
       if(index > -1)
         listPos.push(index);
     }
-    return listPos.sort().reverse();
+    return listPos.sort()
   }
 
   function findPos(chunks,pos){
@@ -789,6 +789,8 @@ function sortear(jogadores,idsJogos){
                     else {
                       op = (tipoSorteio > 5) ? 2 : 1
                       nivel = (op == 1) ? (tipoSorteio - 2) : (tipoSorteio - 7)
+                      console.log(op);
+                      console.log(nivel);
                     }
                     mapa = sorteioEliminatorias(inscritos,nivel,tipo2,op)
                     jogos = mapaToJogos(mapa,idsJogos)
@@ -1122,17 +1124,17 @@ function sortear(jogadores,idsJogos){
           for(s=0; Math.pow(2, s) < par[c][i].size; s++);
           var npartes = Math.pow(2, s),sizePartes = (tipo == 1) ? (mapSize/2/npartes) : (mapSize/npartes);
           var chunks = chunkArrayInGroups(l,sizePartes);
-          chunksDisp(chunks,par[c][i].sorteados)
+          chunksDisp(chunks,par[c][i].sorteados);
 
           //sortear jogadores do clube
           for (var i2=0; i2< sizeclube; i2++){
             var j = par[c][i].jogadores[i2];
             var posicoesD = chunks.flat().filter(x => listPos.indexOf(x) > -1);
             if(posicoesD.length == 0){
-              if(sizePartes == mapSize/2)
+              if(sizePartes == 2)
                 posicoesD = l.filter(x => listPos.indexOf(x) > -1)
               else {
-                sizePartes *= 2
+                sizePartes /= 2
                 chunks = chunkArrayInGroups(l,sizePartes);
                 chunksDisp(chunks,par[c][i].sorteados);
                 posicoesD = chunks.flat().filter(x => listPos.indexOf(x) > -1);
@@ -1206,7 +1208,8 @@ function sortear(jogadores,idsJogos){
   function sorteioEliminatorias(jogadores,nivel,tipo,op){
     var total = jogadores.length,mapSize = 1,i2=0;
     var primeiros=[],mapa=[],segundos=[],grupos = [],clubes1 = [],clubes2 = [];
-    nivel = (tipo == 1) ? nivelToSize(nivel,total) : nivel
+    var nivelMax = nivelToSize(nivel,total)
+    nivel = (tipo == 1 || nivel > nivelMax) ? nivelMax : nivel
 
     // inicializar primeiros
     for(mapSize = 1; mapSize < total; mapSize*=2){
