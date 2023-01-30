@@ -554,7 +554,6 @@ router.get("/:idTorneio/inscritos",(req,res) => {
 
 router.get("/:idTorneio/inscricoes",(req,res) => {
     var idTorneio = req.params.idTorneio
-
     var sql = data.getInscricoes(idTorneio);
     data.query(sql).then(inscritos => {
       res.send(inscritos)
@@ -1590,7 +1589,7 @@ router.post("/:id/gestao/:idJogo/fecharResultado",isAuth,(req,res) => {
                             else {
                                 var idEtapa = jogo[0].idEtapa
                                 var ronda = jogo[0].ronda
-                                var newR = (ronda == 1)?  1 : Math.floor(ronda/2)
+                                var newR = (ronda == 1)?  1 : Math.ceil(ronda/2)
 
                                 let sql3 = `Select numeroEtapa from Etapa where idEtapa = ${idEtapa}`
                                 data.query(sql3).then(re3 => {
@@ -1779,5 +1778,192 @@ router.post("/:id/gestao/:idJogo/fecharResultado",isAuth,(req,res) => {
     })
 })
 
+router.get("/:id/gestao/jogosFaseGrupos",isAuth,(req,res) => {
+
+    const idTorneio = parseInt(req.params.id);
+
+    let sqlOrganizador = `Select idOrganizador,tipoTorneio from Torneio where idTorneio = ${idTorneio}`
+    data.query(sqlOrganizador).then(re => {
+        if (re.length != 0) {
+            if (re[0].idOrganizador == req.userId) {
+                if(re[0].tipoTorneio != 1 && re[0].tipoTorneio != 4 ){
+                    let sql1 = "select * from Jogo as J join Grupo as G on J.Grupo_idGrupo = G.idGrupo " +
+                                "join FaseGrupos as FG on G.FaseGrupos_idFaseGrupos = FG.idFaseGrupos " +
+                                "join Torneio as T on T.idTorneio = FG.Torneio_idTorneio " +
+                                "where T.idTorneio = " + idTorneio +  " ORDER BY J.hora ASC;";
+                    data.query(sql1).then(re => {
+                        if (re.length != 0) {
+                            let sql1 = ""
+                            for (let i = 0; i<re.length; i++) {
+                                if (re[i].idOponente1 != undefined && re[i].idOponente1 != -1) {
+                                    sql1 += `Select idEquipa,nomeEquipa from Equipa where idEquipa = ${re[i].idOponente1};`
+                                }
+                                if (re[i].idOponente2 != -1 && re[i].idOponente2 != undefined) {
+                                    sql1 += `Select idEquipa,nomeEquipa from Equipa where idEquipa = ${re[i].idOponente2};`
+                                }
+                            }
+                            if (sql1  != "") {
+                                data.query(sql1).then(re1 => {
+                                    //Põe os nomes das equipas na resposta.
+                                    if (re1.length != 0) {
+                                        re.map ((r) => {
+                                            if (r.idOponente1 != undefined && r.idOponente1 != -1) {
+                                                for (let i = 0; i< re1.length; i++) {
+                                                    if (r.idOponente1 == re1[i][0].idEquipa) {
+                                                        r["nomeEquipa1"] = re1[i][0].nomeEquipa;
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                            if (r.idOponente2 != undefined && r.idOponente2 != -1) {
+                                                for (let i = 0; i< re1.length; i++) {
+                                                    if (r.idOponente2 == re1[i][0].idEquipa) {
+                                                        r["nomeEquipa2"] = re1[i][0].nomeEquipa;
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                            let hora = r.hora.getHours()
+                                            let minutos =r.hora.getMinutes()
+                                            if (parseInt(minutos)< 10) {
+                                                minutos = "0"+minutos
+                                            }
+                                            r.hora = r.hora.toLocaleDateString() + ` ${hora}:${minutos}`;
+                                        })
+                                        res.send(re);
+                                    }
+                                    else {
+                                        res.status(404).send("Erro ao encontrar as equipas")
+                                   }
+                                })
+                            }
+                        else {
+                            res.status(404).send("Não existem jogos");
+                        }
+                    }
+                });
+            }
+                else {
+                    res.status(404).send("O Torneio não tem grupos");
+                }
+            }
+            else {
+                res.status(404).send("O Utilizador não é o organizador do Torneio");
+            }
+        }
+        else {
+            res.status(404).send("O Torneio não existe")
+        }
+    });
+})
+
+router.get("/:id/gestao/jogosEliminatorias",isAuth,(req,res) => {
+    const idTorneio = parseInt(req.params.id);
+
+    let sqlOrganizador = `Select idOrganizador,tipoTorneio from Torneio where idTorneio = ${idTorneio}`
+    data.query(sqlOrganizador).then(re => {
+        if (re.length != 0) {
+            if (re[0].idOrganizador == req.userId) {
+                if(re[0].tipoTorneio != 0 && re[0].tipoTorneio != 3 ){
+                    let sql1 = "select * from Jogo as J " +
+                                "join Etapa as E on J.idEtapa = E.idEtapa " +
+                                "join Eliminatoria as EL on E.Eliminatoria_idEliminatoria = EL.idEliminatoria " +
+                                "where EL.Torneio_idTorneio = " + idTorneio +  " ORDER BY J.hora ASC;";
+                    data.query(sql1).then(re => {
+                        if (re.length != 0) {
+                            let sql1 = ""
+                            for (let i = 0; i<re.length; i++) {
+                                if (re[i].idOponente1 != undefined && re[i].idOponente1 != -1) {
+                                    sql1 += `Select idEquipa,nomeEquipa from Equipa where idEquipa = ${re[i].idOponente1};`
+                                }
+                                if (re[i].idOponente2 != -1 && re[i].idOponente2 != undefined) {
+                                    sql1 += `Select idEquipa,nomeEquipa from Equipa where idEquipa = ${re[i].idOponente2};`
+                                }
+                            }
+                            if (sql1  != "") {
+                                data.query(sql1).then(re1 => {
+                                    //Põe os nomes das equipas na resposta.
+                                    if (re1.length != 0) {
+                                        re.map ((r) => {
+                                            if (r.idOponente1 != undefined && r.idOponente1 != -1) {
+                                                for (let i = 0; i< re1.length; i++) {
+                                                    if (r.idOponente1 == re1[i][0].idEquipa) {
+                                                        r["nomeEquipa1"] = re1[i][0].nomeEquipa;
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                            if (r.idOponente2 != undefined && r.idOponente2 != -1) {
+                                                for (let i = 0; i< re1.length; i++) {
+                                                    if (r.idOponente2 == re1[i][0].idEquipa) {
+                                                        r["nomeEquipa2"] = re1[i][0].nomeEquipa;
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                            let hora = r.hora.getHours()
+                                            let minutos =r.hora.getMinutes()
+                                            if (parseInt(minutos)< 10) {
+                                                minutos = "0"+minutos
+                                            }
+                                            r.hora = r.hora.toLocaleDateString() + ` ${hora}:${minutos}`;
+                                        }) 
+                                        let aux = -1;
+                                        for (let i = 0; i< re.length; i++) {
+                                            if (re[i].nomeEtapa == "Final" && re[i].mao == 2) {
+                                                aux = i;
+                                                break;
+                                            }
+                                        }
+                                        if (aux != -1) {
+                                            re.splice(aux,1);
+                                        }
+                                        res.send(re);
+                                    }
+                                    else {
+                                        res.status(404).send("Erro ao encontrar as equipas")
+                                   }
+                                })
+                            }
+                            else {
+                                let aux = -1;
+                                for (let i = 0; i< re.length; i++) {
+                                    if (re[i].nomeEtapa == "Final" && re[i].mao == 2) {
+                                        aux = i;
+                                        break;
+                                    }
+                                }
+                                if (aux != -1) {
+                                    re.splice(aux,1);
+                                }
+                                re.map((r) => {
+                                    let hora = r.hora.getHours()
+                                    let minutos =r.hora.getMinutes()
+                                    if (parseInt(minutos)< 10) {
+                                        minutos = "0"+minutos
+                                    }
+                                    r.hora = r.hora.toLocaleDateString() + ` ${hora}:${minutos}`;
+                                })
+                                res.send(re);
+                            }
+                        }
+                        else {
+                            res.status(404).send("Não existem jogos");
+                        }
+                    });
+                }
+                else {
+                    res.status(404).send("O Torneio não tem eliminatórias");
+                }
+            }
+            else {
+                res.status(404).send("O Utilizador não é o organizador do Torneio");
+            }
+        }
+        else {
+            res.status(404).send("O Torneio não existe")
+        }
+    });
+})
 
 module.exports = router
