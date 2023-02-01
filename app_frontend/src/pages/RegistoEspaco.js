@@ -18,6 +18,7 @@ export function RegistoEspaco() {
     const inputruaEspacoRef = useRef(null);
     const inputContactoEspacoRef = useRef(null);
     const inputNMesasRef = useRef(null);
+    const inputImageRef = useRef(null);
 
     //Variáveis auxiliares para guardar os espaços,localidades e torneios da BD e a espaçosFav para ver se mostramos
     // espaços sugeridos ou se ele quer introduzir ele mesmo o espaço
@@ -27,6 +28,8 @@ export function RegistoEspaco() {
 
 
     const navigate = useNavigate();
+
+    const validFileTypes = ['image/jpg', 'image/jpeg', 'image/png']
 
     //Função que vai buscar os desportos da Base de Dados
     const searchDesportos = async () => {
@@ -61,20 +64,33 @@ export function RegistoEspaco() {
     const handleRegisto = async (e) => {
         e.preventDefault();
 
+        let file = null;
+
+        if (inputImageRef.current.files.length > 0) {
+            file = inputImageRef.current.files[0]
+            if(!validFileTypes.find(type => type === file.type)) {
+                //setAlertMsg("Ficheiro deve possuir formatos JPG ou PNG!")
+                //setAlert(true)
+                return;
+            }
+        }
+
         const headers = {
-            "authorization": "Bearer " +localStorage.getItem("token")
+            "authorization": "Bearer " +localStorage.getItem("token"),
+            'Content-Type': 'multipart/form-data'
         }
+        const formData = new FormData()
 
-        const bodyEspaco = {
-            "nome" : inputnomeEspacoRef.current.value,
-            "rua" : inputruaEspacoRef.current.value,
-            "contacto" : inputContactoEspacoRef.current.value,
-            "localidade" : localidade,
-            "desporto" : desporto,
-            "nMesas" : inputNMesasRef.current.value
-        }
+            formData.append("nome",inputnomeEspacoRef.current.value)
+            formData.append("rua",inputruaEspacoRef.current.value)
+            formData.append("contacto",inputContactoEspacoRef.current.value)
+            formData.append("localidade",localidade)
+            formData.append("desporto",desporto)
+            formData.append("nMesas",inputNMesasRef.current.value)
+            formData.append("fotoEspaco" , file)
+        
 
-        axios.post(`${API_URL}/espacos/registarEspaco`, bodyEspaco,{headers: headers})
+        axios.post(`${API_URL}/espacos/registarEspaco`, formData,{headers: headers})
             .then(response => {
             const idEspaco = response.data.idEspaco
             navigate(`/espacos`)
@@ -132,6 +148,27 @@ export function RegistoEspaco() {
                                 <option value ={localidade.idLocalidade}>{localidade.Nome}</option>
                             ))}
                         </select>
+                    </div>
+
+                    <div class="flex justify-center">
+                        <div class="mb-3 w-96">
+                        <label for="formfile" class="block mb-2 text-base font-bold text-gray-900 dark:text-white">Imagem do torneio:</label>
+                            <input class="form-control
+                            block
+                            w-full
+                            px-3
+                            py-1.5
+                            text-base
+                            font-normal
+                            text-gray-700
+                            bg-white bg-clip-padding
+                            border border-solid border-gray-300
+                            rounded
+                            transition
+                            ease-in-out
+                            m-0
+                            focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" ref={inputImageRef} type="file" id="formFile"/>
+                        </div>
                     </div>
                     
                     <button type="submit" class="w-full text-white bg-orange-500 hover:bg-orange-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Registar</button>

@@ -156,7 +156,7 @@ console.log(pedido);
             <div className="espaco-cards-container">
               {espacos.length > 0
               ? espacos.map((espaco) => (
-                <Link to={"/espacos/" + espaco.idEspaco}><EspacoCard nome={espaco.nome} rua={espaco.rua} contacto={espaco.contacto} /></Link>
+                <Link to={"/espacos/" + espaco.idEspaco}><EspacoCard url={espaco.imageUrl} nome={espaco.nome} rua={espaco.rua} contacto={espaco.contacto} /></Link>
               ))
               : <h2 className="text-4xl text-center">Não existem espaços!</h2>}
             </div>

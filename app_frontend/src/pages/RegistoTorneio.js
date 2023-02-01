@@ -174,16 +174,17 @@ export function RegistoTorneio() {
                 .catch(e => console.log(e))
         }
         else{
-            const bodyEspaco = {
-                "nome" : inputnomeEspacoRef.current.value,
-                "rua" : inputruaEspacoRef.current.value,
-                "contacto" : inputContactoEspacoRef.current.value,
-                "localidade" : localidade,
-                "desporto" : desporto,
-                "nMesas" : inputNMesasRef.current.value
-            }
+            const formData = new FormData()
 
-            axios.post(`${API_URL}/espacos/registoNFavorito`, bodyEspaco,{headers: headersEsp})
+                formData.append("nome", inputnomeEspacoRef.current.value)
+                formData.append("rua", inputruaEspacoRef.current.value)
+                formData.append("contacto", inputContactoEspacoRef.current.value)
+                formData.append("localidade", localidade)
+                formData.append("desporto", desporto)
+                formData.append("nMesas", inputNMesasRef.current.value)
+                formData.append("fotoEspaco",null)
+
+            axios.post(`${API_URL}/espacos/registoNFavorito`, formData,{headers: headers})
                 .then(response => {
                     const idEspaco = response.data.idEspaco
                     
@@ -390,28 +391,28 @@ export function RegistoTorneio() {
                             (desporto !== "" && localidade !== "" ?
                                 (espacos?.length > 0
                                 ? (
-                                    <div class="relative">
+                                    <div class="relative items-center">
                                         {(aMostrar == espacoSelecionado)?
                                         (
-                                            <div className="grid md:grid-cols-2 mx-auto lg:grid-cols-3 place-content-center" onClick={handleSelectEstado}>
-                                            <EspacoCardAux nome = {espacos[aMostrar].nome} rua = {espacos[aMostrar].rua} contacto = {espacos[aMostrar].contacto}/>
+                                            <div className="grid mx-auto place-content-center" onClick={handleSelectEstado}>
+                                            <EspacoCardAux url={espacos[aMostrar].imageUrl} nome = {espacos[aMostrar].nome} rua = {espacos[aMostrar].rua} contacto = {espacos[aMostrar].contacto}/>
                                             </div>
                                         )
                                         :
                                         (
-                                            <div className="grid md:grid-cols-2 mx-auto lg:grid-cols-3 place-content-center" onClick={handleSelectEstado}>
-                                            <EspacoCard nome = {espacos[aMostrar].nome} rua = {espacos[aMostrar].rua} contacto = {espacos[aMostrar].contacto}/>
+                                            <div className="grid mx-auto place-content-center" onClick={handleSelectEstado}>
+                                            <EspacoCard url={espacos[aMostrar].imageUrl} nome = {espacos[aMostrar].nome} rua = {espacos[aMostrar].rua} contacto = {espacos[aMostrar].contacto}/>
                                             </div>
                                         )
                                         }
                                         <button type="button" onClick={handlePrevEspaco} class="absolute top-0 left-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" >
-                                            <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50  group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
+                                            <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-orange-300 dark:bg-gray-800/30 group-hover:orange-500  group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
                                                 <svg aria-hidden="true" class="w-6 h-6 text-white dark:text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
                                                 <span class="sr-only">Previous</span>
                                             </span>
                                         </button>
                                         <button type="button" onClick={handleProxEspaco} class="absolute top-0 right-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none">
-                                            <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50  group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
+                                            <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-orange-300 dark:bg-gray-800/30 group-hover:orange-500  group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
                                                 <svg aria-hidden="true" class="w-6 h-6 text-white dark:text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                                                 <span class="sr-only">Next</span>
                                             </span>

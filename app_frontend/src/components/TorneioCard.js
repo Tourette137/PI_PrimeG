@@ -28,8 +28,8 @@ const TorneioCard = ({torneio}) => {
         <div className="flex-wrap p-4 md:flex mx-auto hover:bg-gray-200 hover:scale-105 transition duration-500 shadow-2xl shadow-gray-300 rounded-2xl md:h-[200px] md:w-[700px] w-[350px] h-[400px] bg-white">
             <div className="mx-auto w-[170px] h-[170px] bg-transparent">
                 {(torneio.imageUrl === null) ?
-                  (<img src={profileIcon} alt="Torneio Picture"></img>)
-              :   (<img src={torneio.imageUrl} alt="Torneio Picture2"></img>)
+                  (<img className="w-[170px] h-[170px] object-contain" src={profileIcon} alt="Torneio Picture"></img>)
+              :   (<img className="w-[170px] h-[170px] object-contain" src={torneio.imageUrl} alt="Torneio Picture2"></img>)
               }
             </div>
             <div className="w-[320px] md:w-[450px] md:h-[175px] h-[190px]  mt-4 md:mt-1 mx-auto text-left">

@@ -1,14 +1,16 @@
 import React from 'react'
 
-const EspacoCard = ({nome,rua,contacto}) => {
+import profileIcon from '../images/profileIcon.png'
+
+const EspacoCard = ({url,nome,rua,contacto}) => {
     return (
       <div className="w-full place-content-center hover:scale-105 transition duration-500">
         <div className="flex-col mx-auto p-2 shadow-2xl shadow-gray-300 rounded-2xl h-[370px] w-[350px] bg-white text-black text-left">
-            <div className="mx-auto w-[320px] h-[250px] bg-black">
-                <img
-                  src={"../images/logotipo.png"}
-                  className=""
-                />
+            <div className="mx-auto w-[320px] h-[250px] bg-transparent">
+            {(url == null || url == undefined) ?
+                  (<img className="w-[320px] h-[250px] object-contain" src={profileIcon} alt="Espaco Picture"></img>)
+              :   (<img className="w-[320px] h-[250px] object-contain" src={url} alt="Espaco Picture2"></img>)
+              }
             </div>
             <div className=" w-[320px] h-[100px] mx-auto mt-2 p-2">
                 <p className="text-2xl font-bold">{nome}</p>
