@@ -64,16 +64,19 @@ const CalendarioDisplay = ({calendario,tipo}) => {
               </div>
 
             ))}
-
-              <div class="w-full p-2">
-              {showAll != 5
-              ? (
-                <button class="px-4 py-1 mt-1 font-medium text-sm text-coolGray-500 hover:text-coolGray-600 border border-coolGray-200 hover:border-coolGray-300 rounded-md shadow-button" onClick={evt => setShowAll(5)}>Hidde all schedules</button>
-              )
-              : (
-                <button class="px-4 py-1 mt-1 font-medium text-sm text-coolGray-500 hover:text-coolGray-600 border border-coolGray-200 hover:border-coolGray-300 rounded-md shadow-button" onClick={evt => setShowAll(calendario?.length)}>See all schedules</button>
-              )}
-              </div>
+            {calendario.length > 5 
+              ? <div class="w-full p-2">
+                  {showAll != 5
+                  ? (
+                      <button class="px-4 py-1 mt-1 font-medium text-sm text-coolGray-500 hover:text-coolGray-600 border border-coolGray-200 hover:border-coolGray-300 rounded-md shadow-button" onClick={evt => setShowAll(5)}>Ver menos</button>
+                    )
+                  : (
+                      <button class="px-4 py-1 mt-1 font-medium text-sm text-coolGray-500 hover:text-coolGray-600 border border-coolGray-200 hover:border-coolGray-300 rounded-md shadow-button" onClick={evt => setShowAll(calendario?.length)}>Ver mais</button>
+                    )}
+                </div>
+              : null
+            }
+              
             </div>
           </div>
         </div>

@@ -4,6 +4,8 @@ import EspacoCard from '../components/EspacoCard.js';
 import {Link,Route,Routes} from 'react-router-dom';
 import {useNavigate } from 'react-router-dom';
 import {NavbarDynamic} from '../components/NavbarDynamic.js';
+import '../components/RadioForm.css';
+import '../components/selectForm.css';
 
 const API_URL="http://localhost:3000"
 export function Espacos() {
@@ -106,15 +108,15 @@ console.log(pedido);
           <h1>Espaços</h1>
         </div>
 
-        <div className="viagem-form" onChange={handleTipo}>
+        <div className="viagem-form w3-mobile radio-list" onChange={handleTipo}>
             <form>
               <div className="w3-row-padding w3-mobile">
-                <div className = "w3-center w3-mobile radio-item">
+                <div className = "w3-half w3-center w3-mobile radio-item">
                   <input type="radio" id="disponiveis" value="disponiveis" name="espacos" checked={("disponiveis"===tipo) ? "checked" : ""}/>
                   <label for="disponiveis" style={{justifyContent:"center"}}>Todos</label><br/>
                 </div>
 
-                <div className = "w3-center w3-mobile radio-item">
+                <div className = "w3-half w3-center w3-mobile radio-item">
                   <input type="radio" id="favoritos" value="favoritos" name="espacos" checked={("favoritos"===tipo) ? "checked" : ""}/>
                   <label for="favoritos" style={{justifyContent:"center"}}>Favoritos</label><br/>
                 </div>
@@ -123,48 +125,44 @@ console.log(pedido);
             </form>
         </div>
 
-        <div className='w-full mb-8'>
-          <form>
-          <label className='w-auto mx-auto text-xl font-bold'>Localidade </label>
-            <div className = "select mx-auto">
-              <select className="pl-4 text-black" onChange={handleLocalidade}>
-                  <option defaultValue="Todas">Indiferente</option>
-                  {localidades.map((localidade) => (
-                      <option value ={localidade.idLocalidade}>{localidade.Nome}</option>
-                  ))}
-              </select>
+        <div className="flex flex-wrap w-full">
+          <div className='filtros lg:w-1/3'>
+            <form>
+            <label className='w-auto text-xl font-bold'>Localidade:</label>
+              <div className = "select">
+                <select className="pl-4 text-black" onChange={handleLocalidade}>
+                    <option defaultValue="Todas">Indiferente</option>
+                    {localidades.map((localidade) => (
+                        <option value ={localidade.idLocalidade}>{localidade.Nome}</option>
+                    ))}
+                </select>
+              </div>
+            <label className='w-auto text-xl font-bold'>Desporto: </label>
+              <div className = "select">
+                <select  className="pl-4 text-black" onChange={handleDesporto}>
+                    <option defaultValue="Todos">Indiferente</option>
+                    {desportos.map((desporto) => (
+                        <option value ={desporto.idDesporto}>{desporto.nomeDesporto}</option>
+                    ))}
+                </select>
+              </div>
+            </form>
+            <div className='botaoregistoEspaco bg-white hover:bg-gray-200 mt-5 mb-10'>
+              <button className="p-4 bg-white text-xl border-2 border-black hover:bg-gray-200" onClick ={handleRegisto}>Registe aqui o seu espaço</button>
             </div>
-          <label className='w-auto mx-auto text-xl font-bold'>Desporto </label>
-            <div className = "select mx-auto">
-              <select  className="pl-4 text-black" onChange={handleDesporto}>
-                  <option defaultValue="Todos">Indiferente</option>
-                  {desportos.map((desporto) => (
-                      <option value ={desporto.idDesporto}>{desporto.nomeDesporto}</option>
-                  ))}
-              </select>
+          </div>
+
+          <div className="espacos flex flex-col place-content-center w-full lg:w-2/3 flex-grow-0">
+            <div className="espaco-cards-container">
+              {espacos.length > 0
+              ? espacos.map((espaco) => (
+                <Link to={"/espacos/" + espaco.idEspaco}><EspacoCard nome={espaco.nome} rua={espaco.rua} contacto={espaco.contacto} /></Link>
+              ))
+              : <h2 className="text-4xl text-center">Não existem espaços!</h2>}
             </div>
-          </form>
+          </div>
+
         </div>
-
-
-
-        {espacos?.length > 0
-        ? (
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 place-content-center">
-          {espacos.map((espaco) => (
-            <Link to ={"/espacos/" + espaco.idEspaco}><EspacoCard nome = {espaco.nome} rua = {espaco.rua} contacto = {espaco.contacto}/></Link>
-          ))}
-        </div>
-        )
-        : (
-        <div className="empty">
-            <h2>Não existem espaços!</h2>
-        </div>
-      )}
-      <div className='botaoregisto bg-white hover:bg-gray-200 mx-auto'>
-        <button className="p-4 bg-white text-xl border-2 border-black hover:bg-gray-200" onClick ={handleRegisto}>Registe aqui o seu espaço</button>
-      </div>
-
     </div>
     )
 }

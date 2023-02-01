@@ -43,10 +43,24 @@ export function Calendario(props) {
       },[])
 
     return(
-        <>
+        <div>
+            {calendarioGrupos.length > 0 
+            ? <CalendarioDisplay calendario = {calendarioGrupos} tipo = "1"/>
+            : (tipoTorneio != 1 && tipoTorneio != 4) 
+                ? <div class="p-4 mb-4 w-full text-sm text-red-800 rounded-lg bg-red-200 dark:bg-gray-800 dark:text-red-400" role="alert">
+                        <span class="font-medium">Os jogos da fase de grupos ainda não foram sorteados!</span>
+                    </div>
+                : null
+            }
 
-          <CalendarioDisplay calendario = {calendarioGrupos} tipo = "1"/>
-          <CalendarioDisplay calendario = {calendarioElim} tipo = "2"/>
-        </>
+            {calendarioElim.length > 0
+            ? <CalendarioDisplay calendario = {calendarioElim} tipo = "2"/>
+            : (tipoTorneio != 0 && tipoTorneio != 3)
+                ? <div class="p-4 mb-4 w-full text-sm text-red-800 rounded-lg bg-red-200 dark:bg-gray-800 dark:text-red-400" role="alert">
+                    <span class="font-medium">Os jogos da fase de eliminatórias ainda não foram sorteados!</span>
+                </div>
+                : null
+            }
+        </div>
     )
 }

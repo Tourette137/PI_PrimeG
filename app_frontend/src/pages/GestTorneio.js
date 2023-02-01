@@ -4,6 +4,7 @@ import GrupoDisplay from "../components/GrupoDisplay.js";
 import ElimDisplay from "./ElimDisplay.jsx";
 import axios from 'axios';
 import InscritosDisplay from "../components/ListaInscritos.js";
+import '../components/RadioForm.css';
 
 const API_URL="http://localhost:3000"
 
@@ -29,6 +30,9 @@ export function GestTorneio({ id,terminado,tipoTorneio, ...props }) {
     const [loading2,setLoading2] = useState(false);
     const [loading3,setLoading3] = useState(false);
     const [loading4,setLoading4] = useState(false);
+
+    const [alert, setAlert] = useState(false)
+    const [alertMsg, setAlertMsg] = useState("")
 
     const searchApurados = async () => {
       const response = await fetch (`${API_URL}/torneios/${id}/apurados`);
@@ -117,8 +121,16 @@ export function GestTorneio({ id,terminado,tipoTorneio, ...props }) {
         }
         axios.post(`${API_URL}/torneios/${id}/gestao/criarFaseGrupos`, bodyGrupo,{headers: headers})
               .then(response => {
-                searchGrupos();
-        }).catch(e => console.log(e))
+                if(response.status==200){
+                  console.log("aqui")
+                  searchGrupos();
+                  setAlert(false);
+                }
+              }).catch(e => {console.log(e);
+                            setAlert(true);
+                            console.log(alert);
+                            setAlertMsg("O Torneio ainda tem inscrições abertas!");
+              })
     }
 
     const handleElim = async (e) => {
@@ -133,7 +145,14 @@ export function GestTorneio({ id,terminado,tipoTorneio, ...props }) {
             }
             axios.post(`${API_URL}/torneios/${id}/gestao/criarEliminatorias`, bodyElim,{headers: headers})
                 .then(response => {
-                  searchElim();
+                  if(response.status==200){
+                    searchElim();
+                    setAlert(false);
+                  }
+                  else {
+                    setAlert(true);
+                    setAlertMsg("O Torneio ainda tem inscrições abertas!");
+                  }
             }).catch(e => console.log(e))
         }
         else {
@@ -145,7 +164,14 @@ export function GestTorneio({ id,terminado,tipoTorneio, ...props }) {
             }
             axios.post(`${API_URL}/torneios/${id}/gestao/criarEliminatoriasFromGrupos`, bodyElimG,{headers: headers})
                 .then(response => {
-                  searchElim();
+                  if(response.status==200){
+                    searchElim();
+                    setAlert(false);
+                  }
+                  else {
+                    setAlert(true);
+                    setAlertMsg("A fase de grupos ainda não terminou!");
+                  }
             }).catch(e => console.log(e))
         }
     }
@@ -179,7 +205,16 @@ export function GestTorneio({ id,terminado,tipoTorneio, ...props }) {
                 searchGrupos();
         }).catch(e => console.log(e))
     }
+    
 
+    const handleTipoTorneio = async (e) => {
+      if(tipoTorneio == 1 || tipoTorneio == 4) {
+        setTipo1("eliminatorias");
+      }
+      else {
+        setTipo1("grupos");
+      }
+    } 
 
     // Vai buscar os grupos e as eliminatórias.
     useEffect(() => {
@@ -191,17 +226,32 @@ export function GestTorneio({ id,terminado,tipoTorneio, ...props }) {
       searchElim();
       searchInscritos();
       searchApurados();
+      handleTipoTorneio();
     },[])
 
 
 
-
     return(
-        <div className = "mb-32">
-        <div onChange={e=>setTipo1(e.target.value)}>
-            <input type="radio" value="eliminatorias" name="tipoamostrar" checked={("eliminatorias"===tipo1) ? "checked" : ""}/> Eliminatorias
-            <input type="radio" value="grupos" name="tipoamostrar" checked={("grupos"===tipo1) ? "checked" : ""}/> Grupos
+      <div className = "mb-32">
+
+        <div className="viagem-form w3-mobile radio-list" onChange={e=>setTipo1(e.target.value)}>
+              <form>
+                {(tipoTorneio != 0 && tipoTorneio != 3 && tipoTorneio != 1 && tipoTorneio != 4) 
+                ?   <div className="w3-row-padding w3-mobile">
+                      <div className = "w3-half w3-center w3-mobile radio-item">
+                        <input type="radio" id="grupos" value="grupos" name="tipoamostrar" checked={("grupos"===tipo1) ? "checked" : ""}/>
+                        <label for="grupos" style={{justifyContent:"center"}}>Grupos</label><br/>
+                      </div>
+                      <div className = "w3-half w3-center w3-mobile radio-item ">
+                        <input type="radio" id="eliminatorias" value="eliminatorias" name="tipoamostrar" checked={("eliminatorias"===tipo1) ? "checked" : ""}/>
+                        <label for="eliminatorias" style={{justifyContent:"center"}}>Eliminatórias</label><br/>
+                      </div>
+                    </div>
+                : ""
+                }
+              </form>
         </div>
+
 
         <br/>
         {tipo1==="grupos"
@@ -304,7 +354,12 @@ export function GestTorneio({ id,terminado,tipoTorneio, ...props }) {
                                 <input className="w-full relative py-2 pl-2 pr-6 cursor-pointer bg-transparent text-xs text-gray-500 font-semibold appearance-none outline-none border border-black" value={inputIntervaloEtapas} id="intervaloEtapa" type="number" onChange={(e) => setInputIntervaloEtapas(e.target.value)} required></input>
                                 <br/>
                             <br/>
-
+                            {(alert)
+                              ? (<div class="p-4 mb-4 w-full text-sm text-red-800 rounded-lg bg-red-200 dark:bg-gray-800 dark:text-red-400" role="alert">
+                                    <span class="font-medium">{alertMsg}</span>
+                                </div>)
+                              : null
+                            }
                         <button className="mt-4 bg-orange-500 p-2 text-white rounded-xl hover:bg-orange-700">Criar Grupos</button>
                     </form>
                 </div>
@@ -395,9 +450,13 @@ export function GestTorneio({ id,terminado,tipoTorneio, ...props }) {
                 )
               : (
                 <div className="empty_eliminatorias">
-                  <div className="inscritos">
-                    <InscritosDisplay inscritos = {inscritos} titulo = "Inscritos"/>
-                  </div>
+                  {inscritos.length > 0
+                  ? <div className="inscritos">
+                      <InscritosDisplay inscritos = {inscritos} titulo = "Inscritos"/>
+                    </div>
+                  : null
+                  }
+                  
                     <form className="bg-white border border-gray-200 w-2/3 rounded-xl p-10 mx-auto" onSubmit={handleElim}>
                       <div className="text-black text-xl font-bold w-full mb-4">
                           <label className="w-full">Criar eliminatorias </label>
@@ -414,7 +473,12 @@ export function GestTorneio({ id,terminado,tipoTorneio, ...props }) {
                                 <input className="w-full relative py-2 pl-2 pr-6 cursor-pointer bg-transparent text-xs text-gray-500 font-semibold appearance-none outline-none border border-black"  value={inputIntervaloEtapas} id="intervaloEtapa" type="number" onChange={(e) => setInputIntervaloEtapas(e.target.value)} required></input>
                                 <br/>
                             <br/>
-
+                            {(alert)
+                              ? (<div class="p-4 mb-4 w-full text-sm text-red-800 rounded-lg bg-red-200 dark:bg-gray-800 dark:text-red-400" role="alert">
+                                    <span class="font-medium">{alertMsg}</span>
+                                </div>)
+                              : null
+                            }
                         <button className="my-4 bg-orange-500 p-2 text-white rounded-xl hover:bg-orange-700">Criar Eliminatorias</button>
                     </form>
                 </div>

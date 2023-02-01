@@ -149,7 +149,7 @@ export function Torneios() {
 
           </div>
         <div className="flex flex-wrap w-full">
-        <div className='filtros lg:w-1/3 mx-auto'>
+        <div className='filtros lg:w-1/3'>
           <form>
           <label className='label'>Localidade: </label>
             <div className = "select">
@@ -178,26 +178,19 @@ export function Torneios() {
               </select>
             </div>
           </form>
-          <div className='botaoregisto bg-white hover:bg-gray-200'>
+          <div className='botaoregistoTorneio bg-white hover:bg-gray-200'>
             <button className="p-4 bg-white text-xl border-2 border-black hover:bg-gray-200" onClick ={handleRegisto}>Registe aqui o seu torneio</button>
           </div>
         </div>
 
 
-        {torneios?.length > 0
-        ? (
         <div className="flex flex-wrap place-content-center w-full lg:w-2/3">
-
-        {torneios.map((torneio) => (
-          <Link to={"/torneios/" + torneio.idTorneio}><TorneioDisplay torneio = {torneio}/></Link>
-        ))}
+          {torneios.length > 0
+          ? torneios.map((torneio) => (
+              <Link to={"/torneios/" + torneio.idTorneio}><TorneioDisplay torneio = {torneio}/></Link>
+            ))
+          : <h2 className="text-4xl text-center">Não existem torneios!</h2>}
         </div>
-        )
-        : (
-        <div className="empty">
-            <h2 className="text-4xl">Não existem torneios!</h2>
-        </div>
-     )}
      </div>
 
 

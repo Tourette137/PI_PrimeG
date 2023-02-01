@@ -64,10 +64,14 @@ export function Classificacao() {
     return(
         <>
         <div className='titulo'>
-          <h1>Classificacao</h1>
+          <h1>Classificação</h1>
         </div>
 
-        <section class="py-3">
+        {classificacaoGrupo.length == 0 && classificacaoElim.length == 0
+        ? <div class="p-4 mt-16 mb-4 w-full text-sm text-red-800 rounded-lg bg-red-200 dark:bg-gray-800 dark:text-red-400" role="alert">
+            <span class="font-medium">O torneio ainda não foi sorteado!</span>
+          </div>
+        : <section class="py-3">
           <div class="container px-4 mx-auto">
             <div class="flex flex-wrap -mx-3 -mb-8">
 
@@ -159,6 +163,7 @@ export function Classificacao() {
           </div>
         </div>
       </section>
+    }
     </>
     )
 }

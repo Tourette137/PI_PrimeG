@@ -7,6 +7,7 @@ import {GestTorneio} from './GestTorneio.js';
 import {Inscricoes} from './Inscricoes.js';
 import queries from '../requests/queries';
 import { useQuery } from '@tanstack/react-query';
+import '../components/RadioForm.css';
 
 const API_URL="http://localhost:3000"
 
@@ -50,24 +51,45 @@ export function Gestao() {
 
     return(
         <div className="text-center">
-        <h1 className = "text-center p-4 text-6xl font-bold">Gestão</h1>
-        <div onChange={e => setTipo(e.target.value)}>
-            <input className="" type="radio" value="inscricoes" name="gestao" checked={("inscricoes"===tipo) ? "checked" : ""} /> Inscrições
-            <input type="radio" value="torneio" name="gestao" checked={("torneio"===tipo) ? "checked" : ""}/> Torneio
-            <input type="radio" value="calendario" name="gestao" checked={("calendario"===tipo) ? "checked" : ""}/> Calendário
-            <input type="radio" value="jogos" name="gestao" checked={("jogos"===tipo) ? "checked" : ""}/> Jogos
-        </div>
-        {("inscricoes"===tipo)? (
-          <Inscricoes id={parseInt(id)} inscricoesA = {data.inscricoesAbertas} terminado = {data.terminado}/>
-        ):
-          (("torneio"===tipo)?
-            <GestTorneio id = {parseInt(id)}  tipoTorneio = {data.tipoTorneio} terminado = {data.terminado}/>
-            :(("calendario"===tipo)?
-              <Calendario id = {parseInt(id)}  tipoTorneio = {data.tipoTorneio}/>
-              : <GestJogos idTorneio={parseInt(id)} tipoTorneio={torneio.tipoTorneio} desporto={torneio.nomeDesporto} />
+          <h1 className = "text-center p-4 text-6xl font-bold">Gestão</h1>
+          <div className="viagem-form w3-mobile radio-list" onChange={e => setTipo(e.target.value)}>
+              <form>
+                <div className="w3-row-padding w3-mobile">
+                  <div className = "w3-quarter w3-center w3-mobile radio-item">
+                    <input type="radio" id="inscricoes" value="inscricoes" name="gestao" checked={("inscricoes"===tipo) ? "checked" : ""}/>
+                    <label for="inscricoes" style={{justifyContent:"center"}}>Inscrições</label><br/>
+                  </div>
+
+                  <div className = "w3-quarter w3-center w3-mobile radio-item">
+                    <input type="radio" id="torneio" value="torneio" name="gestao" checked={("torneio"===tipo) ? "checked" : ""}/>
+                    <label for="torneio" style={{justifyContent:"center"}}>Torneio</label><br/>
+                  </div>
+
+                  <div className = "w3-quarter w3-center w3-mobile radio-item">
+                    <input type="radio" id="calendario" value="calendario" name="gestao" checked={("calendario"===tipo) ? "checked" : ""}/>
+                    <label for="calendario" style={{justifyContent:"center"}}>Calendário</label><br/>
+                  </div>
+
+                  <div className = "w3-quarter w3-center w3-mobile radio-item">
+                    <input type="radio" id="jogos" value="jogos" name="gestao" checked={("jogos"===tipo) ? "checked" : ""}/>
+                    <label for="jogos" style={{justifyContent:"center"}}>Jogos</label><br/>
+                  </div>
+                </div>
+              </form>
+          </div>
+          {("inscricoes"===tipo)? (
+            <Inscricoes id={parseInt(id)} inscricoesA = {data.inscricoesAbertas} terminado = {data.terminado}/>
+          ):
+            (("torneio"===tipo)?
+              <GestTorneio id = {parseInt(id)}  tipoTorneio = {data.tipoTorneio} terminado = {data.terminado}/>
+              :(("calendario"===tipo)?
+                <Calendario id = {parseInt(id)}  tipoTorneio = {data.tipoTorneio}/>
+                : <GestJogos idTorneio={parseInt(id)} tipoTorneio={torneio.tipoTorneio} desporto={torneio.nomeDesporto} />
+              )
             )
-          )
-        }
+          }
         </div>
     )
+
+          
 }
