@@ -25,7 +25,7 @@
     border-radius: 4px;
 }
 .login-info-form .registerLink {
-    font-size: 16px;
+    font-size: 18px;
     font-weight: bold;
     text-decoration: none;
     padding-bottom: 0.1rem;
@@ -56,6 +56,10 @@
     border-width: 3px;
     color: grey;
     margin-bottom: 20px;
+}
+.paragensFavoritas h2 {
+    font-size: 18px;
+    margin-bottom: 10px;
 }
 .paragensFavoritas h3 {
     font-size: 22px;

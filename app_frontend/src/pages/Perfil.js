@@ -108,7 +108,6 @@ export function Perfil() {
 
         axios.get(`${API_URL}/users/perfil`, {headers: headers})
                 .then(response => {
-                    console.log(response.data[0])
                     setUser(response.data[0])
                 })
                 .catch(e => console.log(e))
@@ -145,14 +144,14 @@ export function Perfil() {
             </div>
 
 
-            <div className="butoesAcceptBack gridButtons containerDiv" style={{ margin: "0 0 30px 0" }}>
-                <button className="buttonBlack"><Link to="/perfil/localidadesFavoritas">Localidades Favoritas</Link></button>
-                <button className="buttonBlack"><Link to="/perfil/desportosFavoritos">Desportos Favoritos</Link></button>
-                <button className="buttonBlack"><Link to="/perfil/inscrito">Torneios Inscrito</Link></button>
-                <button className="buttonBlack"><Link to="/perfil/favoritos">Torneios Favoritos</Link></button>
-                <button className="buttonBlack"><Link to="/perfil/historico">Historico Torneios</Link></button>
-                <button className="buttonBlack"><Link to="/perfil/historicoJogos">Historico Jogos</Link></button>
-                <button className="buttonBlack"><Link to="/perfil/notificacoes">Notificacoes</Link></button>
+            <div className="butoesAcceptBack gridButtons containerDiv" style={{ margin: "0 0 80px 0" }}>
+            <Link to="/perfil/localidadesFavoritas"><button className="buttonBlack">Localidades Favoritas</button></Link>
+                <Link to="/perfil/desportosFavoritos"><button className="buttonBlack">Desportos Favoritos</button></Link>
+                <Link to="/perfil/inscrito"><button className="buttonBlack">Torneios Inscrito</button></Link>
+                <Link to="/perfil/favoritos"><button className="buttonBlack">Torneios Favoritos</button></Link>
+                <Link to="/perfil/historico"><button className="buttonBlack">Historico Torneios</button></Link>
+                <Link to="/perfil/historicoJogos"><button className="buttonBlack">Historico Jogos</button></Link>
+                <Link to="/perfil/notificacoes"><button className="buttonBlack">Notificacoes</button></Link>
             </div>
         </section>
 

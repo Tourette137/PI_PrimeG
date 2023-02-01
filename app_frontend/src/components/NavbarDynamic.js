@@ -1,31 +1,52 @@
 import {Link} from 'react-router-dom';
 import logotipo from '../images/logotipo.png'
 import {useState, useEffect} from 'react';
+import axios from 'axios';
+import NotificacaoDisplayMenu from "../pages/NotificacaoDisplayMenu.jsx";
 
 import "./NavbarDynamic.css";
+
+const API_URL="http://localhost:3000"
 
 export function NavbarDynamic() {
 
     const [showMenu, setShowMenu] = useState(false);
-    const [loggedIn, setLoggedIn] = useState(false);
+
+    const [notificacoes, setNotificacoes] = useState([]);
+    const [showNotification, setShowNotification] = useState(false);
+
+    // Vai a API buscar os torneios inscritos do Utilizador
+    const notificacoesUser = async () => {
+
+        const headers = { "authorization": "Bearer " + localStorage.getItem("token") }
+
+        axios.get(`${API_URL}/users/notificacoes`, {headers: headers})
+                .then(response => {
+                    setNotificacoes(response.data.sort((a, b) => b.idNotificacao - a.idNotificacao));
+                })
+                .catch(e => console.log(e))
+      }
+
+    const handleToogleNotifications = async (e) => {
+        setShowNotification(!showNotification)
+    }
+
+    const handleHideNotificatios = async (e) => {
+        setShowNotification(false)
+    }
 
     useEffect(() => {
-        setLoggedIn()
+        if (localStorage.getItem("token") !== 'null') {
+            notificacoesUser()
+        }
     },[])
-
-    const homeComponent =
-        <li className="nav__item">
-            <Link to="/" className="nav__link">
-                <i className="uil uil-estate nav__icon"></i>Home
-            </Link>
-        </li>
 
     return(
         <div className='mb-16'>
 
             <header className="header">
                 <nav className="nav containerDiv">
-                    <Link to="/" className="nav__logo">
+                    <Link to="/" className="nav__logo" onClick={() => {setShowMenu(false); handleHideNotificatios()}}>
                         <img src={logotipo} alt="MATCHUP"></img>
                     </Link>
 
@@ -36,7 +57,7 @@ export function NavbarDynamic() {
                             {
                                 showMenu ?
                                 (<li className="nav__item">
-                                    <Link to="/" className="nav__link">
+                                    <Link to="/" className="nav__link" onClick={() => {setShowMenu(false); handleHideNotificatios()}}>
                                         <i className="uil uil-estate nav__icon"></i>Home
                                     </Link>
                                 </li>
@@ -58,13 +79,13 @@ export function NavbarDynamic() {
 
 
                             <li className="nav__item">
-                                <Link to="/torneios" className="nav__link">
+                                <Link to="/torneios" className="nav__link" onClick={() => {setShowMenu(false); handleHideNotificatios()}}>
                                     <i className="uil uil-trophy nav__icon"></i>Torneios
                                 </Link>
                             </li>
 
                             <li className="nav__item">
-                                <Link to="/espacos" className="nav__link">
+                                <Link to="/espacos" className="nav__link" onClick={() => {setShowMenu(false); handleHideNotificatios()}}>
                                     <i className="uil uil-location-pin-alt nav__icon"></i>Espaços
                                 </Link>
                             </li>
@@ -72,13 +93,52 @@ export function NavbarDynamic() {
                             <>
                             {
                                 (localStorage.getItem("token") !== 'null') ? (
-                                    <Link to="/perfil" className="nav__link">
+                                    <Link to="/perfil" className="nav__link" onClick={() => {setShowMenu(false); handleHideNotificatios()}}>
                                         <i className="uil uil-user nav__icon"></i>O meu Perfil
                                     </Link>
                                 ) : (
-                                    <Link to="/login" className="nav__link">
+                                    <Link to="/login" className="nav__link" onClick={() => {setShowMenu(false); handleHideNotificatios()}}>
                                         <i className="uil uil-user nav__icon"></i>Login
                                     </Link>
+                                )
+                            }
+                            </>
+
+                            <>  
+                            {
+                                ((localStorage.getItem("token") !== 'null') && !showMenu) ?
+                                (<li className="nav__item">
+                                    <div className="nav__link">
+                                        <i className="uil uil-bell" style={{fontSize: "1.2rem", marginTop:"-3px", marginLeft:"-3px", cursor:"pointer"}} onClick={handleToogleNotifications}></i>
+                                    </div>
+                                    <div className="absolute overflow-x-auto shadow-md sm:rounded-lg containerDiv" style={{display: (showNotification ? "" : "none"), width:"400px", marginLeft:"-380px", marginTop:"10px"}}>
+                                        <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                                            <thead className="text-xl text-center text-white uppercase bg-transparent dark:bg-gray-700 dark:text-gray-400" style={{background: "linear-gradient(90deg, #ff5500, #f8b028)"}}>
+                                                <tr>
+                                                    <th scope="col" className="px-6 py-3">
+                                                        Notificações
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            {
+                                                notificacoes?.length > 0 ?
+                                                (
+                                                    notificacoes.map((notificacao) => <NotificacaoDisplayMenu notificacao={notificacao} setShowMenu={setShowMenu} handleHideNotificatios={handleHideNotificatios}/>)
+                                                ) : (
+                                                <tr className="text-lg bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                                    <td className="px-6 py-4">
+                                                        Não existem notificações
+                                                    </td>
+                                                </tr>
+                                                )
+                                            }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </li>
+                                ) : (
+                                    null
                                 )
                             }
                             </>

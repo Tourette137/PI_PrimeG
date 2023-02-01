@@ -150,6 +150,10 @@ img {
   gap: 1.5rem;
 }
 
+.distanciaTop {
+  margin-top: 20px;
+}
+
 /*=============== BUTTONS ===============*/
 .button {
   display: inline-block;

@@ -149,7 +149,7 @@ export function LocalidadesFavoritas() {
                             {localidadesFav.map((localidade) => 
                                 <>
                                 <div className= "informacaoParagem">
-                                    <h3 style={{float: "left"}}>{localidade}</h3>
+                                    <h3 key={localidade} style={{float: "left"}}>{localidade}</h3>
                                     <img onClick={(event) => handleTogglePopupDeleteLocalidade(event, localidade)} style={{cursor:"pointer"}} className="deleteButton" src={trashIcon} alt="Lixo"/>
                                 </div>
                                 <hr/>

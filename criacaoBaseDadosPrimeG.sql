@@ -355,7 +355,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `primeG`.`Notificacao` (
   `idNotificacao` INT NOT NULL AUTO_INCREMENT,
-  `Titulo` VARCHAR(45) NULL,
+  `Titulo` VARCHAR(140) NULL,
   `Torneio_idTorneio` INT NOT NULL,
   PRIMARY KEY (`idNotificacao`),
   INDEX `fk_Notificacao_Torneio1_idx` (`Torneio_idTorneio` ASC) VISIBLE,

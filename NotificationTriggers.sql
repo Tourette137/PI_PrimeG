@@ -5,7 +5,15 @@ DROP TRIGGER IF EXISTS torneio_trigger;
 DELIMITER $$
 CREATE TRIGGER torneio_trigger AFTER INSERT ON Torneio FOR EACH ROW 
 BEGIN
-	INSERT INTO Notificacao (Titulo, Torneio_idTorneio) VALUES (NEW.nomeTorneio, NEW.idTorneio);
+	DECLARE insert_desporto VARCHAR(45);
+    DECLARE insert_localidade VARCHAR(45);
+    DECLARE insert_titulo_notificacao VARCHAR(45);
+    
+    SET @insert_desporto = (SELECT nomeDesporto FROM Desporto WHERE idDesporto = NEW.idDesporto);
+    SET @insert_localidade = (SELECT L.Nome FROM Localidade as L JOIN Espaco as E ON E.Localidade_idLocalidade = L.idLocalidade WHERE E.idEspaco = NEW.Espaco_idEspaco);
+    SET @insert_titulo_notificacao = CONCAT( NEW.nomeTorneio, "$$", @insert_desporto, "$$", @insert_localidade);
+    
+	INSERT INTO Notificacao (Titulo, Torneio_idTorneio) VALUES (@insert_titulo_notificacao, NEW.idTorneio);
 END$$
 DELIMITER ;
 

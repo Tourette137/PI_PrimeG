@@ -6,7 +6,7 @@ import { useState } from 'react';
 
 const API_URL="http://localhost:3000"
 
-const NotificacaoDisplay = ({notificacao}) => {
+const NotificacaoDisplayMenu = ({notificacao, setShowMenu, handleHideNotificatios}) => {
     const navigate = useNavigate();
 
     const [notTitulo, setNotTitulo] = useState("");
@@ -17,7 +17,7 @@ const NotificacaoDisplay = ({notificacao}) => {
     const handlebackGoToTorneios = async (e, idTorneio, lido, idNotificacao) => {
         
         e.preventDefault()
-        
+
         if(!lido) {
             console.log("ENTREI")
             const headers = { "authorization": "Bearer " + localStorage.getItem("token") }
@@ -53,8 +53,8 @@ const NotificacaoDisplay = ({notificacao}) => {
 
 
     return (
-        <tr className= {notificacao.Lido ? "bg-gray-200 hover:bg-gray-300 text-lg border-b cursor-pointer" : "bg-white hover:bg-gray-100 text-lg border-b cursor-pointer"} onClick={(e) => handlebackGoToTorneios(e, notificacao.Torneio_idTorneio, notificacao.Lido, notificacao.idNotificacao)}>
-            <td className="px-6 py-4">
+        <tr className= {notificacao.Lido ? "bg-gray-200 hover:bg-gray-300 text-lg border-b cursor-pointer" : "bg-white hover:bg-gray-100 text-lg border-b cursor-pointer"} onClick={(e) => {handlebackGoToTorneios(e, notificacao.Torneio_idTorneio, notificacao.Lido, notificacao.idNotificacao); setShowMenu(false); handleHideNotificatios()}}>
+            <td className="px-6 py-4 text-base">
                 Novo Torneio: <b>{notTitulo}</b> de <b>{notDesporto}</b> em <b>{notLocalidade}</b>
             </td>
         </tr>
@@ -82,4 +82,4 @@ const NotificacaoDisplay = ({notificacao}) => {
         </div>
 */
 
-export default NotificacaoDisplay;
+export default NotificacaoDisplayMenu;

@@ -64,6 +64,16 @@ router.get("/allDesportos", (req, res) => {
         .catch(e => { res.status(500).jsonp({ error: e }) })
 })
 
+//Imprimir todos os desportos favoritos
+router.get("/desportosFav", isAuth, (req, res) => {
+    let sql = `Select D.nomeDesporto from Desporto as D
+                JOIN DesportosFav as DF on DF.Desporto_idDesporto = D.idDesporto
+                WHERE DF.Utilizador_idUtilizador = ${req.userId};`
+    data.query(sql)
+        .then(re => { res.send(re) })
+        .catch(e => { res.status(500).jsonp({ error: e }) })
+})
+
 //Registo de um utilizador 
 router.post("/registo", upload.single('fotoPerfil'), (req, res) => {
 
@@ -257,7 +267,7 @@ router.get("/jogosHistorico", isAuth, (req, res) => {
 // Notificações
 router.get("/notificacoes", isAuth, (req, res) => {
 
-    let sql =  `Select N.Titulo, UN.Lido, N.Torneio_idTorneio from Notificacao as N
+    let sql =  `Select N.Titulo, N.idNotificacao, UN.Lido, N.Torneio_idTorneio from Notificacao as N
                 Join Utilizador_has_Notificacao as UN on UN.Notificacao_idNotificacao = N.idNotificacao
                 WHERE UN.Utilizador_idUtilizador = "${req.userId}"; `
 
@@ -273,6 +283,18 @@ router.get("/notificacoes", isAuth, (req, res) => {
     
 })
 
+// Change notification viewed
+router.post("/notificacaoVista", isAuth, (req, res) => {
+
+    let sql = `Update Utilizador_has_Notificacao Set Lido=1 Where Utilizador_idUtilizador = ${req.userId} AND Notificacao_idNotificacao = ${req.body.idNotificacao};`
+
+    data.query(sql)
+        .then( async re => {
+            res.send(re);
+        })
+        .catch(e => { res.status(502).jsonp({ error: e }) })
+    
+})
 
 // Editar Perfil Utilizador
 
@@ -344,7 +366,9 @@ router.post("/addFavorito", isAuth, (req, res) => {
                 res.send(re);
             }
         })
-        .catch(e => { res.status(502).jsonp({ error: e }) })
+        .catch(e => { 
+            console.log(e)
+            res.status(502).jsonp({ error: e }) })
     
 })
 

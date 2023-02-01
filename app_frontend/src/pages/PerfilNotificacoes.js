@@ -3,6 +3,7 @@ import {useNavigate, Link,Route,Routes} from 'react-router-dom';
 import {useState,useEffect} from 'react';
 import axios from 'axios';
 import {NavbarDynamic} from '../components/NavbarDynamic.js';
+import '../components/Buttons.css';
 
 const API_URL="http://localhost:3000"
 
@@ -24,7 +25,7 @@ export function PerfilNotificacoes() {
 
         axios.get(`${API_URL}/users/notificacoes`, {headers: headers})
                 .then(response => {
-                    setNotificacoes(response.data)
+                    setNotificacoes(response.data.sort((a, b) => b.idNotificacao - a.idNotificacao));
                 })
                 .catch(e => console.log(e))
       }
@@ -38,23 +39,40 @@ export function PerfilNotificacoes() {
     return(
         <>
         <NavbarDynamic/>
-            <h1>Só entra aqui se tiver o token / estiver logado.</h1>
-            <h1>NOTIFICACOES</h1>
 
-            {
-                notificacoes?.length > 0 ?
-                (
-                <div className="container">
-                    {notificacoes.map((notificacao) => <li><NotificacaoDisplay notificacao={notificacao}/></li>) }
+            <div className="pt-12">
+                <div className="relative overflow-x-auto shadow-md sm:rounded-lg containerDiv">
+                    <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                        <thead className="text-3xl text-center text-white uppercase bg-transparent dark:bg-gray-700 dark:text-gray-400" style={{background: "linear-gradient(90deg, #ff5500, #f8b028)"}}>
+                            <tr>
+                                <th scope="col" className="px-6 py-3">
+                                    Notificações
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {
+                            notificacoes?.length > 0 ?
+                            (
+                                notificacoes.map((notificacao) => <NotificacaoDisplay notificacao={notificacao}/>)
+                            ) : (
+                            <tr className="text-lg bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                <td className="px-6 py-4">
+                                    Não existem notificações
+                                </td>
+                            </tr>
+                            )
+                        }
+                        </tbody>
+                    </table>
                 </div>
-                ) : (
-                <div className="empty">
-                    <h2>Nao Tem Notificações</h2>
-                </div>
-                )
-            }
 
-            <button onClick={handlebackToProfile}>Voltar ao Perfil</button>
+                <div className="butoesAcceptBack" style={{marginBottom: "50px" ,textAlign:"center"}}>
+                    <button className="buttonBlack" onClick={handlebackToProfile}>Voltar ao Perfil</button>
+                </div>
+            </div>
+
+
         </>
     )
 }
