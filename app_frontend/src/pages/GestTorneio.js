@@ -13,7 +13,7 @@ export function GestTorneio({ id,terminado,tipoTorneio, ...props }) {
     const [classificacaoElim,setClassificacaoElim] = useState([]);
     const [elimSize,setElimSize] = useState(0);
 
-    const [tipo1,setTipo1] = useState("grupos");
+    const [tipo1,setTipo1] = useState("");
     const [fecharSorteio,setFecharSorteio] = useState(0);
 
     // variaveis criar elim
@@ -83,6 +83,7 @@ export function GestTorneio({ id,terminado,tipoTorneio, ...props }) {
         const response = await fetch (`${API_URL}/torneios/${id}/classificacao/eliminatorias`);
         if (response.status === 200) {
             const data = await response.json();
+            console.log();
             setClassificacaoElim(data);
             setElimSize(data.length)
             searchSorteio()

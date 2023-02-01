@@ -6,6 +6,14 @@ insert into equipa (classificacao, ranking, nomeEquipa, escalao,clube) values (0
 insert into equipa (classificacao, ranking, nomeEquipa, escalao,clube) values (0,6,"Famaligato",2,"c5");
 insert into equipa (classificacao, ranking, nomeEquipa, escalao,clube) values (0,7,"Vitela",2,"c5");
 insert into equipa (classificacao, ranking, nomeEquipa, escalao,clube) values (0,8,"VSC",2,"c6");
+insert into equipa (classificacao, ranking, nomeEquipa, escalao,clube) values (0,9,"u1",2,"c1");
+insert into equipa (classificacao, ranking, nomeEquipa, escalao,clube) values (0,10,"u2",2,"c4");
+insert into equipa (classificacao, ranking, nomeEquipa, escalao,clube) values (0,111,"u3",2,"c3");
+insert into equipa (classificacao, ranking, nomeEquipa, escalao,clube) values (0,1141,"u4 Sia",2,"c72");
+insert into equipa (classificacao, ranking, nomeEquipa, escalao,clube) values (0,1311,"u5",2,"c1");
+insert into equipa (classificacao, ranking, nomeEquipa, escalao,clube) values (0,211,"u6",2,"c59");
+insert into equipa (classificacao, ranking, nomeEquipa, escalao,clube) values (0,75,"u7",2,"c9");
+insert into equipa (classificacao, ranking, nomeEquipa, escalao,clube) values (0,88,"u98",2,"c1");
 #insert into equipa (classificacao, ranking, nomeEquipa, escalao) values (0,9,"PUUOORTO",2);
 
 
@@ -40,7 +48,7 @@ insert into torneio (nomeTorneio,idOrganizador,
                     idDesporto,isFederado,dataTorneio,
                     inscricoesAbertas,escalao,tipoTorneio,
                     terminado,Espaco_idEspaco,tamEquipa,genero) 
-                    values ("ATP",1,2,1,'2012-06-18 10:34:09',0,2,0,0,1,1,1);
+                    values ("ATP",1,2,1,'2012-06-18 10:34:09',0,2,2,0,1,1,1);
 
 insert into DesportosFav(Utilizador_idUtilizador, Desporto_idDesporto, numeroFederado, clube, notificacao) values (1,1,1454,"c7",1);
 insert into DesportosFav(Utilizador_idUtilizador, Desporto_idDesporto, numeroFederado, clube, notificacao) values (2,1,2345,"c1",1);
@@ -52,15 +60,23 @@ insert into DesportosFav(Utilizador_idUtilizador, Desporto_idDesporto, numeroFed
 insert into DesportosFav(Utilizador_idUtilizador, Desporto_idDesporto, numeroFederado, clube, notificacao) values (8,1,8356,"c6",1);
 
 
-insert into torneio_has_equipa (Torneio_idTorneio,Equipa_idEquipa,pendente) values (1,1,1);
-insert into torneio_has_equipa (Torneio_idTorneio,Equipa_idEquipa,pendente) values (1,2,1);
-insert into torneio_has_equipa (Torneio_idTorneio,Equipa_idEquipa,pendente) values (1,3,1);
-insert into torneio_has_equipa (Torneio_idTorneio,Equipa_idEquipa,pendente) values (1,4,1);
-insert into torneio_has_equipa (Torneio_idTorneio,Equipa_idEquipa,pendente) values (1,5,1);
-insert into torneio_has_equipa (Torneio_idTorneio,Equipa_idEquipa,pendente) values (1,6,1);
-insert into torneio_has_equipa (Torneio_idTorneio,Equipa_idEquipa,pendente) values (1,7,1);
-insert into torneio_has_equipa (Torneio_idTorneio,Equipa_idEquipa,pendente) values (1,8,1);
+insert into torneio_has_equipa (Torneio_idTorneio,Equipa_idEquipa,pendente) values (2,1,0);
+insert into torneio_has_equipa (Torneio_idTorneio,Equipa_idEquipa,pendente) values (2,2,0);
+insert into torneio_has_equipa (Torneio_idTorneio,Equipa_idEquipa,pendente) values (2,3,0);
+insert into torneio_has_equipa (Torneio_idTorneio,Equipa_idEquipa,pendente) values (2,4,0);
+insert into torneio_has_equipa (Torneio_idTorneio,Equipa_idEquipa,pendente) values (2,5,1);
+insert into torneio_has_equipa (Torneio_idTorneio,Equipa_idEquipa,pendente) values (2,6,1);
+insert into torneio_has_equipa (Torneio_idTorneio,Equipa_idEquipa,pendente) values (2,7,1);
+insert into torneio_has_equipa (Torneio_idTorneio,Equipa_idEquipa,pendente) values (2,8,0);
 
+insert into torneio_has_equipa (Torneio_idTorneio,Equipa_idEquipa,pendente) values (1,9,0);
+insert into torneio_has_equipa (Torneio_idTorneio,Equipa_idEquipa,pendente) values (1,10,0);
+insert into torneio_has_equipa (Torneio_idTorneio,Equipa_idEquipa,pendente) values (1,11,0);
+insert into torneio_has_equipa (Torneio_idTorneio,Equipa_idEquipa,pendente) values (1,12,0);
+insert into torneio_has_equipa (Torneio_idTorneio,Equipa_idEquipa,pendente) values (2,13,1);
+insert into torneio_has_equipa (Torneio_idTorneio,Equipa_idEquipa,pendente) values (2,14,1);
+insert into torneio_has_equipa (Torneio_idTorneio,Equipa_idEquipa,pendente) values (2,15,1);
+insert into torneio_has_equipa (Torneio_idTorneio,Equipa_idEquipa,pendente) values (1,16,0);
 
 
 select * from equipa;
@@ -68,3 +84,7 @@ select * from torneio_has_equipa;
 select * from utilizador;
 select * from equipa_has_utilizador;
 select * from DesportosFav;
+select * from grupo;
+
+
+

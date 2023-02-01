@@ -2,7 +2,7 @@ import React from 'react'
 
 const EspacoCard = ({nome,rua,contacto}) => {
     return (
-      <div className="w-full place-content-center">
+      <div className="w-full place-content-center hover:scale-105 transition duration-500">
         <div className="flex-col mx-auto p-2 shadow-2xl shadow-gray-300 rounded-2xl h-[370px] w-[350px] bg-white text-black text-left">
             <div className="mx-auto w-[320px] h-[250px] bg-black">
                 <img

@@ -11,6 +11,8 @@ export function Classificacao() {
     const [classificacaoElim,setClassificacaoElim] = useState([]);
     const [elimSize,setElimSize] = useState(0);
     const [tipo,setTipo] = useState("");
+    const [loading1,setLoading1] = useState(false);
+    const [loading2,setLoading2] = useState(false);
 
     // Função que vai buscar a classificação dos grupos.
     const searchGrupos = async () => {
@@ -18,15 +20,12 @@ export function Classificacao() {
         if (response.status === 200) {
             const data = await response.json();
             setClassificacaoGrupo(data);
-            if(tipo === "eliminatorias" || classificacaoElim != [])
-              setTipo("")
-            else {
-              setTipo("grupos")
-            }
         }
         else {
             setClassificacaoGrupo([]);
+            setTipo("eliminatorias")
         }
+        setLoading1(false);
     }
 
 
@@ -37,31 +36,30 @@ export function Classificacao() {
             const data = await response.json();
             setClassificacaoElim(data);
             setElimSize(data.length)
-            if(tipo === "grupos" || classificacaoGrupo != [])
-              setTipo("")
-            else {
-              setTipo("eliminatorias")
-            }
         }
         else {
             setClassificacaoElim([]);
+            setTipo("grupos")
         }
+        setLoading2(false);
     }
 
     function changeTipo(t){
       if(t === tipo)
         t = ""
       setTipo(t);
-      console.log(tipo);
     }
 
     // Vai buscar os grupos e as eliminatórias.
     useEffect(() => {
+      setLoading1(true);
+      setLoading2(true);
         searchGrupos();
         searchElim();
       },[])
 
-
+    if(loading1 || loading2)
+      return (<div>Loading!</div>)
 
     return(
         <>

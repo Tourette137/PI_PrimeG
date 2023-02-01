@@ -3,9 +3,10 @@ import Bracket from "../components/Bracket.js";
 import {useState,useEffect} from 'react';
 
 const ElimDisplay = ({elim,elimSize,tipo}) => {
-  const c = (elimSize > 31) ? 6 : ((elimSize > 15) ? 5 : ((elimSize > 7) ? 4 : ((elimSize > 3) ? 3 : ((elimSize > 1) ? 2 : 1))))
-  const e = (c == 1) ? "Final" : (c == 2) ? "1/2" : (c == 3) ? "1/4" : (c == 4) ? "1/8" : (c == 5) ? "1/16" : (c == 6) ? "1/32" : "1/64"
+  const [c,setC] = useState(0)
+  const [e,setE] = useState("Final")
   const [etapa,setEtapa] = useState(e)
+  const [loading,setLoading] = useState(false)
 
   function handleNext(){
     const n = (etapa == "1/2") ? "Final" :
@@ -26,9 +27,21 @@ const ElimDisplay = ({elim,elimSize,tipo}) => {
     setEtapa(n)
   }
 
-  if (c == undefined)
-    return (<div>LOADING!!!</div>)
+  function handleEtapas(){
+    const col = (elimSize > 31) ? 6 : ((elimSize > 15) ? 5 : ((elimSize > 7) ? 4 : ((elimSize > 3) ? 3 : ((elimSize > 1) ? 2 : 1))))
+    const e = (col == 1) ? "Final" : (col == 2) ? "1/2" : (col == 3) ? "1/4" : (col == 4) ? "1/8" : (col == 5) ? "1/16" : (col == 6) ? "1/32" : "1/64"
+    setC(col)
+    setE(e)
+    setLoading(false)
+  }
 
+  useEffect(() => {
+      setLoading(true)
+      handleEtapas()
+  },[])
+
+  if (loading)
+    return (<div>LOADING!!!</div>)
 
     return (
       <>

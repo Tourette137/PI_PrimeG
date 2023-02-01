@@ -79,8 +79,8 @@ export function Inscricoes({ id,terminado,inscricoesA, ...props }) {
         )
         : ((inscricoesAbertas === 1 )
             ?
-              (<div className="place-content-center">
-                <div className="">
+              (
+                <div className="place-content-center">
                     <section class="bg-coolGray-50 py-4">
                       <div class="container px-4 mx-auto">
                         <div class="pt-6 bg-white overflow-hidden border border-coolGray-100 rounded-md shadow-dashboard">
@@ -138,7 +138,6 @@ export function Inscricoes({ id,terminado,inscricoesA, ...props }) {
                             </div>
                           </div>
                         </section>
-                    </div>
                 <div className="butoesAcceptBack gridButtons container" style={{ margin: "0 0 30px 0" }}>
                   <button className="buttonBlack" onClick={handleFecharInscricoes}>Fechar inscrições</button>
                 </div>

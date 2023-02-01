@@ -28,7 +28,7 @@ import {DesportosFavoritos} from './pages/DesportosFavoritos.js';
 
 
 import {NavbarDynamic} from './components/NavbarDynamic.js';
-
+import {Footer} from './components/Footer.js';
 import './App.css'
 
 function App() {
@@ -70,7 +70,7 @@ function App() {
           </Route>
       </Routes>
 
-
+      <Footer/>
     </QueryClientProvider>
 
 
