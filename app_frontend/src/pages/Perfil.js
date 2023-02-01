@@ -145,7 +145,7 @@ export function Perfil() {
             </div>
 
 
-            <div className="butoesAcceptBack gridButtons container" style={{ margin: "0 0 30px 0" }}>
+            <div className="butoesAcceptBack gridButtons containerDiv" style={{ margin: "0 0 30px 0" }}>
                 <button className="buttonBlack"><Link to="/perfil/localidadesFavoritas">Localidades Favoritas</Link></button>
                 <button className="buttonBlack"><Link to="/perfil/desportosFavoritos">Desportos Favoritos</Link></button>
                 <button className="buttonBlack"><Link to="/perfil/inscrito">Torneios Inscrito</Link></button>

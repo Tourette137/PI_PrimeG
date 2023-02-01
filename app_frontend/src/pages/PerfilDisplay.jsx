@@ -5,7 +5,7 @@ import '../components/Buttons.css'
 
 const PerfilDisplay = ({user, handleTooglePopup, handleTooglePopupNewImage}) => {
     return (
-        <div className="container grid-container">  
+        <div className="containerDiv grid-container">  
             
             <div className="profilePic">
                 {(user.imageUrl === null) ?

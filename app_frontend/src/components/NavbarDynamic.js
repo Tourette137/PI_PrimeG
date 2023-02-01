@@ -21,9 +21,8 @@ export function NavbarDynamic() {
         </li>
 
     return(
-      <div className="mb-16">
         <header className="header">
-            <nav className="nav container">
+            <nav className="nav containerDiv">
                 <Link to="/" className="nav__logo">
                     <img src={logotipo} alt="MATCHUP"></img>
                 </Link>
@@ -94,6 +93,5 @@ export function NavbarDynamic() {
 
             </nav>
         </header>
-      </div>
     )
 }

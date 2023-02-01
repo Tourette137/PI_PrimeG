@@ -5,6 +5,8 @@ import {Link,Route,Routes} from 'react-router-dom';
 import {useNavigate } from 'react-router-dom';
 import {NavbarDynamic} from '../components/NavbarDynamic.js';
 
+import '../components/tailwindCSS.css';
+
 const API_URL="http://localhost:3000"
 export function Espacos() {
 
