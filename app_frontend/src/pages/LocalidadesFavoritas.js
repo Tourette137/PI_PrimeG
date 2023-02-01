@@ -145,7 +145,7 @@ export function LocalidadesFavoritas() {
                     {
                         localidadesFav?.length > 0 ?
                         (
-                          <div className="container">
+                          <div className="containerDiv">
                             {localidadesFav.map((localidade) => 
                                 <>
                                 <div className= "informacaoParagem">
