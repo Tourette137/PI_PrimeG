@@ -82,7 +82,10 @@ export function GestJogos(props) {
                                 </>
                             ) : (
                                 jogosGrupo.length > 0 ? (
-                                    <h4>A fase eliminatória não se encontra sorteada!</h4>
+                                    <div class=" mt-16 p-4 mb-4 w-full text-sm text-red-800 rounded-lg bg-red-200 dark:bg-gray-800 dark:text-red-400" role="alert">
+                                <span class="font-medium">A fase eliminatória não se encontra sorteada!</span>
+                                    </div>
+                                    
                                 )
                                 : null
                             )}
@@ -94,12 +97,17 @@ export function GestJogos(props) {
                     (<section className="grupos">
                     {jogosGrupo?.length > 0 ? (
                         <>
+                        <div class="border border-gray-300 rounded-md mx-4 mt-10 p-4">
+                                <div class="px-6 mb-4 text-lg text-coolGray-900 font-semibold">Jogos da Fase de Grupos:</div>
                         {jogosGrupo.map((jogo) => (
                             <JogoDisplayGest idTorneio = {idTorneio} jogo={jogo} desporto = {desporto} isGrupo={true}/>
                         ))}
+                        </div>
                         </>
                     ) : (
-                        <h2 className="mb-4 text-4xl font-bold leading-none tracking-tight text-orange-600 md:text-4xl lg:text-5xl dark:text-white">A fase de grupos não se encontra sorteada!</h2>
+                        <div class=" mt-16 p-4 mb-4 w-full text-sm text-red-800 rounded-lg bg-red-200 dark:bg-gray-800 dark:text-red-400" role="alert">
+                                <span class="font-medium">A fase de grupos não se encontra sorteada</span></div>
+
                     )}
                 </section>)
             : (
@@ -107,26 +115,33 @@ export function GestJogos(props) {
                     <section className="grupos">
                         {jogosGrupo?.length > 0 ? (
                             <>
+                            <div class="border border-gray-300 rounded-md mx-4 mt-10 p-4">
+                                <div class="px-6 mb-4 text-lg text-coolGray-900 font-semibold">Jogos da Fase de Grupos:</div>
                             {jogosGrupo.map((jogo) => (
                                 <JogoDisplayGest idTorneio = {idTorneio} jogo={jogo} desporto = {desporto} isGrupo={true}/>
                             ))}
+                            </div>
                             </>
                         ) : (
-                            <h2 className="mb-4 text-4xl font-bold leading-none tracking-tight text-orange-600 md:text-4xl lg:text-5xl dark:text-white">A fase de grupos não se encontra sorteada!</h2>
+                            <div class="mt-16 p-4 mb-4 w-full text-sm text-red-800 rounded-lg bg-red-200 dark:bg-gray-800 dark:text-red-400" role="alert">
+                                <span class="font-medium">A fase de grupos não se encontra sorteada</span></div>
                         )}
                     </section>
                 : 
                     <section className="eliminatorias">
                         {jogosElim?.length > 0 ? (
                             <>
+                            <div class="border border-gray-300 rounded-md mx-4 mt-10 p-4">
+                                <div class="px-6 mb-4 text-lg text-coolGray-900 font-semibold">Jogos da Fase Eliminatória:</div>
                             {jogosElim.map((jogo) => (
                                 <JogoDisplayGest idTorneio = {idTorneio} jogo={jogo} desporto = {desporto} isGrupo={false}/>
                             ))}
+                            </div>
                             </>
                         ) : (
-                            <div className="mt-12">
-                            <h2 className="mb-4 text-4xl font-bold leading-none tracking-tight text-orange-600 md:text-4xl lg:text-5xl dark:text-white">A Fase eliminatória não se encontra sorteada!</h2>
-                            </div>
+                            <div class="mt-16 p-4 mb-4 w-full text-sm text-red-800 rounded-lg bg-red-200 dark:bg-gray-800 dark:text-red-400" role="alert">
+                                <span class="font-medium">A fase eliminatória não se encontra sorteada!</span>
+                                    </div>
                         )}
                     </section>
             )

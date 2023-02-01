@@ -1,6 +1,10 @@
 import React from 'react'
 
+import profileIcon from '../images/profileIcon.png'
+
 const TorneioCard = ({torneio}) => {
+  console.log(torneio)
+
   const escalao = (torneio.escalao == 0) ? "Seniores" :
                   (torneio.escalao == 1) ? "Sub-21" :
                   (torneio.escalao == 2) ? "Sub-20" :
@@ -22,11 +26,11 @@ const TorneioCard = ({torneio}) => {
     return (
       <div className= "w-full m-4">
         <div className="flex-wrap p-4 md:flex mx-auto hover:bg-gray-200 hover:scale-105 transition duration-500 shadow-2xl shadow-gray-300 rounded-2xl md:h-[200px] md:w-[700px] w-[350px] h-[400px] bg-white">
-            <div className="mx-auto w-[170px] h-[170px] bg-black">
-                <img
-                  src={"../images/logotipo.png"}
-                  className=""
-                />
+            <div className="mx-auto w-[170px] h-[170px] bg-transparent">
+                {(torneio.imageUrl === null) ?
+                  (<img src={profileIcon} alt="Torneio Picture"></img>)
+              :   (<img src={torneio.imageUrl} alt="Torneio Picture2"></img>)
+              }
             </div>
             <div className="w-[320px] md:w-[450px] md:h-[175px] h-[190px]  mt-4 md:mt-1 mx-auto text-left">
                 <h1 className="text-4xl font-bold text-center">{torneio.nomeTorneio}</h1>

@@ -77,60 +77,68 @@ export function RegistoEspaco() {
         axios.post(`${API_URL}/espacos/registarEspaco`, bodyEspaco,{headers: headers})
             .then(response => {
             const idEspaco = response.data.idEspaco
-            navigate(`/espacos/${idEspaco}`)
+            navigate(`/espacos`)
         }).catch(e => console.log(e))
     }
 
 
     return (
-        <>
-        <h1>Registo de Espaco</h1>
-        <form onSubmit={handleRegisto}>
-            <div>
-                <label>Desporto: </label>
-                <select value={desporto} id="desporto" name="Desporto" onChange={e => setDesporto(e.target.value)} required>
-                <option value="">Indique o desporto pretendido</option>
-                    {desportos.map((desporto) => (
-                        <option value ={desporto.idDesporto}>{desporto.nomeDesporto}</option>
-                    ))}
-                </select>
+        <div class="bg-gray-100  min-h-screen">
+        <div class="flex flex-col items-center justify-center px-6 pt-4 py-8 mx-auto">
+        <div class="w-full bg-white rounded-lg shadow dark:border mt-8 sm:max-w-md xl:p-0 dark:bg-gray-800 ">
+          <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
+              <h1 class="text-xl font-bold leading-tight tracking-tight text-orange-500 md:text-2xl text-center">
+                  Registe aqui o seu espaço
+              </h1>
+                <form class="space-y-4 md:space-y-6" onSubmit={handleRegisto}>
+                        <div>
+                            <label for="text" class="block mb-2 text-base font-bold text-gray-900 ">Nome do Espaço:</label>
+                                <input class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                                ref={inputnomeEspacoRef} id="nomeEspaco" type="nomeEspaco" placeholder="Nome do Espaço" required></input>
+                            </div>
 
-                <br/>
+                            <div>
+                            <label for="text" class="block mb-2 text-base font-bold text-gray-900 ">Nome da Rua:</label>
+                                <input class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                                 ref={inputruaEspacoRef} id="ruaEspaco" type="ruaEspaco" placeholder="Nome da Rua" required></input>
+                            </div>
 
-                <label>Localidade: </label>
-                <select value={localidade} id="localidade" name="Localidade" onChange={e => setLocalidade(e.target.value)} required>
-                <option value="">Indique a localidade pretendida</option>
-                    {localidades.map((localidade) => (
-                        <option value ={localidade.idLocalidade}>{localidade.Nome}</option>
-                    ))}
-                </select>
+                            <div>
+                            <label for="text" class="block mb-2 text-base font-bold text-gray-900 ">Contacto do Espaço:</label>
+                                <input class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                                 ref={inputContactoEspacoRef} id="contactoEspaco" type="tel" pattern="^9[0-9]{8}$" placeholder="916912569" required></input>
+                            </div>
 
-                <br/>
-
-
-                <label>Nome do Espaço: </label>
-                <input ref={inputnomeEspacoRef} id="nomeEspaco" type="nomeEspaco" placeholder="Nome do Espaço" required></input>
-
-                <br/>
-
-                <label>Nome da Rua: </label>
-                <input ref={inputruaEspacoRef} id="ruaEspaco" type="ruaEspaco" placeholder="Nome da Rua" required></input>
-
-                <br/>
-
-                <label>Contacto do Espaço: </label>
-                <input ref={inputContactoEspacoRef} id="contactoEspaco" type="contactoEspaco" placeholder="Contacto do Espaço" required></input>
-
-                <br/>
-
-                <label>Numéro de campos do Espaço: </label>
-                <input ref={inputNMesasRef} id="nMesasEspaco" type="nMesasEspaco" placeholder="Número de campos" required></input>
+                            <div>
+                            <label for="text" class="block mb-2 text-base font-bold text-gray-900 ">Numéro de campos do Espaço:</label>
+                                <input class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                                 ref={inputNMesasRef} id="nMesasEspaco" type="number" min="1" placeholder="1" required></input>
+                            </div>
+                            <div>
+                        <label  class="block mb-2 text-base font-bold text-gray-900">Desporto: </label>
+                        <select className="form-select bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-gray-500 focus:border-gray-500 block w-full p-2.5"
+                         value={desporto} id="desporto" name="Desporto" onChange={e => setDesporto(e.target.value)} required>
+                        <option value="">Indique o desporto pretendido</option>
+                            {desportos.map((desporto) => (
+                                <option value ={desporto.idDesporto}>{desporto.nomeDesporto}</option>
+                            ))}
+                        </select>
+                    </div>
+                    <div>
+                        <label  class="block mb-2 text-base font-bold text-gray-900 dark:text-white">Localidade: </label>
+                        <select className="form-select bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-gray-500 focus:border-gray-500 block w-full p-2.5" id="localidade" name="Localidade" onChange={e => setLocalidade(e.target.value)} required>
+                        <option value="">Indique a localidade pretendida</option>
+                            {localidades.map((localidade) => (
+                                <option value ={localidade.idLocalidade}>{localidade.Nome}</option>
+                            ))}
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="w-full text-white bg-orange-500 hover:bg-orange-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Registar</button>
+                </form>
+                </div>
             </div>
-            <button>Registar</button>
-            <Link to ={"/espacos"}>
-              <button>Voltar</button>
-            </Link>
-        </form>
-        </>
+        </div>
+        </div>
     )
 }

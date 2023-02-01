@@ -3,6 +3,29 @@ const router = express.Router();
 const data = require('../query.js')
 const {isAuth, isOrganizador} = require('./auth');
 const algoritmos = require('../algoritmos.js')
+const dotenv = require('dotenv');
+const multer = require('multer');
+
+const {S3Client, PutObjectCommand, GetObjectCommand} = require('@aws-sdk/client-s3');
+const {getSignedUrl} =  require ("@aws-sdk/s3-request-presigner");
+
+dotenv.config()
+
+const bucketName = process.env.AWS_BUCKET_NAME
+const region = process.env.AWS_BUCKET_REGION
+const accessKeyId = process.env.AWS_ACCESS_KEY
+const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY
+
+const s3Client = new S3Client({
+    region,
+    credentials: {
+        accessKeyId,
+        secretAccessKey
+    }
+  })
+
+const storage = multer.memoryStorage()
+const upload = multer({ storage: storage })
 
 //0 - por começar
 //1 - a decorrer
@@ -214,7 +237,7 @@ function getJogosTorneio(terminado,idTorneio,res){
 router.get("/disponiveis",(req,res) => {
     //0 -> inscricoes fechadas
     //1 -> inscricoes abertas
-    let sql = "select T.idTorneio,T.nomeTorneio,T.isFederado,T.dataTorneio,T.escalao,T.tipoTorneio,T.tamEquipa,D.nomeDesporto,L.Nome from torneio as T " +
+    let sql = "select T.imageName,T.idTorneio,T.nomeTorneio,T.isFederado,T.dataTorneio,T.escalao,T.tipoTorneio,T.tamEquipa,D.nomeDesporto,L.Nome from torneio as T " +
               "join Espaco as E on T.Espaco_idEspaco = E.idEspaco " +
               "join Localidade as L on E.Localidade_idLocalidade = L.idLocalidade " +
               "join Desporto as D on T.idDesporto = D.idDesporto "
@@ -245,9 +268,10 @@ router.get("/disponiveis",(req,res) => {
     }
 
     sql += ";";
-    data.query(sql).then(re => {
+    data.query(sql).then(async re => {
         if(re.length != 0){
-            re.map((r) => {
+            for (let i= 0; i<re.length; i++) {
+                let r = re[i];
                 r.dataTorneio = r.dataTorneio.toLocaleDateString();
                 switch (r.tipoTorneio) {
                     case 0: r.nometipoTorneio = "Liga"
@@ -268,7 +292,23 @@ router.get("/disponiveis",(req,res) => {
                         break;
                     default: console.log("default");
                 }
-            })
+                
+                if (!(r.imageName === null)) {
+
+                    const params = {
+                        Bucket: bucketName,
+                        Key: r.imageName
+                    }
+    
+                    const command = new GetObjectCommand(params);
+                    const url = await getSignedUrl(s3Client, command, {expiresIn: 60});
+                    r.imageUrl = url
+                } else {
+                    r.imageUrl = null
+                }
+            }
+            
+            console.log(re)
             res.send(re);
         }
         else {
@@ -281,7 +321,7 @@ router.get("/disponiveis",(req,res) => {
 router.get("/encerrados",(req,res) => {
     //0 -> inscricoes abertas
     //1 -> inscricoes fechadas
-    let sql = "select T.idTorneio,T.nomeTorneio,T.isFederado,T.dataTorneio,T.escalao,T.tipoTorneio,T.tamEquipa,D.nomeDesporto,L.Nome from torneio as T " +
+    let sql = "select T.imageName,T.idTorneio,T.nomeTorneio,T.isFederado,T.dataTorneio,T.escalao,T.tipoTorneio,T.tamEquipa,D.nomeDesporto,L.Nome from torneio as T " +
               "join Espaco as E on T.Espaco_idEspaco = E.idEspaco " +
               "join Localidade as L on E.Localidade_idLocalidade = L.idLocalidade " +
               "join Desporto as D on T.idDesporto = D.idDesporto "
@@ -312,9 +352,10 @@ router.get("/encerrados",(req,res) => {
     }
 
     sql += ";";
-    data.query(sql).then(re => {
+    data.query(sql).then(async re => {
         if(re.length != 0){
-            re.map((r) => {
+            for (let i= 0; i<re.length; i++) {
+                let r = re[i];
                 r.dataTorneio = r.dataTorneio.toLocaleDateString();
                 switch (r.tipoTorneio) {
                     case 0: r.nometipoTorneio = "Liga"
@@ -325,7 +366,7 @@ router.get("/encerrados",(req,res) => {
                         break;
                     case 3: r.nometipoTorneio = "Liga com duas mãos";
                         break;
-                    case 4: r.nometipoTorneio = "Torneio de Eliminatórias com duas mãos";
+                    case 4: r.nometipotorneio = "Torneio de Eliminatórias com duas mãos";
                         break;
                     case 5: r.nometipoTorneio = "Torneio com fase de grupos com duas mãos e eliminatórias";
                         break;
@@ -335,7 +376,23 @@ router.get("/encerrados",(req,res) => {
                         break;
                     default: console.log("default");
                 }
-            })
+                
+                if (!(r.imageName === null)) {
+
+                    const params = {
+                        Bucket: bucketName,
+                        Key: r.imageName
+                    }
+    
+                    const command = new GetObjectCommand(params);
+                    const url = await getSignedUrl(s3Client, command, {expiresIn: 60});
+                    r.imageUrl = url
+                } else {
+                    r.imageUrl = null
+                }
+            }
+            
+            console.log(re)
             res.send(re);
         }
         else {
@@ -348,7 +405,7 @@ router.get("/encerrados",(req,res) => {
 router.get("/aDecorrer",(req,res) => {
     //0 -> inscricoes abertas
     //1 -> inscricoes fechadas
-    let sql = "select T.idTorneio,T.nomeTorneio,T.isFederado,T.dataTorneio,T.escalao,T.tipoTorneio,T.tamEquipa,D.nomeDesporto,L.Nome from torneio as T " +
+    let sql = "select T.imageName, T.idTorneio,T.nomeTorneio,T.isFederado,T.dataTorneio,T.escalao,T.tipoTorneio,T.tamEquipa,D.nomeDesporto,L.Nome from torneio as T " +
               "join Espaco as E on T.Espaco_idEspaco = E.idEspaco " +
               "join Localidade as L on E.Localidade_idLocalidade = L.idLocalidade " +
               "join Desporto as D on T.idDesporto = D.idDesporto "
@@ -379,9 +436,10 @@ router.get("/aDecorrer",(req,res) => {
     }
 
     sql += ";";
-    data.query(sql).then(re => {
+    data.query(sql).then(async re => {
         if(re.length != 0){
-            re.map((r) => {
+            for (let i= 0; i<re.length; i++) {
+                let r = re[i];
                 r.dataTorneio = r.dataTorneio.toLocaleDateString();
                 switch (r.tipoTorneio) {
                     case 0: r.nometipoTorneio = "Liga"
@@ -402,7 +460,23 @@ router.get("/aDecorrer",(req,res) => {
                         break;
                     default: console.log("default");
                 }
-            })
+                
+                if (!(r.imageName === null)) {
+
+                    const params = {
+                        Bucket: bucketName,
+                        Key: r.imageName
+                    }
+    
+                    const command = new GetObjectCommand(params);
+                    const url = await getSignedUrl(s3Client, command, {expiresIn: 60});
+                    r.imageUrl = url
+                } else {
+                    r.imageUrl = null
+                }
+            }
+            
+            console.log(re)
             res.send(re);
         }
         else {
@@ -416,7 +490,7 @@ router.get("/aDecorrer",(req,res) => {
 router.get("/emBreve",(req,res) => {
     //0 -> inscricoes abertas
     //1 -> inscricoes fechadas
-    let sql = "select T.idTorneio,T.nomeTorneio,T.isFederado,T.dataTorneio,T.escalao,T.tipoTorneio,T.tamEquipa,D.nomeDesporto,L.Nome from torneio as T " +
+    let sql = "select T.imageName,T.idTorneio,T.nomeTorneio,T.isFederado,T.dataTorneio,T.escalao,T.tipoTorneio,T.tamEquipa,D.nomeDesporto,L.Nome from torneio as T " +
               "join Espaco as E on T.Espaco_idEspaco = E.idEspaco " +
               "join Localidade as L on E.Localidade_idLocalidade = L.idLocalidade " +
               "join Desporto as D on T.idDesporto = D.idDesporto "
@@ -447,9 +521,10 @@ router.get("/emBreve",(req,res) => {
     }
 
     sql += ";";
-    data.query(sql).then(re => {
+    data.query(sql).then(async re => {
         if(re.length != 0){
-            re.map((r) => {
+            for (let i= 0; i<re.length; i++) {
+                let r = re[i];
                 r.dataTorneio = r.dataTorneio.toLocaleDateString();
                 switch (r.tipoTorneio) {
                     case 0: r.nometipoTorneio = "Liga"
@@ -470,7 +545,23 @@ router.get("/emBreve",(req,res) => {
                         break;
                     default: console.log("default");
                 }
-            })
+                
+                if (!(r.imageName === null)) {
+
+                    const params = {
+                        Bucket: bucketName,
+                        Key: r.imageName
+                    }
+    
+                    const command = new GetObjectCommand(params);
+                    const url = await getSignedUrl(s3Client, command, {expiresIn: 60});
+                    r.imageUrl = url
+                } else {
+                    r.imageUrl = null
+                }
+            }
+            
+            console.log(re)
             res.send(re);
         }
         else {
@@ -852,7 +943,7 @@ function getClassificacaoElim(idTorneio,res) {
 //Get de um torneio
 router.get("/:id",isOrganizador,(req,res) => {
     const idTorneio = req.params.id;
-    let sql = "select T.idTorneio,T.nomeTorneio,T.terminado,T.isFederado,T.dataTorneio,T.escalao,T.tipoTorneio,T.tamEquipa,D.nomeDesporto,L.Nome, T.idOrganizador,T.inscricoesAbertas from torneio as T " +
+    let sql = "select T.imageName,T.idTorneio,T.nomeTorneio,T.terminado,T.isFederado,T.dataTorneio,T.escalao,T.tipoTorneio,T.tamEquipa,D.nomeDesporto,L.Nome, T.idOrganizador,T.inscricoesAbertas from torneio as T " +
               "join Espaco as E on T.Espaco_idEspaco = E.idEspaco " +
               "join Localidade as L on E.Localidade_idLocalidade = L.idLocalidade " +
               "join Desporto as D on T.idDesporto = D.idDesporto " +
@@ -894,24 +985,37 @@ router.get("/:id",isOrganizador,(req,res) => {
 
 
 //Inicializo com inscricoesAbertas a 1 (inscrições abertas) e com terminado a 0
-router.post("/registo",isAuth,(req,res) => {
+router.post("/registo",isAuth,upload.single('fotoTorneio'),(req,res) => {
     let dataT = `${req.body.dataTorneio.split("T")[0]} ${req.body.dataTorneio.split("T")[1]}:00`
     let sql = `Insert into torneio (nomeTorneio, idOrganizador, idDesporto, isFederado, dataTorneio,inscricoesAbertas,escalao,tipoTorneio,terminado,Espaco_idEspaco,tamEquipa,genero)
                     values ("${req.body.nomeTorneio}",${req.userId}, ${req.body.idDesporto}, ${req.body.isFederado},"${dataT}", 1, ${req.body.escalao}, ${req.body.tipoTorneio}, 0, ${req.body.Espaco_idEspaco},${req.body.tamEquipa},${req.body.genero})`
         data.query(sql)
-        .then(re => {
-            let sql1 = `select t.idTorneio from torneio as t where t.nomeTorneio = "${req.body.nomeTorneio}" and t.idOrganizador= ${req.userId} and t.idDesporto =${req.body.idDesporto} and t.isFederado = ${req.body.isFederado} and t.dataTorneio = "${req.body.dataTorneio}"
-                        and t.inscricoesAbertas = 1 and t.escalao = ${req.body.escalao} and t.tipoTorneio = ${req.body.tipoTorneio} and t.terminado = 0 and t.Espaco_idEspaco = ${req.body.Espaco_idEspaco} and t.tamEquipa = ${req.body.tamEquipa};`
-            data.query(sql1).then(re => {
-                if (re.length != 0) {
-                    res.send(re[0])
+        .then(async re => {          
+                if (!(req.file === undefined)) {
+                    const fileName = "Torneio"+re.insertId
+
+                    const params = {
+                        Bucket: bucketName,
+                        Body: req.file.buffer,
+                        Key: fileName,
+                        ContentType: req.file.mimetype
+                    }
+
+                    await s3Client.send(new PutObjectCommand(params))
+
+                    let sql = `Update Torneio Set imageName='${fileName}' Where idTorneio = ${re.insertId};`
+
+                    data.query(sql)
+                        .then(re1 => {
+                            res.send({idTorneio: re.insertId})
+
+                        }) 
+                        .catch (e => { res.status(400).jsonp({ error: e }) })
+
+                } else {
+                    res.send({idTorneio: re.insertId})
                 }
-                else {
-                    res.status(404).send("Torneio não encontrado")
-                }
-            })
         })
-        .catch(e => { res.status(400).send({ error: e }) })
 })
 
 // aceitar/rejeitar inscrições
