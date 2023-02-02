@@ -178,6 +178,13 @@ img {
 }
 
 /*=============== BREAKPOINTS ===============*/
+@media screen and (max-width: 1170px) {
+  .containerDiv {
+    margin-left: var(--mb-1-5);
+    margin-right: var(--mb-1-5);
+  }
+}
+
 /* For large devices */
 @media screen and (max-width: 992px) {
   .containerDiv {
