@@ -385,7 +385,7 @@ export function RegistoTorneio() {
                                 class="form-check-input form-radio w-4 h-4 text-blue-600 bg-gray-100 border-gray-300" 
                                 checked={!espacosFav} 
                                 onChange={handleEspaco}/>
-                            <label for="horizontal-list-radio-license" class="w-full py-3 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Inserir manualmente</label>
+                            <label for="horizontal-list-radio-license" class="w-full py-3 ml-2 text-sm font-medium text-gray-900">Inserir manualmente</label>
                             </div>
                         </li>
                     </ul>
@@ -409,25 +409,25 @@ export function RegistoTorneio() {
                                         )
                                     }
                                         <button type="button" onClick={handlePrevEspaco} class="absolute top-0 left-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" >
-                                            <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-orange-300 dark:bg-gray-800/30 group-hover:orange-500  group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
-                                                <svg aria-hidden="true" class="w-6 h-6 text-white dark:text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                                            <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-orange-300 group-hover:orange-500  group-focus:ring-4 group-focus:ring-white group-focus:outline-none">
+                                                <svg aria-hidden="true" class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
                                                 <span class="sr-only">Previous</span>
                                             </span>
                                         </button>
                                         <button type="button" onClick={handleProxEspaco} class="absolute top-0 right-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none">
-                                            <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-orange-300 dark:bg-gray-800/30 group-hover:orange-500  group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
-                                                <svg aria-hidden="true" class="w-6 h-6 text-white dark:text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                                            <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-orange-300 group-hover:orange-500  group-focus:ring-4 group-focus:ring-white group-focus:outline-none">
+                                                <svg aria-hidden="true" class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                                                 <span class="sr-only">Next</span>
                                             </span>
                                         </button>
                                     </div>
                                 )
-                                : (<div class="p-4 mb-4 w-full text-sm text-red-800 rounded-lg bg-red-200 dark:bg-gray-800 dark:text-red-400" role="alert">
+                                : (<div class="p-4 mb-4 w-full text-sm text-red-800 rounded-lg bg-red-200" role="alert">
                                 <span class="font-medium">Não existem espaços para esse desporto nessa localidade!</span>
                                     </div>)
                                 )
                                 :
-                                (<div class="p-4 mb-4 w-full text-sm text-yellow-800 rounded-lg bg-yellow-200 dark:bg-gray-800 dark:text-red-400" role="alert">
+                                (<div class="p-4 mb-4 w-full text-sm text-yellow-800 rounded-lg bg-yellow-200" role="alert">
                                 <span class="font-medium">Selecione um desporto e uma localidade!</span>
                                     </div>)
                             )

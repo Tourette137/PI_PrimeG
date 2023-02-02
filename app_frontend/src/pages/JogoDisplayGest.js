@@ -361,7 +361,7 @@ export function JogoDisplayGest (props) {
                                     }
                             </div>
                             {(alert)?
-                                        (<div class="p-4 mb-4 w-full text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+                                        (<div class="p-4 mb-4 w-full text-sm text-red-800 rounded-lg bg-red-50" role="alert">
                                             <span class="font-medium">{alertMsg}</span>
                                         </div>)
                                         : null
@@ -380,11 +380,11 @@ export function JogoDisplayGest (props) {
                                     </div>
                                     <div className="w-1/2 h-min">
                                         <div>
-                                            <input className="w-1/6 m-0.5 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                            <input className="w-1/6 m-0.5 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-1.5"
                                             ref={inputequipa1} id="equipa1res" type="number" min="0" value= {currentValue1} onChange={handleChange1}  required></input>
                                         </div>
                                         <div>
-                                        <input className='w-1/6 m-0.5 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
+                                        <input className='w-1/6 m-0.5 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-1.5'
                                          ref={inputequipa2} id="equipa2res" type="number" min="0" value= {currentValue2} onChange ={handleChange2} required></input>
                                         </div>
                                     </div>
@@ -449,13 +449,13 @@ export function JogoDisplayGest (props) {
                                         </div>
                                     </div>
                                     {(alert)?
-                                        (<div class="p-4 mb-4 w-full text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+                                        (<div class="p-4 mb-4 w-full text-sm text-red-800 rounded-lg bg-red-50" role="alert">
                                             <span class="font-medium">{alertMsg}</span>
                                         </div>)
                                         : null
                                         }
                                         {(alertsucesso)?
-                                        (<div class="p-4 mb-4 w-full text-sm text-green-800 rounded-lg bg-green-100 dark:bg-gray-800 dark:text-green-400" role="alert">
+                                        (<div class="p-4 mb-4 w-full text-sm text-green-800 rounded-lg bg-green-100" role="alert">
                                             <span class="font-medium">Resultado alterado com sucesso!</span>
                                         </div>)
                                         : null
@@ -569,7 +569,7 @@ export function JogoDisplayGest (props) {
                                     }
                             </div>
                             {(alert)?
-                                        (<div class="p-4 mb-4 w-full text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+                                        (<div class="p-4 mb-4 w-full text-sm text-red-800 rounded-lg bg-red-50" role="alert">
                                             <span class="font-medium">{alertMsg}</span>
                                         </div>)
                                         : null
@@ -591,7 +591,7 @@ export function JogoDisplayGest (props) {
                                             {sets.map((inputValue, index) => (
                                                 <div className="w-1/6" key={index}>
                                                 <input
-                                                className="m-0.5 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                                className="m-0.5 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full p-1.5"
                                                 name = "equipa1"
                                                 type="number"
                                                 min = "0"
@@ -599,7 +599,7 @@ export function JogoDisplayGest (props) {
                                                 onChange={(e) => handleChange(e,index)}
                                                 />
                                                 <input
-                                                className="m-0.5 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                                className="m-0.5 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full p-1.5"
                                                 name = "equipa2"
                                                 type="number"
                                                 min = "0"
@@ -678,13 +678,13 @@ export function JogoDisplayGest (props) {
                                         
                                     </div>
                                     {(alert)?
-                                        (<div class="p-4 mb-4 w-full text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+                                        (<div class="p-4 mb-4 w-full text-sm text-red-800 rounded-lg bg-red-50" role="alert">
                                             <span class="font-medium">{alertMsg}</span>
                                         </div>)
                                         : null
                                         }
                                         {(alertsucesso)?
-                                        (<div class="p-4 mb-4 w-full text-sm text-green-800 rounded-lg bg-green-100 dark:bg-gray-800 dark:text-green-400" role="alert">
+                                        (<div class="p-4 mb-4 w-full text-sm text-green-800 rounded-lg bg-green-100" role="alert">
                                             <span class="font-medium">Resultado alterado com sucesso!</span>
                                         </div>)
                                         : null

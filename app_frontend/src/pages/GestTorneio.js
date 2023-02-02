@@ -355,7 +355,7 @@ export function GestTorneio({ id,terminado,tipoTorneio, ...props }) {
                                 <br/>
                             <br/>
                             {(alert)
-                              ? (<div class="p-4 mb-4 w-full text-sm text-red-800 rounded-lg bg-red-200 dark:bg-gray-800 dark:text-red-400" role="alert">
+                              ? (<div class="p-4 mb-4 w-full text-sm text-red-800 rounded-lg bg-red-200" role="alert">
                                     <span class="font-medium">{alertMsg}</span>
                                 </div>)
                               : null
@@ -474,7 +474,7 @@ export function GestTorneio({ id,terminado,tipoTorneio, ...props }) {
                                 <br/>
                             <br/>
                             {(alert)
-                              ? (<div class="p-4 mb-4 w-full text-sm text-red-800 rounded-lg bg-red-200 dark:bg-gray-800 dark:text-red-400" role="alert">
+                              ? (<div class="p-4 mb-4 w-full text-sm text-red-800 rounded-lg bg-red-200" role="alert">
                                     <span class="font-medium">{alertMsg}</span>
                                 </div>)
                               : null

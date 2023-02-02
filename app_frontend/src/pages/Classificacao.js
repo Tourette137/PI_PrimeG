@@ -70,7 +70,7 @@ export function Classificacao() {
         </div>
 
         {classificacaoGrupo.length == 0 && classificacaoElim.length == 0
-        ? <div class="p-4 mt-16 mb-4 w-full text-sm text-red-800 rounded-lg bg-red-200 dark:bg-gray-800 dark:text-red-400" role="alert">
+        ? <div class="p-4 mt-16 mb-4 w-full text-sm text-red-800 rounded-lg bg-red-200" role="alert">
             <span class="font-medium">O torneio ainda não foi sorteado!</span>
           </div>
         : <section class="py-3">

@@ -82,7 +82,7 @@ export function GestJogos(props) {
                                 </>
                             ) : (
                                 jogosGrupo.length > 0 ? (
-                                    <div class=" p-4 mb-4 w-full text-sm text-red-800 rounded-lg bg-red-200 dark:bg-gray-800 dark:text-red-400" role="alert">
+                                    <div class=" p-4 mb-4 w-full text-sm text-red-800 rounded-lg bg-red-200" role="alert">
                                 <span class="font-medium">A fase eliminatória não se encontra sorteada!</span>
                                     </div>
                                     
@@ -105,7 +105,7 @@ export function GestJogos(props) {
                         </div>
                         </>
                     ) : (
-                        <div class="p-4 mb-4 w-full text-sm text-red-800 rounded-lg bg-red-200 dark:bg-gray-800 dark:text-red-400" role="alert">
+                        <div class="p-4 mb-4 w-full text-sm text-red-800 rounded-lg bg-red-200" role="alert">
                                 <span class="font-medium">A fase de grupos não se encontra sorteada</span></div>
 
                     )}
@@ -123,7 +123,7 @@ export function GestJogos(props) {
                             </div>
                             </>
                         ) : (
-                            <div class="p-4 mb-4 w-full text-sm text-red-800 rounded-lg bg-red-200 dark:bg-gray-800 dark:text-red-400" role="alert">
+                            <div class="p-4 mb-4 w-full text-sm text-red-800 rounded-lg bg-red-200" role="alert">
                                 <span class="font-medium">A fase de grupos não se encontra sorteada</span></div>
                         )}
                     </section>
@@ -139,7 +139,7 @@ export function GestJogos(props) {
                             </div>
                             </>
                         ) : (
-                            <div class="p-4 mb-4 w-full text-sm text-red-800 rounded-lg bg-red-200 dark:bg-gray-800 dark:text-red-400" role="alert">
+                            <div class="p-4 mb-4 w-full text-sm text-red-800 rounded-lg bg-red-200" role="alert">
                                 <span class="font-medium">A fase eliminatória não se encontra sorteada!</span>
                                     </div>
                         )}

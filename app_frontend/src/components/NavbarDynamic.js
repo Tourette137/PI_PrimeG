@@ -115,8 +115,8 @@ export function NavbarDynamic() {
                                         <i className="uil uil-bell" style={{fontSize: "1.2rem", marginTop:"-3px", marginLeft:"-3px", cursor:"pointer"}} onClick={handleToogleNotifications}></i>
                                     </div>
                                     <div className="absolute overflow-x-auto shadow-md sm:rounded-lg containerDiv" style={{display: (showNotification ? "" : "none"), width:"400px", marginLeft:"-380px", marginTop:"10px"}}>
-                                        <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                                            <thead className="text-xl text-center text-white uppercase bg-transparent dark:bg-gray-700 dark:text-gray-400" style={{background: "linear-gradient(90deg, #ff5500, #f8b028)"}}>
+                                        <table className="w-full text-sm text-left text-gray-500">
+                                            <thead className="text-xl text-center text-white uppercase bg-transparent" style={{background: "linear-gradient(90deg, #ff5500, #f8b028)"}}>
                                                 <tr>
                                                     <th scope="col" className="px-6 py-3">
                                                         Notificações
@@ -129,7 +129,7 @@ export function NavbarDynamic() {
                                                 (
                                                     notificacoes.map((notificacao) => <NotificacaoDisplayMenu notificacao={notificacao} setShowMenu={setShowMenu} handleHideNotificatios={handleHideNotificatios}/>)
                                                 ) : (
-                                                <tr className="text-lg bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                                <tr className="text-lg bg-white border-b">
                                                     <td className="px-6 py-4">
                                                         Não existem notificações
                                                     </td>
