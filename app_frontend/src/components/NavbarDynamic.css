@@ -101,9 +101,16 @@
     display: none;
 }
 
+.distancia{
+    margin-bottom: 3.5rem;
+}
+
 
 /* For medium devices */
 @media screen and (max-width: 768px) {
+    .distancia{
+        margin-bottom: 0rem;
+    }
     .header {
         top: initial;
         bottom: 0;

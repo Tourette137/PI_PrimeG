@@ -55,7 +55,7 @@ export function NavbarDynamic() {
     },[])
 
     return(
-        <div className='mb-16'>
+        <div className='distancia'>
 
             <header className="header">
                 <nav className="nav containerDiv">
