@@ -110,8 +110,8 @@ export function Torneio() {
         setAlertMsg("Nome de Equipa já existente")
         return;
       } else {
-        setAlert(false)
-        setAlertMsg("")
+        setAlert(true)
+        setAlertMsg("Equipa inscrita com sucesso")
       }
 
     }
@@ -281,7 +281,7 @@ export function Torneio() {
                                               ) : (null)
                                               
                                             }
-                                            <p style={{color: "red", marginBottom:"10px", marginTop:(alert?"10px":"")}}>{alert ? alertMsg : ''}</p>
+                                            <p style={{color: "green", marginTop:(alert?"10px":"")}}>{alert ? alertMsg : ''}</p>
                                             
                                             <div className="butoesAcceptBack">
                                                 <button onClick={handleTogglePopupInscricao} type="button" className="buttonCancelar buttonBlack">Cancelar</button>
