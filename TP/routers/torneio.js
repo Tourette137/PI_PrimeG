@@ -631,6 +631,20 @@ router.get("/:idTorneio/inscritos",(req,res) => {
     })
 })
 
+router.get("/:idTorneio/estaInscrito", isAuth, (req,res) => {
+    var idTorneio = req.params.idTorneio
+
+    let sql = `Select EU.Utilizador_idUtilizador from Equipa_has_Utilizador as EU
+                Join Torneio_has_Equipa as TE on TE.Equipa_idEquipa =  EU.Equipa_idEquipa
+                Join Torneio as T on T.idTorneio = TE.Torneio_idTorneio
+                Where EU.Utilizador_idUtilizador = ${req.userId}
+                AND T.idTorneio = ${idTorneio}`;
+    data.query(sql)
+        .then(re => {
+            res.send(re.length>0)
+        })
+})
+
 router.get("/:idTorneio/inscricoes",(req,res) => {
     var idTorneio = req.params.idTorneio
     var sql = data.getInscricoes(idTorneio);

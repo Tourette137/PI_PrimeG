@@ -48,7 +48,7 @@ insert into torneio (nomeTorneio,idOrganizador,
                     idDesporto,isFederado,dataTorneio,
                     inscricoesAbertas,escalao,tipoTorneio,
                     terminado,Espaco_idEspaco,tamEquipa,genero) 
-                    values ("ATP",1,2,1,'2012-06-18 10:34:09',0,2,2,0,1,1,1);
+                    values ("ATP",3,2,1,'2012-06-18 10:34:09',0,2,2,0,2,1,1);
 
 insert into DesportosFav(Utilizador_idUtilizador, Desporto_idDesporto, numeroFederado, clube, notificacao) values (1,1,1454,"c7",1);
 insert into DesportosFav(Utilizador_idUtilizador, Desporto_idDesporto, numeroFederado, clube, notificacao) values (2,1,2345,"c1",1);
@@ -60,24 +60,23 @@ insert into DesportosFav(Utilizador_idUtilizador, Desporto_idDesporto, numeroFed
 insert into DesportosFav(Utilizador_idUtilizador, Desporto_idDesporto, numeroFederado, clube, notificacao) values (8,1,8356,"c6",1);
 
 
-insert into torneio_has_equipa (Torneio_idTorneio,Equipa_idEquipa,pendente) values (2,1,0);
-insert into torneio_has_equipa (Torneio_idTorneio,Equipa_idEquipa,pendente) values (2,2,0);
-insert into torneio_has_equipa (Torneio_idTorneio,Equipa_idEquipa,pendente) values (2,3,0);
-insert into torneio_has_equipa (Torneio_idTorneio,Equipa_idEquipa,pendente) values (2,4,0);
-insert into torneio_has_equipa (Torneio_idTorneio,Equipa_idEquipa,pendente) values (2,5,1);
-insert into torneio_has_equipa (Torneio_idTorneio,Equipa_idEquipa,pendente) values (2,6,1);
-insert into torneio_has_equipa (Torneio_idTorneio,Equipa_idEquipa,pendente) values (2,7,1);
-insert into torneio_has_equipa (Torneio_idTorneio,Equipa_idEquipa,pendente) values (2,8,0);
+insert into torneio_has_equipa (Torneio_idTorneio,Equipa_idEquipa,pendente) values (4,1,0);
+insert into torneio_has_equipa (Torneio_idTorneio,Equipa_idEquipa,pendente) values (4,2,0);
+insert into torneio_has_equipa (Torneio_idTorneio,Equipa_idEquipa,pendente) values (4,3,0);
+insert into torneio_has_equipa (Torneio_idTorneio,Equipa_idEquipa,pendente) values (4,4,0);
+insert into torneio_has_equipa (Torneio_idTorneio,Equipa_idEquipa,pendente) values (4,5,1);
+insert into torneio_has_equipa (Torneio_idTorneio,Equipa_idEquipa,pendente) values (4,6,1);
+insert into torneio_has_equipa (Torneio_idTorneio,Equipa_idEquipa,pendente) values (4,7,1);
+insert into torneio_has_equipa (Torneio_idTorneio,Equipa_idEquipa,pendente) values (4,8,0);
 
-insert into torneio_has_equipa (Torneio_idTorneio,Equipa_idEquipa,pendente) values (1,9,0);
-insert into torneio_has_equipa (Torneio_idTorneio,Equipa_idEquipa,pendente) values (1,10,0);
-insert into torneio_has_equipa (Torneio_idTorneio,Equipa_idEquipa,pendente) values (1,11,0);
-insert into torneio_has_equipa (Torneio_idTorneio,Equipa_idEquipa,pendente) values (1,12,0);
-insert into torneio_has_equipa (Torneio_idTorneio,Equipa_idEquipa,pendente) values (2,13,1);
-insert into torneio_has_equipa (Torneio_idTorneio,Equipa_idEquipa,pendente) values (2,14,1);
-insert into torneio_has_equipa (Torneio_idTorneio,Equipa_idEquipa,pendente) values (2,15,1);
-insert into torneio_has_equipa (Torneio_idTorneio,Equipa_idEquipa,pendente) values (1,16,0);
-
+insert into torneio_has_equipa (Torneio_idTorneio,Equipa_idEquipa,pendente) values (5,9,0);
+insert into torneio_has_equipa (Torneio_idTorneio,Equipa_idEquipa,pendente) values (5,10,0);
+insert into torneio_has_equipa (Torneio_idTorneio,Equipa_idEquipa,pendente) values (5,11,0);
+insert into torneio_has_equipa (Torneio_idTorneio,Equipa_idEquipa,pendente) values (5,12,0);
+insert into torneio_has_equipa (Torneio_idTorneio,Equipa_idEquipa,pendente) values (5,13,1);
+insert into torneio_has_equipa (Torneio_idTorneio,Equipa_idEquipa,pendente) values (5,14,1);
+insert into torneio_has_equipa (Torneio_idTorneio,Equipa_idEquipa,pendente) values (5,15,1);
+insert into torneio_has_equipa (Torneio_idTorneio,Equipa_idEquipa,pendente) values (5,16,0);
 
 select * from equipa;
 select * from torneio_has_equipa;
@@ -85,6 +84,12 @@ select * from utilizador;
 select * from equipa_has_utilizador;
 select * from DesportosFav;
 select * from grupo;
+
+Select EU.Utilizador_idUtilizador from Equipa_has_Utilizador as EU
+                Join Torneio_has_Equipa as TE on TE.Equipa_idEquipa =  EU.Equipa_idEquipa
+                Join Torneio as T on T.idTorneio = TE.Torneio_idTorneio
+                Where EU.Utilizador_idUtilizador = 1
+                AND T.idTorneio = 2;
 
 
 

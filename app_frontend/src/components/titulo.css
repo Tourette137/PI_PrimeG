@@ -1,0 +1,12 @@
+.titulo {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+  .titulo h1 {
+    font-size: 40px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 0 20px;
+  }

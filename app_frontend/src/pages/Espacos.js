@@ -6,6 +6,7 @@ import {useNavigate } from 'react-router-dom';
 import {NavbarDynamic} from '../components/NavbarDynamic.js';
 import '../components/RadioForm.css';
 import '../components/selectForm.css';
+import '../components/titulo.css';
 
 const API_URL="http://localhost:3000"
 export function Espacos() {
@@ -104,7 +105,7 @@ console.log(pedido);
     return(
         <div className="text-center">
        {/*Aqui seleciona o tipo de espaco que quer mostrar.*/}
-        <div className='titulo'>
+        <div className='titulo pt-8 pb-3'>
           <h1>Espaços</h1>
         </div>
 

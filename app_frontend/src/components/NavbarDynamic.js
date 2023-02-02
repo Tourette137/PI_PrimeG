@@ -24,7 +24,7 @@ export function NavbarDynamic() {
                 .then(response => {
                     setNotificacoes(response.data.sort((a, b) => b.idNotificacao - a.idNotificacao));
                 })
-                .catch(e => console.log(e))
+                .catch(e => console.log("No Notifications"))
       }
 
     const handleToogleNotifications = async (e) => {

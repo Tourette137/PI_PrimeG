@@ -114,7 +114,7 @@
 
     .nav__logo img {
         height: 1.6rem;
-        margin-bottom: -0.9rem;
+        margin-top: 0.5rem;
     }
 
     .nav__logo::before {

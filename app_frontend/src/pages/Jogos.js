@@ -3,6 +3,7 @@ import {useState,useEffect} from 'react';
 import JogoDisplay from "./JogoDisplay.jsx";
 import {NavbarDynamic} from '../components/NavbarDynamic.js';
 //import {Link,Route,Routes} from 'react-router-dom';
+import '../components/titulo.css';
 
 const API_URL="http://localhost:3000/torneios"
 
@@ -86,7 +87,7 @@ export function Jogos() {
     // }
     return(
         <>
-        <div className='titulo'>
+        <div className='titulo pt-8 pb-3'>
           <h1>Jogos</h1>
         </div>
 

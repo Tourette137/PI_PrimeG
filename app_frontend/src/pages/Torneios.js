@@ -8,6 +8,7 @@ import {NavbarDynamic} from '../components/NavbarDynamic.js';
 import '../components/RadioForm.css';
 import '../components/selectForm.css';
 import '../components/containerTorneios.css';
+import '../components/titulo.css';
 
 const API_URL="http://localhost:3000"
 export function Torneios() {
@@ -119,7 +120,7 @@ export function Torneios() {
     return(
         <>
        {/*Aqui seleciona o tipo de torneio que quer mostrar.*/}
-        <div className='titulo'>
+        <div className='titulo pt-8 pb-3'>
           <h1>Torneios</h1>
         </div>
           <div className="viagem-form w3-mobile radio-list" onChange={handleTipo}>

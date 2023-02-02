@@ -204,6 +204,22 @@ router.get("/perfil", isAuth, (req, res) => {
 
 // Listar Dados DO USER
 
+router.get("/email", isAuth, (req, res) => {
+
+    let sql =  `Select email from Utilizador Where idUtilizador = "${req.userId}";`
+
+    data.query(sql)
+        .then( async re => {
+            if(re.length == 0) {
+                res.status(503).jsonp("Não possui email")
+            } else {
+                res.send(re);
+            }
+        })
+        .catch(e => { res.status(502).jsonp({ error: e }) })
+    
+})
+
 // Listar favoritos
 router.get("/torneiosFavoritos", isAuth, (req, res) => {
 

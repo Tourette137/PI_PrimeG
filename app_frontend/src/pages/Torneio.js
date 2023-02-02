@@ -1,12 +1,13 @@
 //Componente de um único Torneio
 
 import {useParams} from 'react-router-dom'
-import {useState,useEffect} from 'react';
+import {useState,useEffect, useRef} from 'react';
 //import TorneioDisplay from '../components/TorneioCard.js';
 import TorneioDisplay from './TorneioDisplay.jsx';
 import InscritosDisplay from "../components/ListaInscritos.js";
 import {Link} from 'react-router-dom';
 import CalendarioDisplay from "../components/CalendarioDisplay.js";
+import '../components/titulo.css';
 
 const API_URL="http://localhost:3000"
 
@@ -25,6 +26,13 @@ export function Torneio() {
     const [loading4,setLoading4] = useState(false);
     const [loading5,setLoading5] = useState(false);
     const [jogos,setJogos] = useState([]);
+
+    const [estaInscrito,setEstaInscrito] = useState(false);
+    const [emailUser, setEmailUser] = useState("");
+    const [popUpInscricao,setPopUpInscricao] = useState(false);
+    const [alert, setAlert] = useState(false);
+    const [alertMsg, setAlertMsg] = useState("");
+    const newNomeEquipa = useRef(null);
 
     const searchJogos = async () => {
         let tipo = "/jogosPorComecar";
@@ -51,6 +59,7 @@ export function Torneio() {
       if (response.status === 200) {
           const data = await response.json();
           setInscritos(data);
+          console.log(data)
       }
       else {
           setInscritos([]);
@@ -58,8 +67,57 @@ export function Torneio() {
       setLoading2(false);
     }
 
+    const verificaEstaInscrito = async () => {
+      const requestOptions = {
+        headers: {'Authorization': "Bearer " + localStorage.getItem("token")}
+      } 
+
+      const response = await fetch (`${API_URL}/torneios/${id}/estaInscrito`, requestOptions);
+
+      if (response.status === 200) {
+          const data = await response.json();
+          setEstaInscrito(data);
+      }
+      else {
+        setEstaInscrito(false);
+      }
+
+      const responseMail = await fetch (`${API_URL}/users/email`, requestOptions);
+
+      if (response.status === 200) {
+          const dataMail = await responseMail.json();
+          setEmailUser(dataMail[0].email);
+      }
+    }
+
+    const handleTogglePopupInscricao = async (e) => {
+      setAlert(false)
+      setAlertMsg("")
+      newNomeEquipa.current.value = null
+
+      setPopUpInscricao(!popUpInscricao)
+    }
+
+    const handleEfetuaInscricao = async (e) => {
+      e.preventDefault()
+      
+      const novoNomeEquipa = inscritos.find(inscrito => {
+          return inscrito.nomeEquipa === newNomeEquipa.current.value
+      })
+
+      if(!(novoNomeEquipa === undefined)) {
+        setAlert(true)
+        setAlertMsg("Nome de Equipa já existente")
+        return;
+      } else {
+        setAlert(false)
+        setAlertMsg("")
+      }
+
+    }
+
     const searchApurados = async () => {
-      console.log("aaaa");
+      
       const response = await fetch (`${API_URL}/torneios/${id}/apurados`);
       if (response.status === 200) {
           const data = await response.json();
@@ -141,7 +199,7 @@ export function Torneio() {
       searchApurados();
       searchCalendarioGrupos();
       searchCalendarioElim();
-
+      verificaEstaInscrito();
     },[])
 
     if(loading1 || loading2  || loading3  || loading4 || loading5)
@@ -149,7 +207,7 @@ export function Torneio() {
 
     return(
         <>
-            <div className='titulo'>
+            <div className='titulo pt-8 pb-3'>
               <h1>{torneio.nomeTorneio}</h1>
             </div>
 
@@ -182,32 +240,64 @@ export function Torneio() {
                 <div class="w-full lg:w-1/2 px-3">
                   <div class="h-full px-6 pt-6 pb-8 bg-white rounded-xl">
                     <div class="w-full mt-6 pb-4 overflow-x-auto">
-                    <section class="py-20 md:py-28 bg-white">
-                      <div class="container px-4 mx-auto">
-                        <div class="max-w-4xl mx-auto text-center">
-                          <h2 class="mb-4 text-3xl md:text-4xl font-heading font-bold">
-                          {gestao == 1
-                          ?
-                          "Gestão"
-                          : "Incrições"
-                          }
-                          </h2>
+                      <section class="py-20 md:py-28 bg-white">
+                        <div class="container px-4 mx-auto">
+                          <div class="max-w-4xl mx-auto text-center">
+                            <h2 class="mb-4 text-3xl md:text-4xl font-heading font-bold">
+                            {gestao == 1
+                            ?
+                            "Gestão"
+                            : "Incrições"
+                            }
+                            </h2>
 
-                          {gestao == 1
-                          ?
-                          (<>
-                            <p class="mb-6 text-lg md:text-xl font-heading font-medium text-coolGray-500">Personalize o torneio a seu gosto!</p>
-                            <a class="inline-block py-3 px-7 w-full md:w-auto text-lg leading-7 text-green-50 bg-orange-500 hover:bg-orange-600 font-medium text-center focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50 border border-transparent rounded-md shadow-sm" href={`/${id}/gestao`}>-></a>
-                          </>)
-                          :
-                          (<>
-                            <p class="mb-6 text-lg md:text-xl font-heading font-medium text-coolGray-500">Increva-se neste torneio!</p>
-                            <a class="inline-block py-3 px-7 w-full md:w-auto text-lg leading-7 text-green-50 bg-orange-500 hover:bg-orange-600 font-medium text-center focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50 border border-transparent rounded-md shadow-sm" href={`/${id}/`}>Inscrever></a>
-                          </>)
-                          }
-                          </div>
-                      </div>
-                    </section>
+                            {gestao == 1
+                            ?
+                            (<>
+                              <p class="mb-6 text-lg md:text-xl font-heading font-medium text-coolGray-500">Personalize o torneio a seu gosto!</p>
+                              <a class="inline-block py-3 px-7 w-full md:w-auto text-lg leading-7 text-green-50 bg-orange-500 hover:bg-orange-600 font-medium text-center focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50 border border-transparent rounded-md shadow-sm" href={`/${id}/gestao`}>-&gt;</a>
+                            </>)
+                            :
+                            (<>
+                              { estaInscrito ? (
+                                <>
+                                  <p class="mb-6 text-lg md:text-xl font-heading font-medium text-coolGray-500">Já se encontra inscrito neste torneio!</p>
+                                </>
+                              ) : (
+                                <>
+                                  <p class="mb-6 text-lg md:text-xl font-heading font-medium text-coolGray-500">Increva-se neste torneio!</p>
+                                  <a class="inline-block py-3 px-7 w-full md:w-auto text-lg leading-7 text-green-50 bg-orange-500 hover:bg-orange-600 font-medium text-center focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50 border border-transparent rounded-md shadow-sm" onClick={handleTogglePopupInscricao} style={{cursor:"pointer"}}>Inscrever</a>
+
+                                  <div className={`popup ${popUpInscricao ? 'active' : ''}`}>
+                                    <div className="overlay">
+                                        <form className="overlayContent">
+                                            <label>Nova Inscricao</label>
+                                            <input ref={newNomeEquipa} id="novoNomeEquipa" style={{marginBottom:"10px"}} type="text" placeholder="Nome Equipa" required/>
+
+                                            <label style={{marginTop:"10px"}}>Elemento(s) Equipa</label>
+                                            <input  style={{marginBottom:"10px"}} type="mail" placeholder={emailUser} disabled="disabled"/>
+                                            { torneio.tamEquipa > 1 ?
+                                              ([...Array(torneio.tamEquipa-1)].map((e, i) => <input style={{marginBottom:"10px"}} id="novoElemento" type="mail" placeholder={"Email elemento nº " + (i+2)} required/>)
+                                              ) : (null)
+                                              
+                                            }
+                                            <p style={{color: "red", marginBottom:"10px", marginTop:(alert?"10px":"")}}>{alert ? alertMsg : ''}</p>
+                                            
+                                            <div className="butoesAcceptBack">
+                                                <button onClick={handleTogglePopupInscricao} type="button" className="buttonCancelar buttonBlack">Cancelar</button>
+                                                <button onClick={handleEfetuaInscricao} type="submit" className="buttonAceitar buttonBlack">Inscrever</button>
+                                            </div>
+                                        </form>
+                                    </div>	
+                                  </div>
+                                </>
+                              )
+                              }
+                            </>)
+                            }
+                            </div>
+                        </div>
+                      </section>
                     </div>
                   </div>
                 </div>

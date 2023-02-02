@@ -8,6 +8,7 @@ import {Inscricoes} from './Inscricoes.js';
 import queries from '../requests/queries';
 import { useQuery } from '@tanstack/react-query';
 import '../components/RadioForm.css';
+import '../components/titulo.css';
 
 const API_URL="http://localhost:3000"
 
@@ -51,7 +52,7 @@ export function Gestao() {
 
     return(
         <div className="text-center">
-          <h1 className = "text-center p-4 text-6xl font-bold">Gestão</h1>
+          <h1 className = "text-center p-4 text-6xl font-bold pt-8 pb-3">Gestão</h1>
           <div className="viagem-form w3-mobile radio-list" onChange={e => setTipo(e.target.value)}>
               <form>
                 <div className="w3-row-padding w3-mobile">
