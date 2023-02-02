@@ -222,7 +222,7 @@ export function RegistoTorneio() {
         <NavbarDynamic/>
         <div class="bg-gray-100  min-h-screen">
         <div class="flex flex-col items-center justify-center px-6 pt-4 py-8 mx-auto">
-        <div class="w-full bg-white rounded-lg shadow dark:border mt-8 sm:max-w-md xl:p-0 dark:bg-gray-800 ">
+        <div class="w-full bg-white rounded-lg shadow mt-8 sm:max-w-md xl:p-0">
           <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
               <h1 class="text-xl font-bold leading-tight tracking-tight text-orange-500 md:text-2xl text-center">
                   Registe aqui o seu torneio
@@ -230,7 +230,7 @@ export function RegistoTorneio() {
                 <form class="space-y-4 md:space-y-6" onSubmit={handleRegisto}>
                     <div>
                     <label for="text" class="block mb-2 text-base font-bold text-gray-900 ">Nome: </label>
-                        <input class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                        <input class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" 
                         ref={inputnomeTorneioRef} id="nomeTorneio" type="nomeTorneio" placeholder="Nome do Torneio" required></input>
                     </div>
 
@@ -251,7 +251,7 @@ export function RegistoTorneio() {
                                         data-input
                                         placeholder="Data do Torneio"
                                         required
-                                        class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                        class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                                         
                                         />
                                 </div>
@@ -273,7 +273,7 @@ export function RegistoTorneio() {
                         </select>
                     </div>
                     <div>
-                        <label  class="block mb-2 text-base font-bold text-gray-900 dark:text-white">Localidade: </label>
+                        <label  class="block mb-2 text-base font-bold text-gray-900">Localidade: </label>
                         <select className="form-select bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-gray-500 focus:border-gray-500 block w-full p-2.5" id="localidade" name="Localidade" onChange={e => setLocalidade(e.target.value)} required>
                         <option value="">Indique a localidade pretendida</option>
                             {localidades.map((localidade) => (
@@ -282,7 +282,7 @@ export function RegistoTorneio() {
                         </select>
                     </div>
                     <div>
-                        <label  class="block mb-2 text-base font-bold text-gray-900 dark:text-white">Tipo do torneio: </label>
+                        <label  class="block mb-2 text-base font-bold text-gray-900">Tipo do torneio: </label>
                         <select className="form-select bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-gray-500 focus:border-gray-500 block w-full p-2.5" value={tipoTorneio} id="tipoTorneio" name="tipoTorneio" onChange={e => setTipoTorneio(e.target.value)} required>
                             <option value="">Indique o tipo de torneio pretendido</option>
                             <option value="0">Liga</option>
@@ -296,7 +296,7 @@ export function RegistoTorneio() {
                         </select>
                     </div>
                     <div>
-                        <label  class="block mb-2 text-base font-bold text-gray-900 dark:text-white">Federado: </label>
+                        <label  class="block mb-2 text-base font-bold text-gray-900">Federado: </label>
                         <select className="form-select bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-gray-500 focus:border-gray-500 block w-full p-2.5" value={federado} id="federado" name="Federado" onChange={e => setFederado(e.target.value)} required>
                             <option value="">Indique se pretende que o torneio seja federado</option>
                             <option value="1">Federado</option>
@@ -304,7 +304,7 @@ export function RegistoTorneio() {
                         </select>
                     </div>
                     <div>
-                        <label  class="block mb-2 text-base font-bold text-gray-900 dark:text-white">Escalão: </label>
+                        <label  class="block mb-2 text-base font-bold text-gray-900">Escalão: </label>
                         <select className="form-select bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-gray-500 focus:border-gray-500 block w-full p-2.5" value={escalao} id="escalao" name="Escalao" onChange={e => setEscalao(e.target.value)} required>
                             <option value="">Indique o escalão pretendido</option>
                             <option value="0">Seniores</option>
@@ -328,7 +328,7 @@ export function RegistoTorneio() {
                         </select>
                     </div>
                     <div>
-                        <label  class="block mb-2 text-base font-bold text-gray-900 dark:text-white">Género: </label>
+                        <label  class="block mb-2 text-base font-bold text-gray-900">Género: </label>
                         <select className="form-select bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-gray-500 focus:border-gray-500 block w-full p-2.5" value={genero} id="genero" name="Genero" onChange={e => setGenero(e.target.value)} required>
                             <option value="">Indique o género pretendido</option>
                             <option value="0">Masculino</option>
@@ -337,14 +337,14 @@ export function RegistoTorneio() {
                         </select>
                     </div>
                     <div>
-                        <label for="number" class="block mb-2 text-base font-bold text-gray-900 dark:text-white">Número de Elementos por Equipa:</label>
-                        <input class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        <label for="number" class="block mb-2 text-base font-bold text-gray-900">Número de Elementos por Equipa:</label>
+                        <input class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                          ref={inputtamEquipaRef} id="tamEquipa" type="number" min="1" placeholder="1" required></input>
                     </div>
 
                     <div class="flex justify-center">
                         <div class="mb-3 w-96">
-                        <label for="formfile" class="block mb-2 text-base font-bold text-gray-900 dark:text-white">Imagem do torneio:</label>
+                        <label for="formfile" class="block mb-2 text-base font-bold text-gray-900">Imagem do torneio:</label>
                             <input class="form-control
                             block
                             w-full
@@ -363,8 +363,8 @@ export function RegistoTorneio() {
                         </div>
                     </div>
 
-                    <ul class="items-center w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg sm:flex dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                        <li class="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
+                    <ul class="items-center w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg sm:flex">
+                        <li class="w-full border-b border-gray-200 sm:border-b-0 sm:border-r">
                             <div class="flex items-center pl-3">
                             <input id="horizontal-list-radio-license" 
                                 type="radio" 
@@ -373,10 +373,10 @@ export function RegistoTorneio() {
                                 class="form-check-input form-radio w-4 h-4 text-blue-600 bg-gray-100 border-gray-300" 
                                 checked={espacosFav} 
                                 onChange={handleEspaco} />
-                            <label for="horizontal-list-radio-license" class="w-full py-3 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Escolher um espaço</label>
+                            <label for="horizontal-list-radio-license" class="w-full py-3 ml-2 text-sm font-medium text-gray-900">Escolher um espaço</label>
                             </div>
                         </li>
-                        <li class="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
+                        <li class="w-full border-b border-gray-200 sm:border-b-0 sm:border-r">
                             <div class="flex items-center pl-3">
                             <input id="horizontal-list-radio-id" 
                                 type="radio" 
@@ -435,30 +435,30 @@ export function RegistoTorneio() {
                             : ( <>
                             <div>
                             <label for="text" class="block mb-2 text-base font-bold text-gray-900 ">Nome do Espaço:</label>
-                                <input class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                                <input class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" 
                                 ref={inputnomeEspacoRef} id="nomeEspaco" type="nomeEspaco" placeholder="Nome do Espaço" required></input>
                             </div>
 
                             <div>
                             <label for="text" class="block mb-2 text-base font-bold text-gray-900 ">Nome da Rua:</label>
-                                <input class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                                <input class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" 
                                  ref={inputruaEspacoRef} id="ruaEspaco" type="ruaEspaco" placeholder="Nome da Rua" required></input>
                             </div>
 
                             <div>
                             <label for="text" class="block mb-2 text-base font-bold text-gray-900 ">Contacto do Espaço:</label>
-                                <input class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                                <input class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" 
                                  ref={inputContactoEspacoRef} id="contactoEspaco" type="tel" pattern="9[0-9]{8}" placeholder="916912569" required></input>
                             </div>
 
                             <div>
                             <label for="text" class="block mb-2 text-base font-bold text-gray-900 ">Numéro de campos do Espaço:</label>
-                                <input class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                                <input class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" 
                                  ref={inputNMesasRef} id="nMesasEspaco" type="number" min="1" placeholder="1" required></input>
                             </div>
                             </>)
                         }
-                    <button type="submit" class="w-full text-white bg-orange-500 hover:bg-orange-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Registar</button>
+                    <button type="submit" class="w-full text-white bg-orange-500 hover:bg-orange-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Registar</button>
                 </form>
                 </div>
             </div>
