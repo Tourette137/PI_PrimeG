@@ -5,6 +5,7 @@ import logo from '../images/logotipo.png';
 export function Home() {
     return(
         <>
+            <NavbarDynamic/>
             <section class="relative bg-white overflow-hidden">
 
               <div class="py-20 md:py-52">

@@ -119,6 +119,7 @@ export function Torneios() {
 
     return(
         <>
+        <NavbarDynamic/>
        {/*Aqui seleciona o tipo de torneio que quer mostrar.*/}
         <div className='titulo pt-8 pb-3'>
           <h1>Torneios</h1>

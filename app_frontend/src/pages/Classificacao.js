@@ -2,6 +2,7 @@ import {useState,useEffect} from 'react';
 import {useParams} from 'react-router-dom'
 import GrupoDisplay from "../components/GrupoDisplay.js";
 import ElimDisplay from "./ElimDisplay.jsx";
+import {NavbarDynamic} from '../components/NavbarDynamic.js';
 
 const API_URL="http://localhost:3000"
 
@@ -63,6 +64,7 @@ export function Classificacao() {
 
     return(
         <>
+        <NavbarDynamic/>
         <div className='titulo'>
           <h1>Classificação</h1>
         </div>

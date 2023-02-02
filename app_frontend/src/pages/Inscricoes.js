@@ -2,6 +2,7 @@ import {Link} from 'react-router-dom';
 import {useState, useEffect} from 'react';
 import axios from 'axios';
 import '../components/Buttons.css';
+import {NavbarDynamic} from '../components/NavbarDynamic.js';
 
 const API_URL="http://localhost:3000"
 
@@ -74,6 +75,7 @@ export function Inscricoes({ id,terminado,inscricoesA, ...props }) {
 
     return(
         <>
+        <NavbarDynamic/>
         {(terminado > 0 )
         ? (
           <div class="py-3">

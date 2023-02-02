@@ -87,6 +87,7 @@ export function Jogos() {
     // }
     return(
         <>
+        <NavbarDynamic/>
         <div className='titulo pt-8 pb-3'>
           <h1>Jogos</h1>
         </div>

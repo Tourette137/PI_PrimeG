@@ -51,6 +51,8 @@ export function Gestao() {
       return "a dar error";
 
     return(
+      <>
+      <NavbarDynamic/>
         <div className="text-center">
           <h1 className = "text-center p-4 text-6xl font-bold pt-8 pb-3">Gestão</h1>
           <div className="viagem-form w3-mobile radio-list" onChange={e => setTipo(e.target.value)}>
@@ -80,16 +82,17 @@ export function Gestao() {
           </div>
           {("inscricoes"===tipo)? (
             <Inscricoes id={parseInt(id)} inscricoesA = {data.inscricoesAbertas} terminado = {data.terminado}/>
-          ):
+            ):
             (("torneio"===tipo)?
-              <GestTorneio id = {parseInt(id)}  tipoTorneio = {data.tipoTorneio} terminado = {data.terminado}/>
-              :(("calendario"===tipo)?
-                <Calendario id = {parseInt(id)}  tipoTorneio = {data.tipoTorneio}/>
-                : <GestJogos idTorneio={parseInt(id)} tipoTorneio={torneio.tipoTorneio} desporto={torneio.nomeDesporto} />
-              )
+            <GestTorneio id = {parseInt(id)}  tipoTorneio = {data.tipoTorneio} terminado = {data.terminado}/>
+            :(("calendario"===tipo)?
+            <Calendario id = {parseInt(id)}  tipoTorneio = {data.tipoTorneio}/>
+            : <GestJogos idTorneio={parseInt(id)} tipoTorneio={torneio.tipoTorneio} desporto={torneio.nomeDesporto} />
+            )
             )
           }
         </div>
+        </>
     )
 
           

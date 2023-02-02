@@ -2,6 +2,7 @@ import {useRef, useState,useEffect} from 'react';
 import {useNavigate } from 'react-router-dom'
 import axios from 'axios';
 import {Link} from 'react-router-dom';
+import {NavbarDynamic} from '../components/NavbarDynamic.js';
 
 const API_URL="http://localhost:3000"
 
@@ -99,6 +100,8 @@ export function RegistoEspaco() {
 
 
     return (
+        <>
+        <NavbarDynamic/>
         <div class="bg-gray-100  min-h-screen">
         <div class="flex flex-col items-center justify-center px-6 pt-4 py-8 mx-auto">
         <div class="w-full bg-white rounded-lg shadow dark:border mt-8 sm:max-w-md xl:p-0 dark:bg-gray-800 ">
@@ -177,5 +180,6 @@ export function RegistoEspaco() {
             </div>
         </div>
         </div>
+        </>
     )
 }

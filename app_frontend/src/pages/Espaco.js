@@ -3,6 +3,7 @@ import EspacoCard from '../components/EspacoCard.js';
 import {useParams} from 'react-router-dom'
 import {useState,useEffect} from 'react';
 import {Link} from 'react-router-dom';
+import {NavbarDynamic} from '../components/NavbarDynamic.js';
 
 const API_URL="http://localhost:3000"
 
@@ -29,6 +30,7 @@ export function Espaco() {
 
     return(
         <>
+        <NavbarDynamic/>
         <h1>Página do espaco {id}</h1>
         {espaco !== ""
         ? (<div className = "Espaco">

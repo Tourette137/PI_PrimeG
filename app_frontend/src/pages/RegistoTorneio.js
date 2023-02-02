@@ -3,6 +3,7 @@ import {useNavigate } from 'react-router-dom'
 import axios from 'axios';
 import EspacoCardAux from '../components/EspacoCardAux.js';
 import EspacoCard from '../components/EspacoCard';
+import {NavbarDynamic} from '../components/NavbarDynamic.js';
 
 const API_URL="http://localhost:3000"
 
@@ -217,6 +218,8 @@ export function RegistoTorneio() {
 
 
     return (
+        <>
+        <NavbarDynamic/>
         <div class="bg-gray-100  min-h-screen">
         <div class="flex flex-col items-center justify-center px-6 pt-4 py-8 mx-auto">
         <div class="w-full bg-white rounded-lg shadow dark:border mt-8 sm:max-w-md xl:p-0 dark:bg-gray-800 ">
@@ -237,7 +240,7 @@ export function RegistoTorneio() {
                                 x-init="flatpickr($refs.datetimewidget, {wrap: true, enableTime: true, dateFormat: 'M j, Y h:i K'});"
                                 x-ref="datetimewidget"
                                 class="flatpickr container mx-auto col-span-6 sm:col-span-6 mt-5"
-                            >
+                                >
                                 <label for="datetime" class="flex-grow  block font-medium text-sm text-gray-700 mb-1">Data:</label>
                                 <div class="flex align-middle align-content-center">
                                     <input
@@ -249,8 +252,8 @@ export function RegistoTorneio() {
                                         placeholder="Data do Torneio"
                                         required
                                         class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-
-                                    />
+                                        
+                                        />
                                 </div>
 
                             </div>
@@ -266,7 +269,7 @@ export function RegistoTorneio() {
                         <option value="">Indique o desporto pretendido</option>
                             {desportos.map((desporto) => (
                                 <option value ={desporto.idDesporto}>{desporto.nomeDesporto}</option>
-                            ))}
+                                ))}
                         </select>
                     </div>
                     <div>
@@ -275,7 +278,7 @@ export function RegistoTorneio() {
                         <option value="">Indique a localidade pretendida</option>
                             {localidades.map((localidade) => (
                                 <option value ={localidade.idLocalidade}>{localidade.Nome}</option>
-                            ))}
+                                ))}
                         </select>
                     </div>
                     <div>
@@ -389,7 +392,7 @@ export function RegistoTorneio() {
 
                         {espacosFav ?
                             (desporto !== "" && localidade !== "" ?
-                                (espacos?.length > 0
+                            (espacos?.length > 0
                                 ? (
                                     <div class="relative items-center">
                                         {(aMostrar == espacoSelecionado)?
@@ -404,7 +407,7 @@ export function RegistoTorneio() {
                                             <EspacoCard url={espacos[aMostrar].imageUrl} nome = {espacos[aMostrar].nome} rua = {espacos[aMostrar].rua} contacto = {espacos[aMostrar].contacto}/>
                                             </div>
                                         )
-                                        }
+                                    }
                                         <button type="button" onClick={handlePrevEspaco} class="absolute top-0 left-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" >
                                             <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-orange-300 dark:bg-gray-800/30 group-hover:orange-500  group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
                                                 <svg aria-hidden="true" class="w-6 h-6 text-white dark:text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
@@ -428,8 +431,8 @@ export function RegistoTorneio() {
                                 <span class="font-medium">Selecione um desporto e uma localidade!</span>
                                     </div>)
                             )
-            
-                        : ( <>
+                            
+                            : ( <>
                             <div>
                             <label for="text" class="block mb-2 text-base font-bold text-gray-900 ">Nome do Espaço:</label>
                                 <input class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
@@ -461,5 +464,6 @@ export function RegistoTorneio() {
             </div>
         </div>
         </div>
+        </>
     )
 }

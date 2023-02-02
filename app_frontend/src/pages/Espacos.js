@@ -103,6 +103,8 @@ console.log(pedido);
     }
 
     return(
+        <>
+        <NavbarDynamic/>
         <div className="text-center">
        {/*Aqui seleciona o tipo de espaco que quer mostrar.*/}
         <div className='titulo pt-8 pb-3'>
@@ -134,8 +136,8 @@ console.log(pedido);
                 <select className="pl-4 text-black" onChange={handleLocalidade}>
                     <option defaultValue="Todas">Indiferente</option>
                     {localidades.map((localidade) => (
-                        <option value ={localidade.idLocalidade}>{localidade.Nome}</option>
-                    ))}
+                      <option value ={localidade.idLocalidade}>{localidade.Nome}</option>
+                      ))}
                 </select>
               </div>
             <label className='w-auto text-xl font-bold'>Desporto: </label>
@@ -143,8 +145,8 @@ console.log(pedido);
                 <select  className="pl-4 text-black" onChange={handleDesporto}>
                     <option defaultValue="Todos">Indiferente</option>
                     {desportos.map((desporto) => (
-                        <option value ={desporto.idDesporto}>{desporto.nomeDesporto}</option>
-                    ))}
+                      <option value ={desporto.idDesporto}>{desporto.nomeDesporto}</option>
+                      ))}
                 </select>
               </div>
             </form>
@@ -158,12 +160,13 @@ console.log(pedido);
               {espacos.length > 0
               ? espacos.map((espaco) => (
                 <Link to={"/espacos/" + espaco.idEspaco}><EspacoCard url={espaco.imageUrl} nome={espaco.nome} rua={espaco.rua} contacto={espaco.contacto} /></Link>
-              ))
-              : <h2 className="text-4xl text-center">Não existem espaços!</h2>}
+                ))
+                : <h2 className="text-4xl text-center">Não existem espaços!</h2>}
             </div>
           </div>
 
         </div>
     </div>
+    </>
     )
 }

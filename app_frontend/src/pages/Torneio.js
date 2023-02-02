@@ -8,6 +8,7 @@ import InscritosDisplay from "../components/ListaInscritos.js";
 import {Link} from 'react-router-dom';
 import CalendarioDisplay from "../components/CalendarioDisplay.js";
 import '../components/titulo.css';
+import {NavbarDynamic} from '../components/NavbarDynamic.js';
 
 const API_URL="http://localhost:3000"
 
@@ -207,6 +208,7 @@ export function Torneio() {
 
     return(
         <>
+        <NavbarDynamic/>
             <div className='titulo pt-8 pb-3'>
               <h1>{torneio.nomeTorneio}</h1>
             </div>

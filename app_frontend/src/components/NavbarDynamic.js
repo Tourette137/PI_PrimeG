@@ -11,9 +11,15 @@ const API_URL="http://localhost:3000"
 export function NavbarDynamic() {
 
     const [showMenu, setShowMenu] = useState(false);
+    const [count, setCount] = useState(0);
+    const [isLogged, setIsLogged] = useState(false);
 
     const [notificacoes, setNotificacoes] = useState([]);
     const [showNotification, setShowNotification] = useState(false);
+
+    function ReloadNav () {
+        setCount(count + 1);
+    };
 
     // Vai a API buscar os torneios inscritos do Utilizador
     const notificacoesUser = async () => {
@@ -33,6 +39,13 @@ export function NavbarDynamic() {
 
     const handleHideNotificatios = async (e) => {
         setShowNotification(false)
+    }
+
+    const checkLoggedIn = async (e) => {
+        if (localStorage.getItem("token") !== 'null') {
+            setIsLogged(true);
+            console.log("Tá logado")
+        }
     }
 
     useEffect(() => {
@@ -66,16 +79,6 @@ export function NavbarDynamic() {
                                 )
                             }
                             </>
-
-                            {
-                                /*
-                                <li className="nav__item">
-                                    <Link to="/" className="nav__link">
-                                        <i className="uil uil-at nav__icon"></i>About Us
-                                    </Link>
-                                </li>
-                                */
-                            }
 
 
                             <li className="nav__item">

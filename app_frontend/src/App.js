@@ -35,8 +35,6 @@ function App() {
 
   return (
     <QueryClientProvider client = {queryClient}>
-      <NavbarDynamic/>
-
       <Routes>
           <Route path="/" element= {<Home/>}/>
           <Route path="/login" element= {<Login/>}/>
