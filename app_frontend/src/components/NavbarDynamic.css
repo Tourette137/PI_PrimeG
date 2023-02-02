@@ -105,11 +105,18 @@
     margin-bottom: 3.5rem;
 }
 
+.distanciaBottom {
+    margin-bottom: 0rem;
+}
+
 
 /* For medium devices */
 @media screen and (max-width: 768px) {
     .distancia{
         margin-bottom: 0rem;
+    }
+    .distanciaBottom {
+        padding-bottom: 2.25rem;
     }
     .header {
         top: initial;

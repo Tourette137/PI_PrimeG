@@ -1,10 +1,11 @@
 import React from 'react'
 import logotipo from '../images/logotipo.png'
 import {Link} from 'react-router-dom';
+import './NavbarDynamic.css'
 
 export function Footer() {
   return (
-    <footer>
+    <footer className='distanciaBottom'>
     <section class="bg-gray-900 text-white mt-8">
       <div class="container px-4 mx-auto">
       <div class="pt-24 pb-11 mx-auto max-w-4xl">
