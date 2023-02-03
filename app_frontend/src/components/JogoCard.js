@@ -1,6 +1,18 @@
 import React from 'react'
 
 const JogoCard = ({jogo,isGroup,nomeEquipa1,nomeEquipa2}) => {
+    const list = jogo.resultado.split('|');
+    let geral = [0,0]
+    for (var i=0;i < list.length;i++){
+      let sp = list[i].split('-');
+      if(parseInt(sp[0]) > parseInt(sp[1]))
+        geral[0] += 1;
+      else {
+        geral[1] += 1;
+      }
+    }
+
+    console.log(list);
     return (
       <div className= "w-auto my-2 bg-white shadow-2xl shadow-gray-300 hover:bg-gray-200 rounded-xl p-2 text-black">
 
@@ -23,7 +35,16 @@ const JogoCard = ({jogo,isGroup,nomeEquipa1,nomeEquipa2}) => {
               ?
                 (<div className="font-bold text-2xl w-1/2 h-min text-center"> - </div>)
               :
-                (<div className="font-bold text-2xl w-1/2 h-min text-center"> {jogo.resultado.split('-')[0]} </div>)
+                (<div className="font-bold text-2xl w-1/2 place-content-center flex flex-wrap h-min text-center">
+                  <div className="w-4 mx-1 h-full font text-center pr-6 border-r-2 border-orange-200">
+                    {geral[0]}
+                  </div>
+                  {list.map((r) => (
+                    <div className="w-4 mx-1 h-full font-light text-center">
+                      {r.split('-')[0]}
+                    </div>
+                  ))}
+                </div>)
             }
 
             <div className="font-bold text-2xl text-gray-700 w-1/2 h-min text-center"> {nomeEquipa2} </div>
@@ -31,7 +52,16 @@ const JogoCard = ({jogo,isGroup,nomeEquipa1,nomeEquipa2}) => {
               ?
                 (<div className="font-bold text-2xl w-1/2 h-min text-center"> - </div>)
               :
-                (<div className="font-bold text-2xl w-1/2 h-min text-center"> {jogo.resultado.split('-')[1]} </div>)
+                (<div className="font-bold text-2xl w-1/2 place-content-center flex flex-wrap h-min text-center">
+                  <div className={`w-4 mx-1 h-full font text-center ${(list?.length > 1) ? 'pr-6 border-r-2 border-orange-200' : ''}`}>
+                    {geral[1]}
+                  </div>
+                  {list.map((r) => (
+                    <div className="w-4 mx-1 h-full font-light text-center">
+                      {r.split('-')[1]}
+                    </div>
+                  ))}
+                </div>)
             }
           </div>
 

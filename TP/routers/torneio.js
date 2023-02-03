@@ -292,14 +292,14 @@ router.get("/disponiveis",(req,res) => {
                         break;
                     default: console.log("default");
                 }
-                
+
                 if (!(r.imageName === null)) {
 
                     const params = {
                         Bucket: bucketName,
                         Key: r.imageName
                     }
-    
+
                     const command = new GetObjectCommand(params);
                     const url = await getSignedUrl(s3Client, command, {expiresIn: 60});
                     r.imageUrl = url
@@ -307,7 +307,7 @@ router.get("/disponiveis",(req,res) => {
                     r.imageUrl = null
                 }
             }
-            
+
             console.log(re)
             res.send(re);
         }
@@ -376,14 +376,14 @@ router.get("/encerrados",(req,res) => {
                         break;
                     default: console.log("default");
                 }
-                
+
                 if (!(r.imageName === null)) {
 
                     const params = {
                         Bucket: bucketName,
                         Key: r.imageName
                     }
-    
+
                     const command = new GetObjectCommand(params);
                     const url = await getSignedUrl(s3Client, command, {expiresIn: 60});
                     r.imageUrl = url
@@ -391,7 +391,7 @@ router.get("/encerrados",(req,res) => {
                     r.imageUrl = null
                 }
             }
-            
+
             console.log(re)
             res.send(re);
         }
@@ -460,14 +460,14 @@ router.get("/aDecorrer",(req,res) => {
                         break;
                     default: console.log("default");
                 }
-                
+
                 if (!(r.imageName === null)) {
 
                     const params = {
                         Bucket: bucketName,
                         Key: r.imageName
                     }
-    
+
                     const command = new GetObjectCommand(params);
                     const url = await getSignedUrl(s3Client, command, {expiresIn: 60});
                     r.imageUrl = url
@@ -475,7 +475,7 @@ router.get("/aDecorrer",(req,res) => {
                     r.imageUrl = null
                 }
             }
-            
+
             console.log(re)
             res.send(re);
         }
@@ -545,14 +545,14 @@ router.get("/emBreve",(req,res) => {
                         break;
                     default: console.log("default");
                 }
-                
+
                 if (!(r.imageName === null)) {
 
                     const params = {
                         Bucket: bucketName,
                         Key: r.imageName
                     }
-    
+
                     const command = new GetObjectCommand(params);
                     const url = await getSignedUrl(s3Client, command, {expiresIn: 60});
                     r.imageUrl = url
@@ -560,7 +560,7 @@ router.get("/emBreve",(req,res) => {
                     r.imageUrl = null
                 }
             }
-            
+
             console.log(re)
             res.send(re);
         }
@@ -1004,7 +1004,7 @@ router.post("/registo",isAuth,upload.single('fotoTorneio'),(req,res) => {
     let sql = `Insert into torneio (nomeTorneio, idOrganizador, idDesporto, isFederado, dataTorneio,inscricoesAbertas,escalao,tipoTorneio,terminado,Espaco_idEspaco,tamEquipa,genero)
                     values ("${req.body.nomeTorneio}",${req.userId}, ${req.body.idDesporto}, ${req.body.isFederado},"${dataT}", 1, ${req.body.escalao}, ${req.body.tipoTorneio}, 0, ${req.body.Espaco_idEspaco},${req.body.tamEquipa},${req.body.genero})`
         data.query(sql)
-        .then(async re => {          
+        .then(async re => {
                 if (!(req.file === undefined)) {
                     const fileName = "Torneio"+re.insertId
 
@@ -1023,7 +1023,7 @@ router.post("/registo",isAuth,upload.single('fotoTorneio'),(req,res) => {
                         .then(re1 => {
                             res.send({idTorneio: re.insertId})
 
-                        }) 
+                        })
                         .catch (e => { res.status(400).jsonp({ error: e }) })
 
                 } else {

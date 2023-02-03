@@ -36,6 +36,7 @@ export function Torneio() {
     const newNomeEquipa = useRef(null);
 
     const searchJogos = async () => {
+      console.log(torneio.terminado);
         let tipo = "/jogosPorComecar";
         if(torneio.terminado == 1)
           tipo = "/jogosaDecorrer";
@@ -48,6 +49,8 @@ export function Torneio() {
         if (response.status === 200) {
             const data = await response.json();
             setJogos(data);
+            console.log(data);
+            console.log(pedido);
         }
         else {
           setJogos([]);
@@ -71,7 +74,7 @@ export function Torneio() {
     const verificaEstaInscrito = async () => {
       const requestOptions = {
         headers: {'Authorization': "Bearer " + localStorage.getItem("token")}
-      } 
+      }
 
       const response = await fetch (`${API_URL}/torneios/${id}/estaInscrito`, requestOptions);
 
@@ -101,7 +104,7 @@ export function Torneio() {
 
     const handleEfetuaInscricao = async (e) => {
       e.preventDefault()
-      
+
       const novoNomeEquipa = inscritos.find(inscrito => {
           return inscrito.nomeEquipa === newNomeEquipa.current.value
       })
@@ -118,7 +121,7 @@ export function Torneio() {
     }
 
     const searchApurados = async () => {
-      
+
       const response = await fetch (`${API_URL}/torneios/${id}/apurados`);
       if (response.status === 200) {
           const data = await response.json();
@@ -178,12 +181,28 @@ export function Torneio() {
             }
             setTorneio(data);
             setTipoTorneio(data.tipoTorneio);
-            searchJogos();
+
+            let tipo = "/jogosPorComecar";
+            if(data.terminado == 1)
+              tipo = "/jogosaDecorrer";
+            else if (data.terminado == 2)
+              tipo = "/jogosEncerrados";
+
+            let pedido = API_URL + "/torneios/" + id + tipo;
+
+            response = await fetch (pedido);
+            if (response.status === 200) {
+                const data2 = await response.json();
+                setJogos(data2);
+            }
+            else {
+              setJogos([]);
+            }
         }
         else {
             setTorneio([]);
-              setLoading1(false);
         }
+        setLoading1(false);
 
     }
 
@@ -281,16 +300,16 @@ export function Torneio() {
                                             { torneio.tamEquipa > 1 ?
                                               ([...Array(torneio.tamEquipa-1)].map((e, i) => <input style={{marginBottom:"10px"}} id="novoElemento" type="mail" placeholder={"Email elemento nº " + (i+2)} required/>)
                                               ) : (null)
-                                              
+
                                             }
                                             <p style={{color: "green", marginTop:(alert?"10px":"")}}>{alert ? alertMsg : ''}</p>
-                                            
+
                                             <div className="butoesAcceptBack">
                                                 <button onClick={handleTogglePopupInscricao} type="button" className="buttonCancelar buttonBlack">Cancelar</button>
                                                 <button onClick={handleEfetuaInscricao} type="submit" className="buttonAceitar buttonBlack">Inscrever</button>
                                             </div>
                                         </form>
-                                    </div>	
+                                    </div>
                                   </div>
                                 </>
                               )

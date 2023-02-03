@@ -62,7 +62,7 @@ export function Inscricoes({ id,terminado,inscricoesA, ...props }) {
           .then(response => {
             searchInscricoes();
       }).catch(e => console.log(e))
-    } 
+    }
 
     useEffect(() => {
       searchInscritos();
@@ -97,7 +97,7 @@ export function Inscricoes({ id,terminado,inscricoesA, ...props }) {
           </div>
         )
         : ((inscricoesAbertas === 1 )
-            ? 
+            ?
               ((inscricoes?.length > 0
                 ? (<div className="place-content-center">
                     <section class="bg-coolGray-50 py-4">
@@ -132,14 +132,14 @@ export function Inscricoes({ id,terminado,inscricoesA, ...props }) {
                                       </th>
                                     </tr>
                                   ))}
-                                
+
                                   </tbody></table>
                               </div>
                             </div>
                           </div>
                         </section>
-                  {inscritos.length > 1 
-                  ? <div className="butoesAcceptBack gridButtons container" style={{ margin: "0 0 30px 0" }}>
+                  {inscritos.length > 1
+                  ? <div className="butoesAcceptBack gridButtons container" style={{ margin: "0 0 30px 70px" }}>
                       <button className="buttonBlack" onClick={handleFecharInscricoes}>Fechar inscrições</button>
                     </div>
                   : null
@@ -161,8 +161,8 @@ export function Inscricoes({ id,terminado,inscricoesA, ...props }) {
                       </div>
                     </div>
                   </div>
-                  {inscritos.length > 1 
-                    ? <div className="butoesAcceptBack gridButtons container" style={{ margin: "0 0 30px 0" }}>
+                  {inscritos.length > 1
+                    ? <div className="butoesAcceptBack gridButtons container" style={{ margin: "0 0 30px 70px" }}>
                         <button className="buttonBlack" onClick={handleFecharInscricoes}>Fechar inscrições</button>
                       </div>
                     : null
@@ -171,7 +171,7 @@ export function Inscricoes({ id,terminado,inscricoesA, ...props }) {
                 )
               ))
             :
-              (<div className="butoesAcceptBack gridButtons container " style={{ margin: "0 0 30px 0" }}>
+              (<div className="butoesAcceptBack gridButtons container " style={{ margin: "0 0 30px 70px" }}>
                 <button className="buttonBlack" onClick={handleFecharInscricoes}>Abir inscrições</button>
               </div>
             )
