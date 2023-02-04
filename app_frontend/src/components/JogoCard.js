@@ -1,15 +1,21 @@
 import React from 'react'
 
 const JogoCard = ({jogo,isGroup,nomeEquipa1,nomeEquipa2}) => {
-    const list = jogo.resultado.split('|');
+    const list = (jogo.resultado == null) ? [] : jogo.resultado.split('|');
     let geral = [0,0]
-    for (var i=0;i < list.length;i++){
-      let sp = list[i].split('-');
-      if(parseInt(sp[0]) > parseInt(sp[1]))
-        geral[0] += 1;
-      else {
-        geral[1] += 1;
+    if (list.length > 1){
+      for (var i=0;i < list.length;i++){
+        let sp = list[i].split('-');
+        if(parseInt(sp[0]) > parseInt(sp[1]))
+          geral[0] += 1;
+        else {
+          geral[1] += 1;
+        }
       }
+    }
+    else if (list.length == 1){
+      let sp = list[0].split('-');
+      geral = [parseInt(sp[0]),parseInt(sp[1])]
     }
 
     console.log(list);
@@ -36,14 +42,17 @@ const JogoCard = ({jogo,isGroup,nomeEquipa1,nomeEquipa2}) => {
                 (<div className="font-bold text-2xl w-1/2 h-min text-center"> - </div>)
               :
                 (<div className="font-bold text-2xl w-1/2 place-content-center flex flex-wrap h-min text-center">
-                  <div className="w-4 mx-1 h-full font text-center pr-6 border-r-2 border-orange-200">
+                  <div className={`w-4 mx-1 h-full font text-center ${(list?.length > 1) ? 'pr-6 border-r-2 border-orange-200' : ''}`}>
                     {geral[0]}
                   </div>
-                  {list.map((r) => (
+                  {list?.length > 1
+                  ? <>{list.map((r) => (
                     <div className="w-4 mx-1 h-full font-light text-center">
                       {r.split('-')[0]}
                     </div>
-                  ))}
+                  ))}</>
+                  : null
+                }
                 </div>)
             }
 
@@ -56,11 +65,14 @@ const JogoCard = ({jogo,isGroup,nomeEquipa1,nomeEquipa2}) => {
                   <div className={`w-4 mx-1 h-full font text-center ${(list?.length > 1) ? 'pr-6 border-r-2 border-orange-200' : ''}`}>
                     {geral[1]}
                   </div>
-                  {list.map((r) => (
+                  {list?.length > 1
+                  ? <>{list.map((r) => (
                     <div className="w-4 mx-1 h-full font-light text-center">
                       {r.split('-')[1]}
                     </div>
-                  ))}
+                  ))}</>
+                  : null
+                }
                 </div>)
             }
           </div>
