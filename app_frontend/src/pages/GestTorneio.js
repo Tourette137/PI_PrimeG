@@ -119,6 +119,7 @@ export function GestTorneio({ id,terminado,tipoTorneio, ...props }) {
               "intervalo" : parseInt(inputIntervaloEtapas),
               "groupSize" : parseInt(groupSize)
         }
+        if (inscritos.length >= parseInt(groupSize)){
         axios.post(`${API_URL}/torneios/${id}/gestao/criarFaseGrupos`, bodyGrupo,{headers: headers})
               .then(response => {
                 if(response.status==200){
@@ -131,6 +132,11 @@ export function GestTorneio({ id,terminado,tipoTorneio, ...props }) {
                             console.log(alert);
                             setAlertMsg("O Torneio ainda tem inscrições abertas!");
               })
+            }
+        else{
+          setAlert(true);
+          setAlertMsg("O número de inscritos é menor que o tamanho de um grupo!")
+          }
     }
 
     const handleElim = async (e) => {
@@ -149,11 +155,10 @@ export function GestTorneio({ id,terminado,tipoTorneio, ...props }) {
                     searchElim();
                     setAlert(false);
                   }
-                  else {
-                    setAlert(true);
-                    setAlertMsg("O Torneio ainda tem inscrições abertas!");
-                  }
-            }).catch(e => console.log(e))
+            }).catch(e => {console.log(e);
+              setAlert(true);
+              setAlertMsg("O Torneio ainda tem inscrições abertas!");
+            })
         }
         else {
             const bodyElimG = {
@@ -168,11 +173,10 @@ export function GestTorneio({ id,terminado,tipoTorneio, ...props }) {
                     searchElim();
                     setAlert(false);
                   }
-                  else {
-                    setAlert(true);
-                    setAlertMsg("A fase de grupos ainda não terminou!");
-                  }
-            }).catch(e => console.log(e))
+            }).catch(e => {console.log(e);
+              setAlert(true);
+              setAlertMsg("A fase de grupos ainda não terminou!");
+            })
         }
     }
 

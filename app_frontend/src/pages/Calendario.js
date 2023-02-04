@@ -10,7 +10,7 @@ export function Calendario(props) {
     const [calendarioGrupos,setCalendarioGrupos] = useState([]);
     const [calendarioElim,setCalendarioElim] = useState([]);
 
-    const {id} = useParams()
+    const id = props.id;
     const tipoTorneio = props.tipoTorneio;
 
     const searchCalendarioGrupos = async () => {

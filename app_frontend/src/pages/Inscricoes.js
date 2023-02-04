@@ -142,7 +142,9 @@ export function Inscricoes({ id,terminado,inscricoesA, ...props }) {
                   ? <div className="butoesAcceptBack gridButtons container" style={{ margin: "0 0 30px 70px" }}>
                       <button className="buttonBlack" onClick={handleFecharInscricoes}>Fechar inscrições</button>
                     </div>
-                  : null
+                  : <div className="butoesAcceptBack gridButtons container" style={{ margin: "0 0 30px 70px" }}>
+                  <button className="buttonBlack" onClick={handleFecharInscricoes}>Fechar inscrições</button>
+                </div>
                   }
                 </div>)
               : (
@@ -165,7 +167,9 @@ export function Inscricoes({ id,terminado,inscricoesA, ...props }) {
                     ? <div className="butoesAcceptBack gridButtons container" style={{ margin: "0 0 30px 70px" }}>
                         <button className="buttonBlack" onClick={handleFecharInscricoes}>Fechar inscrições</button>
                       </div>
-                    : null
+                    : <div className="butoesAcceptBack gridButtons container" style={{ margin: "0 0 30px 70px" }}>
+                    <button className="buttonBlack" onClick={handleFecharInscricoes}>Fechar inscrições</button>
+                  </div>
                   }
                 </div>
                 )

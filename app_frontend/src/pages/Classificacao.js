@@ -65,7 +65,7 @@ export function Classificacao() {
     return(
         <>
         <NavbarDynamic/>
-        <div className='titulo'>
+        <div className='titulo pt-8 pb-3'>
           <h1>Classificação</h1>
         </div>
 

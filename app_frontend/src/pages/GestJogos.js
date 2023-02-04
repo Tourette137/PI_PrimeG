@@ -12,6 +12,7 @@ export function GestJogos(props) {
 
     const [jogosGrupo,setJogosGrupo] = useState([]);
     const [jogosElim,setJogosElim] = useState([]);
+    const [rerender,setRerender] = useState(0);
 
     //Vemos a fase em que está e depois fazemos o pedido dos jogos correto.
 
@@ -53,8 +54,12 @@ export function GestJogos(props) {
         console.log("entrei no useEffect de jogos")
         searchJogosGrupo();
         searchJogosElim();
-      },[])
+      },[rerender])
 
+      const handlererender = () => {
+        console.log("aqui")
+        setRerender(rerender + 1);
+      };
 
       return (
         <>
@@ -67,7 +72,7 @@ export function GestJogos(props) {
                         <div class="border border-gray-300 rounded-md mx-4 mt-10 p-4">
                                 <div class="px-6 mb-4 text-lg text-coolGray-900 font-semibold">Jogos da Fase de Grupos:</div>
                                 {jogosGrupo.map((jogo) => (
-                                    <JogoDisplayGest idTorneio = {idTorneio} jogo={jogo} desporto = {desporto} isGrupo={true} />
+                                    <JogoDisplayGest idTorneio = {idTorneio} jogo={jogo} desporto = {desporto} isGrupo={true} funcao={handlererender}/>
                                 ))}
                         </div>
                         </div>
@@ -77,7 +82,7 @@ export function GestJogos(props) {
                                 <>
                                 <div class="px-6 mb-4 text-lg text-coolGray-900 font-semibold">Jogos da Fase Eliminatória:</div>
                                 {jogosElim.map((jogo) => (
-                                    <JogoDisplayGest idTorneio = {idTorneio} jogo={jogo} desporto = {desporto} isGrupo={false}/>
+                                    <JogoDisplayGest idTorneio = {idTorneio} jogo={jogo} desporto = {desporto} isGrupo={false} funcao={handlererender}/>
                                 ))}
                                 </>
                             ) : (
@@ -100,7 +105,7 @@ export function GestJogos(props) {
                         <div class="border border-gray-300 rounded-md mx-4 mt-10 p-4">
                                 <div class="px-6 mb-4 text-lg text-coolGray-900 font-semibold">Jogos da Fase de Grupos:</div>
                         {jogosGrupo.map((jogo) => (
-                            <JogoDisplayGest idTorneio = {idTorneio} jogo={jogo} desporto = {desporto} isGrupo={true}/>
+                            <JogoDisplayGest idTorneio = {idTorneio} jogo={jogo} desporto = {desporto} isGrupo={true} funcao={handlererender}/>
                         ))}
                         </div>
                         </>
@@ -118,7 +123,7 @@ export function GestJogos(props) {
                             <div class="border border-gray-300 rounded-md mx-4 mt-10 p-4">
                                 <div class="px-6 mb-4 text-lg text-coolGray-900 font-semibold">Jogos da Fase de Grupos:</div>
                             {jogosGrupo.map((jogo) => (
-                                <JogoDisplayGest idTorneio = {idTorneio} jogo={jogo} desporto = {desporto} isGrupo={true}/>
+                                <JogoDisplayGest idTorneio = {idTorneio} jogo={jogo} desporto = {desporto} isGrupo={true} funcao={handlererender}/>
                             ))}
                             </div>
                             </>
@@ -134,7 +139,7 @@ export function GestJogos(props) {
                             <div class="border border-gray-300 rounded-md mx-4 mt-10 p-4">
                                 <div class="px-6 mb-4 text-lg text-coolGray-900 font-semibold">Jogos da Fase Eliminatória:</div>
                             {jogosElim.map((jogo) => (
-                                <JogoDisplayGest idTorneio = {idTorneio} jogo={jogo} desporto = {desporto} isGrupo={false}/>
+                                <JogoDisplayGest idTorneio = {idTorneio} jogo={jogo} desporto = {desporto} isGrupo={false} funcao={handlererender}/>
                             ))}
                             </div>
                             </>

@@ -104,6 +104,16 @@ function getJogosEstadoTorneio (tipoTorneio, estado, idTorneio, filtro, res){
                       "join Eliminatoria as EL on E.Eliminatoria_idEliminatoria = EL.idEliminatoria " +
                       "where EL.Torneio_idTorneio = " + idTorneio + " and J.estado = " + estado + ";";
                 data.query(sql).then(re => {
+                    let indiceAux = -1;
+                    for (let i=0;i<re.length;i++) {
+                        if (re[i].nomeEtapa == "Final" && re[i].mao==2) {
+                            indiceAux = i;
+                            break;
+                        }
+                    }
+                    if (indiceAux != -1) {
+                        re.splice(indiceAux,1)
+                    }
                     res.send(re);
                 });
             }
@@ -127,6 +137,16 @@ function getJogosEstadoTorneio (tipoTorneio, estado, idTorneio, filtro, res){
                           "join Torneio as T on T.idTorneio = EL.Torneio_idTorneio " +
                           "where T.idTorneio = " + idTorneio + " and J.estado = " + estado + ";";
                     data.query(sql).then(re => {
+                        let indiceAux = -1;
+                        for (let i=0;i<re.length;i++) {
+                            if (re[i].nomeEtapa == "Final" && re[i].mao==2) {
+                                indiceAux = i;
+                                break;
+                            }
+                        }
+                        if (indiceAux != -1) {
+                            re.splice(indiceAux,1)
+                        }
                         res.send(re);
                     })
                     break;
@@ -144,6 +164,16 @@ function getJogosEstadoTorneio (tipoTorneio, estado, idTorneio, filtro, res){
                                     "join Torneio as T on T.idTorneio = EL.Torneio_idTorneio " +
                                     "where T.idTorneio = " + idTorneio + " and J.estado = " + estado + ";";
                         data.query(sql1).then(re1 => {
+                            let indiceAux = -1;
+                            for (let i=0;i<re1.length;i++) {
+                                if (re1[i].nomeEtapa == "Final" && re1[i].mao==2) {
+                                    indiceAux = i;
+                                    break;
+                                }
+                            }
+                            if (indiceAux != -1) {
+                                re1.splice(indiceAux,1)
+                            }
                             var result = re.concat(re1);
                             res.send(JSON.stringify(result));
                         })
@@ -163,6 +193,16 @@ function getJogosEstadoTorneio (tipoTorneio, estado, idTorneio, filtro, res){
                                 "join Torneio as T on T.idTorneio = EL.Torneio_idTorneio " +
                                 "where T.idTorneio = " + idTorneio + " and J.estado = " + estado + ";";
                     data.query(sql1).then(re1 => {
+                        let indiceAux = -1;
+                            for (let i=0;i<re1.length;i++) {
+                                if (re1[i].nomeEtapa == "Final" && re1[i].mao==2) {
+                                    indiceAux = i;
+                                    break;
+                                }
+                            }
+                            if (indiceAux != -1) {
+                                re1.splice(indiceAux,1)
+                            }
                         var result = re.concat(re1);
                         res.send(JSON.stringify(result));
                     })
@@ -282,7 +322,7 @@ router.get("/disponiveis",(req,res) => {
                         break;
                     case 3: r.nometipoTorneio = "Liga com duas mãos";
                         break;
-                    case 4: r.nometipotorneio = "Torneio de Eliminatórias com duas mãos";
+                    case 4: r.nometipoTorneio = "Torneio de Eliminatórias com duas mãos";
                         break;
                     case 5: r.nometipoTorneio = "Torneio com fase de grupos com duas mãos e eliminatórias";
                         break;
@@ -366,7 +406,7 @@ router.get("/encerrados",(req,res) => {
                         break;
                     case 3: r.nometipoTorneio = "Liga com duas mãos";
                         break;
-                    case 4: r.nometipotorneio = "Torneio de Eliminatórias com duas mãos";
+                    case 4: r.nometipoTorneio = "Torneio de Eliminatórias com duas mãos";
                         break;
                     case 5: r.nometipoTorneio = "Torneio com fase de grupos com duas mãos e eliminatórias";
                         break;
@@ -450,7 +490,7 @@ router.get("/aDecorrer",(req,res) => {
                         break;
                     case 3: r.nometipoTorneio = "Liga com duas mãos";
                         break;
-                    case 4: r.nometipotorneio = "Torneio de Eliminatórias com duas mãos";
+                    case 4: r.nometipoTorneio = "Torneio de Eliminatórias com duas mãos";
                         break;
                     case 5: r.nometipoTorneio = "Torneio com fase de grupos com duas mãos e eliminatórias";
                         break;
@@ -535,7 +575,7 @@ router.get("/emBreve",(req,res) => {
                         break;
                     case 3: r.nometipoTorneio = "Liga com duas mãos";
                         break;
-                    case 4: r.nometipotorneio = "Torneio de Eliminatórias com duas mãos";
+                    case 4: r.nometipoTorneio = "Torneio de Eliminatórias com duas mãos";
                         break;
                     case 5: r.nometipoTorneio = "Torneio com fase de grupos com duas mãos e eliminatórias";
                         break;
@@ -702,14 +742,24 @@ router.get("/:id/calendario/eliminatorias", (req,res) => {
 });
 
 function getCalendarioElim(idTorneio,res) {
-    let sql = "select J.idJogo,E.nomeEtapa,E.numeroEtapa,J.hora,J.ronda,J.numeroCampo,J.idEtapa from Etapa as E " +
+    let sql = "select J.idJogo,E.nomeEtapa,E.numeroEtapa,J.mao,J.hora,J.ronda,J.numeroCampo,J.idEtapa from Etapa as E " +
               "join Eliminatoria as El on El.idEliminatoria = E.Eliminatoria_idEliminatoria " +
               "join Torneio as T on T.idTorneio = El.Torneio_idTorneio " +
               "join Jogo as J on J.idEtapa = E.idEtapa " +
               "where idTorneio = " + idTorneio + " order by J.hora;"
-    data.query(sql).then(re => {
+    data.query(sql).then(async re => {
         if(re.length != 0) {
-            re['tipo'] = 2
+            let aux = -1;
+            for (let i=0;i<re.length;i++) {
+                if (re[i].nomeEtapa == "Final" && re[i].mao == 2) {
+                    aux = i;
+                    break;
+                }
+            }
+            if (aux != -1) {
+                re.splice(aux,1)
+            }
+            re['tipo'] = 2;
             res.send(re);
         }
         else {
@@ -873,6 +923,9 @@ function getClassificacaoElim(idTorneio,res) {
                                         }
                                         let hora = r.hora.getHours()
                                         let minutos =r.hora.getMinutes()
+                                        if (parseInt(minutos)< 10) {
+                                            minutos = "0"+minutos
+                                        }
                                         r.hora = r.hora.toLocaleDateString() + ` ${hora}:${minutos}`;
                                     })
                                     let aux = -1;
@@ -975,7 +1028,7 @@ router.get("/:id",isOrganizador,(req,res) => {
                         break;
                     case 3: r.nometipoTorneio = "Liga com duas mãos";
                         break;
-                    case 4: r.nometipotorneio = "Torneio de Eliminatórias com duas mãos";
+                    case 4: r.nometipoTorneio = "Torneio de Eliminatórias com duas mãos";
                         break;
                     case 5: r.nometipoTorneio = "Torneio com fase de grupos com duas mãos e eliminatórias";
                         break;
@@ -1464,13 +1517,18 @@ router.post("/:id/gestao/fecharSorteioElim",isAuth,(req,res) => {
                                         }
                                       }
                                     }
-                                    data.query(sql4).then(re4 => {
-                                      if (re4.length != 0)
+                                    if (sql4 != ""){
+                                        data.query(sql4).then(re4 => {
+                                        if (re4.length != 0)
+                                            res.send("Sorteio da eliminatória fechado com sucesso")
+                                        else {
+                                            res.status(404).send("Não foi possível dar update dos jogos")
+                                        }
+                                        })
+                                    }
+                                    else {
                                         res.send("Sorteio da eliminatória fechado com sucesso")
-                                      else {
-                                        res.status(404).send("Não foi possível dar update dos jogos")
-                                      }
-                                    })
+                                    }
                                 })
                             }
                             else {

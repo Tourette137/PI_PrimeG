@@ -78,6 +78,7 @@ export function RegistoTorneio() {
         if (response.status === 200) {
             const data = await response.json();
             setEspacos(data);
+            setEspaco(data[0].idEspaco);
         }
         else {
             setEspacos([]);
@@ -133,10 +134,6 @@ export function RegistoTorneio() {
 
     const handleRegisto = async (e) => {
         e.preventDefault();
-
-        const headersEsp = {
-            "authorization": "Bearer " +localStorage.getItem("token")
-        }
         const headers = {
             "authorization": "Bearer " +localStorage.getItem("token"),
             'Content-Type': 'multipart/form-data'
@@ -153,26 +150,26 @@ export function RegistoTorneio() {
             }
 
         if(espacosFav) {
-            const formData = new FormData()
-
-            
-            formData.append("nomeTorneio", inputnomeTorneioRef.current.value)
-            formData.append("idDesporto", desporto)
-            formData.append("isFederado", federado)
-            formData.append("dataTorneio", inputDataTorneioRef.current.value)
-            formData.append("escalao", escalao)
-            formData.append("tipoTorneio", tipoTorneio)
-            formData.append("Espaco_idEspaco", espaco)
-            formData.append("tamEquipa", inputtamEquipaRef.current.value)
-            formData.append("genero", genero)
-            formData.append("fotoTorneio" , file)
-            
-            axios.post(`${API_URL}/torneios/registo`, formData,{headers: headers})
-                .then(response => {
-                    let idTorneio = response.data.idTorneio
-                    navigate(`/torneios/${idTorneio}`)
-                })
-                .catch(e => console.log(e))
+            if (espacos.length>0){
+                const formData = new FormData()
+                formData.append("nomeTorneio", inputnomeTorneioRef.current.value)
+                formData.append("idDesporto", desporto)
+                formData.append("isFederado", federado)
+                formData.append("dataTorneio", inputDataTorneioRef.current.value)
+                formData.append("escalao", escalao)
+                formData.append("tipoTorneio", tipoTorneio)
+                formData.append("Espaco_idEspaco", espaco)
+                formData.append("tamEquipa", inputtamEquipaRef.current.value)
+                formData.append("genero", genero)
+                formData.append("fotoTorneio" , file)
+                
+                axios.post(`${API_URL}/torneios/registo`, formData,{headers: headers})
+                    .then(response => {
+                        let idTorneio = response.data.idTorneio
+                        navigate(`/torneios/${idTorneio}`)
+                    })
+                    .catch(e => console.log(e))
+                }
         }
         else{
             const formData = new FormData()

@@ -22,13 +22,12 @@ const Bracket = ({bracket}) => {
                         {bracket.resultado.geral[1][0]}
                         </div>
                       )
-                    : (null)
+                    : (bracket.resultado.sets.map((r,index) => (
+                      <div className="w-2 mx-1 h-full font-light text-center">
+                        {bracket.resultado.sets[index].res1}
+                      </div>
+                    )))
                   )}
-                  {bracket.resultado.sets.map((r,index) => (
-                    <div className="w-2 mx-1 h-full font-light text-center">
-                      {bracket.resultado.sets[index].res1}
-                    </div>
-                  ))}
                 </div>)
               : (<div className="h-[30px] w-1/3 text-center pt-3">-</div>)
             )}
@@ -50,13 +49,12 @@ const Bracket = ({bracket}) => {
                         {bracket.resultado.geral[1][1]}
                         </div>
                       )
-                    : (null)
+                    : (bracket.resultado.sets.map((r,index) => (
+                      <div className="w-2 mx-1 h-full font-light text-center">
+                        {bracket.resultado.sets[index].res2}
+                      </div>
+                    )))
                   )}
-                  {bracket.resultado.sets.map((r,index) => (
-                    <div className="w-2 mx-1 h-full font-light text-center">
-                      {bracket.resultado.sets[index].res2}
-                    </div>
-                  ))}
                 </div>)
               : (<div className="h-[30px] w-1/3 text-center pb-3">-</div>)
             )}

@@ -5,8 +5,6 @@ import {useState,useEffect, useRef} from 'react';
 //import TorneioDisplay from '../components/TorneioCard.js';
 import TorneioDisplay from './TorneioDisplay.jsx';
 import InscritosDisplay from "../components/ListaInscritos.js";
-import {Link} from 'react-router-dom';
-import CalendarioDisplay from "../components/CalendarioDisplay.js";
 import '../components/titulo.css';
 import {NavbarDynamic} from '../components/NavbarDynamic.js';
 
@@ -150,11 +148,12 @@ export function Torneio() {
         if (response.status === 200) {
             const data = await response.json();
             setCalendarioElim(data);
+            setLoading3(false);
         }
         else {
             setCalendarioElim([]);
+            setLoading3(false);
         }
-        setLoading3(false);
     }
 
     // Vai à API buscar a informação do torneio para dar display na página principal

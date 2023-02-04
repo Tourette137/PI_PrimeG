@@ -138,6 +138,7 @@ export function JogoDisplayGest (props) {
             if (response.status == 200) {
                     jogo.resultado= inputequipa1.current.value+"-"+inputequipa2.current.value
                     setEstado(2);
+                    props.funcao();
             }
             else {
                 setEstado(1);
@@ -182,6 +183,8 @@ export function JogoDisplayGest (props) {
                 if (response.status == 200) {
                         jogo.resultado= str; 
                         setEstado(2);
+                        props.funcao();
+                        
                 }
                 else {
                     setEstado(1);
@@ -264,21 +267,19 @@ export function JogoDisplayGest (props) {
     };
 
     function formatarResultado(resultado){
-        console.log(resultado)
-        let auxRes = resultado.split('|')
-        let resString0 = ""
-        let resString1 = ""
-        for (let j= 0; j<auxRes.length;j++) {
-            if (j < auxRes.length -1) {
-                resString0 += auxRes[j].split("-")[0] + " "
-                resString1 += auxRes[j].split("-")[1] + " " 
-            }
+
+        let list = [];
+        let geral = [0,0];
+            list = jogo.resultado.split('|');
+            for (var i=0;i < list.length;i++){
+            let sp = list[i].split('-');
+            if(parseInt(sp[0]) > parseInt(sp[1]))
+                geral[0] += 1;
             else {
-                resString0 += auxRes[j].split("-")[0]
-                resString1 += auxRes[j].split("-")[1]
-            }
+                geral[1] += 1;
         }
-        return [resString0,resString1];
+        }
+        return [geral,list];
 
     }
 
@@ -695,9 +696,27 @@ export function JogoDisplayGest (props) {
                         :(<><div class="flex flex-wrap mx-auto">
                                 <div class="flex flex-wrap w-full">
                                 <div className="font-bold text-2xl text-gray-700 text-center w-1/2 h-min"> {jogo.nomeEquipa1}</div>
-                                <div className="font-bold text-2xl w-1/2 h-min text-center"> {formatarResultado(jogo.resultado)[0]} </div>
+                                <div className="font-bold text-2xl w-1/2 place-content-center flex flex-wrap h-min text-center">
+                                    <div className={`w-4 mx-1 h-full font text-center pr-6 border-r-2 border-orange-200`}>
+                                        {formatarResultado(jogo.resultado)[0][0]}
+                                    </div>
+                                    {formatarResultado(jogo.resultado)[1].map((r) => (
+                                        <div className="w-4 mx-1 h-full font-light text-center">
+                                        {r.split('-')[0]}
+                                        </div>
+                                    ))}
+                                    </div>
                                 <div className="font-bold text-2xl text-gray-700 w-1/2 h-min text-center"> {jogo.nomeEquipa2} </div>
-                                <div className="font-bold text-2xl w-1/2 h-min text-center"> {formatarResultado(jogo.resultado)[1]} </div>
+                                <div className="font-bold text-2xl w-1/2 place-content-center flex flex-wrap h-min text-center">
+                                    <div className={`w-4 mx-1 h-full font text-center pr-6 border-r-2 border-orange-200`}>
+                                        {formatarResultado(jogo.resultado)[0][1]}
+                                    </div>
+                                    {formatarResultado(jogo.resultado)[1].map((r) => (
+                                        <div className="w-4 mx-1 h-full font-light text-center">
+                                        {r.split('-')[1]}
+                                        </div>
+                                    ))}
+                                    </div>
                                 </div>
                                 <div class="w-full mx-auto mt-4">
                                     <div class="flex flex-wrap place-content-center">

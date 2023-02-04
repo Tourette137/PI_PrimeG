@@ -13,7 +13,7 @@ import {Registo} from './pages/Registo.js';
 import {Torneio} from './pages/Torneio.js';
 import {Jogos} from './pages/Jogos.js';
 import {Classificacao } from './pages/Classificacao.js';
-import {Calendario} from './pages/Calendario.js';
+import {CalendarioPage} from './pages/CalendarioPage.js';
 import {NotFound} from './pages/NotFound.js';
 import {Perfil} from './pages/Perfil.js';
 import {RegistoTorneio} from './pages/RegistoTorneio.js';
@@ -49,7 +49,7 @@ function App() {
           </Route>
           <Route path = "/:id/jogos" element = {<Jogos/>}/>
           <Route path = "/:id/classificacao" element = {<Classificacao/>}/>
-          <Route path = "/:id/calendario" element = {<Calendario/>}/>
+          <Route path = "/:id/calendario" element = {<CalendarioPage/>}/>
           <Route path = "/:id/gestao" element = {<Gestao/>}/>
           <Route path = "*" element= {<NotFound/>}/>
 

@@ -268,6 +268,9 @@ function grupoJImpar(teams,jogos) {
   function toDate(dataTorneio,horaInicial,minutos){
     var h = Math.floor(minutos/60) + horaInicial
     var m = minutos % 60
+    if (parseInt(m)<10) {
+      m = "0"+m
+    }
     var d = h.toString() + ':' + m + ':00'
     var res = dataTorneio + " " + d
     return  res
@@ -844,6 +847,10 @@ function sortear(jogadores,idsJogos){
 
 
   function calculaVencedor2Maos(res1,res2,id1,id2){
+    console.log(res1)
+    console.log(res2)
+    console.log(id1)
+    console.log(id2)
     let sp = res1.split('|')
     let vencedor = -1;
 
@@ -856,13 +863,13 @@ function sortear(jogadores,idsJogos){
         for (var i = 0; i < sp.length; i++){
           if (r == 0) {
             let sp2 = sp[i].split('-')
-            let vencedor = (parseInt(sp2[0]) > parseInt(sp2[1])) ? 1 : 2
+            vencedor = (parseInt(sp2[0]) > parseInt(sp2[1])) ? 1 : 2
             pontosGanhos1 += parseInt(sp2[0])
             pontosGanhos2 += parseInt(sp2[1])
           }
           else {
             let sp2 = sp[i].split('-')
-            let vencedor = (parseInt(sp2[1]) > parseInt(sp2[0])) ? 1 : 2
+            vencedor = (parseInt(sp2[1]) > parseInt(sp2[0])) ? 1 : 2
             pontosGanhos1 += parseInt(sp2[1])
             pontosGanhos2 += parseInt(sp2[0])
           }
@@ -873,6 +880,8 @@ function sortear(jogadores,idsJogos){
           }
         }
       }
+      console.log(setsGanhos1)
+      console.log(setsGanhos2)
 
       vencedor = (setsGanhos1 > setsGanhos2) ? id1 :
                   ((setsGanhos2 > setsGanhos1) ? id2 :
@@ -887,6 +896,7 @@ function sortear(jogadores,idsJogos){
       golos2 += parseInt(sp2[0]);
       vencedor = (golos1 > golos2) ? id1 : id2
     }
+    console.log(vencedor)
     return vencedor
   }
 

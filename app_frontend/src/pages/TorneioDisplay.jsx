@@ -154,7 +154,7 @@ const TorneioDisplay = ({torneio,inscritos,calendario,tipo,jogos}) => {
 
                   </div>
                 </div>
-                <div class="h-1 w-full mb-4 rounded-full bg-blue-500"></div>
+                <div class={`h-1 w-full mb-4 rounded-full ${torneio.terminado=== 0? 'bg-blue-500' : ((torneio.terminado ===1)? 'bg-green-500' : 'bg-orange-500')}`}></div>
                 <a class="w-full hover:bg-gray-700 transition duration-200" href="#">
                   {jogos.slice(0, 3).map((jogo) => (
                     <JogoDisplay jogo = {jogo}/>
@@ -170,7 +170,10 @@ const TorneioDisplay = ({torneio,inscritos,calendario,tipo,jogos}) => {
       <div class="w-full lg:w-1/3 px-3">
         <Link to={`/${torneio.idTorneio}/calendario`}>
         <div class="h-full p-6 bg-gray-100 hover:bg-gray-200 rounded-xl">
+          {calendario.length >0 ?
           <CalendarioDisplay calendario = {calendario} tipo = {tipo}/>
+          : (<p class="font-semibold text-center text-lg text-coolGray-900">Calendário ainda não foi gerado!</p>)
+          }
         </div>
         </Link>
       </div>
