@@ -235,9 +235,9 @@ export function Torneio() {
         ? (<div className = "Torneio">
             {calendarioGrupos?.length > 0
             ? (
-              <TorneioDisplay torneio = {torneio} inscritos = {inscritos} calendario={calendarioGrupos.splice(0,5)} tipo = "1" jogos = {jogos}/>
+              <TorneioDisplay torneio = {torneio} inscritos = {inscritos} calendario={calendarioGrupos.slice(0,5)} tipo = "1" jogos = {jogos}/>
               )
-            : (<TorneioDisplay torneio = {torneio} inscritos = {inscritos} calendario={calendarioElim.splice(0,5)} tipo = "2" jogos = {jogos}/>
+            : (<TorneioDisplay torneio = {torneio} inscritos = {inscritos} calendario={calendarioElim.slice(0,5)} tipo = "2" jogos = {jogos}/>
             )
             }
 
