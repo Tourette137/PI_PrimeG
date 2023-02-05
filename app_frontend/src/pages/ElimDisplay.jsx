@@ -211,7 +211,7 @@ const ElimDisplay = ({elim,elimSize,tipo}) => {
                     )
                     : (null)
                   }
-                  <div className={`${(c > 1) ? 'w-1/${c}' : 'w-full'}`}>
+                  <div className={`${(c > 1) ? `w-1/${c}` : 'w-full'}`}>
                     {elim.map((bracket) => (
                       ( bracket.nomeEtapa === "Final"
                       ? (<Bracket bracket = {bracket} />)
