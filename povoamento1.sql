@@ -48,7 +48,7 @@ insert into torneio (nomeTorneio,idOrganizador,
                     idDesporto,isFederado,dataTorneio,
                     inscricoesAbertas,escalao,tipoTorneio,
                     terminado,Espaco_idEspaco,tamEquipa,genero) 
-                    values ("ATP",3,2,1,'2012-06-18 10:34:09',0,2,2,0,2,1,1);
+                    values ("ATP",3,2,1,'2023-06-18 10:34:09',0,2,2,0,2,1,1);
 
 insert into DesportosFav(Utilizador_idUtilizador, Desporto_idDesporto, numeroFederado, clube, notificacao) values (1,1,1454,"c7",1);
 insert into DesportosFav(Utilizador_idUtilizador, Desporto_idDesporto, numeroFederado, clube, notificacao) values (2,1,2345,"c1",1);

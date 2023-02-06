@@ -1,6 +1,6 @@
 import {NavbarDynamic} from '../components/NavbarDynamic.js';
 import {Pricing} from '../components/Pricing.js';
-import logo from '../images/logotipo.png';
+import logo from '../images/fans.png';
 
 export function Home() {
     return(

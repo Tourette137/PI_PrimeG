@@ -685,6 +685,119 @@ router.get("/:idTorneio/estaInscrito", isAuth, (req,res) => {
         })
 })
 
+router.get("/:idTorneio/emailsInscritos",(req,res) => {
+    var idTorneio = req.params.idTorneio
+    const response = {}
+
+    let sql = `Select U.email from Utilizador as U
+                Join Equipa_has_Utilizador as EU on EU.Utilizador_idUtilizador = U.idUtilizador
+                Join Torneio_has_Equipa as TE on TE.Equipa_idEquipa =  EU.Equipa_idEquipa
+                Join Torneio as T on T.idTorneio = TE.Torneio_idTorneio
+                Where T.idTorneio = ${idTorneio}`;
+    
+    data.query(sql)
+        .then(re => {
+
+            response.emailsInscritos = re
+            let sql = `Select U.email from Utilizador as U
+                Join Torneio as T on T.idOrganizador = U.idUtilizador
+                Where T.idTorneio = ${idTorneio}`;
+
+            data.query(sql)
+            .then(re => {
+                response.emailOrganizador = re
+                res.send(response)
+            })
+        })
+})
+
+router.post("/:idTorneio/inscricaoTorneio", isAuth, (req,res) => {
+    var idTorneio = req.params.idTorneio
+    const listString = req.body.emails.join("','")
+
+    let sql = `SELECT U.email, U.idUtilizador, U.dataNascimento FROM Utilizador as U WHERE U.email IN ('${listString}')`;
+    
+    data.query(sql)
+        .then(re => {
+            if (re.length === req.body.tamEquipa) {
+                
+                const escalao = (req.body.escalao == 0) ? 0 :
+                                (req.body.escalao == 1) ? 21 :
+                                (req.body.escalao == 2) ? 20 :
+                                (req.body.escalao == 3) ? 19 :
+                                (req.body.escalao == 4) ? 18 :
+                                (req.body.escalao == 5) ? 17 :
+                                (req.body.escalao == 6) ? 16 :
+                                (req.body.escalao == 7) ? 15 :
+                                (req.body.escalao == 8) ? 14 :
+                                (req.body.escalao == 9) ? 13 :
+                                (req.body.escalao == 10) ? 12 :
+                                (req.body.escalao == 11) ? 11 :
+                                (req.body.escalao == 12) ? 10 :
+                                (req.body.escalao == 13) ? 9 :
+                                (req.body.escalao == 14) ? 8 :
+                                (req.body.escalao == 15) ? 7 :
+                                (req.body.escalao == 16) ? 6 :
+                                5
+                
+                if (escalao > 0) {
+
+                    const mappedData = re.map(row => ({ dataNascimento: row.dataNascimento.getFullYear()}));
+                    const idElementos = re.map(row => ({ idUtilizador: row.idUtilizador}));
+                    
+                    const minYear = mappedData.reduce((min, obj) => {
+                        return obj.dataNascimento < min ? obj.dataNascimento : min;
+                    }, Infinity);
+
+                    const anoTorneio = parseInt(req.body.dataTorneio.split("/")[2])
+                    
+                    if ((anoTorneio - minYear) >= 0) {
+                    
+                        let sql = `Insert into Equipa (ranking, nomeEquipa, escalao, clube) values ("${req.body.ranking}", "${req.body.nomeEquipa}", "${req.body.escalao}", "${req.body.clube}"); `
+
+                        data.query(sql)
+                            .then(re => {
+                                let sql = `Insert into Torneio_has_equipa (Torneio_idTorneio, Equipa_idEquipa, pendente) values ("${req.params.idTorneio}", "${re.insertId}", 0); `
+
+                                for (let i = 0; i<idElementos.length; i++) {
+                                    sql += `Insert into Equipa_has_Utilizador values ("${re.insertId}", "${idElementos[i].idUtilizador}"); `
+                                }
+
+                                data.query(sql)
+                                .then(re => {
+                                    res.send("Inscrição feita com sucesso")
+                                })
+                            })
+
+                    } else {
+                        res.status(501).send("Pelo menos 1 possui um escalão maior do que o deste torneio")
+                    }
+
+                } else {
+
+                    let sql = `Insert into Equipa (ranking, nomeEquipa, escalao, clube) values ("${req.body.ranking}", "${req.body.nomeEquipa}", "${req.body.escalao}", "${req.body.clube}"); `
+
+                        data.query(sql)
+                            .then(re => {
+                                let sql = `Insert into Torneio_has_equipa (Torneio_idTorneio, Equipa_idEquipa, pendente) values ("${req.params.idTorneio}", "${re.insertId}", 0); `
+
+                                for (let i = 0; i<idElementos.length; i++) {
+                                    sql += `Insert into Equipa_has_Utilizador values ("${re.insertId}", "${idElementos[i].idUtilizador}"); `
+                                }
+
+                                data.query(sql)
+                                .then(re => {
+                                    res.send("Inscrição feita com sucesso")
+                                })
+                            })
+                }
+            } else {
+                res.status(501).send("Pelo menos 1 elemento não existe")
+            }
+        })
+        .catch(e => { res.status(502).jsonp({ error: e }) })
+})
+
 router.get("/:idTorneio/inscricoes",(req,res) => {
     var idTorneio = req.params.idTorneio
     var sql = data.getInscricoes(idTorneio);

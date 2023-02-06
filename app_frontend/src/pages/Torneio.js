@@ -7,6 +7,7 @@ import TorneioDisplay from './TorneioDisplay.jsx';
 import InscritosDisplay from "../components/ListaInscritos.js";
 import '../components/titulo.css';
 import {NavbarDynamic} from '../components/NavbarDynamic.js';
+import axios from 'axios';
 
 const API_URL="http://localhost:3000"
 
@@ -28,10 +29,15 @@ export function Torneio() {
 
     const [estaInscrito,setEstaInscrito] = useState(false);
     const [emailUser, setEmailUser] = useState("");
+    const [emailOrganizador, setEmailOrganizador] = useState("");
+    const [emailInscritos, setEmailInscritos] = useState([]);
+    const [inputEmails, setInputEmails] = useState([{email : ''}])
     const [popUpInscricao,setPopUpInscricao] = useState(false);
     const [alert, setAlert] = useState(false);
     const [alertMsg, setAlertMsg] = useState("");
     const newNomeEquipa = useRef(null);
+    const newRankingEquipa = useRef(null);
+    const newClubeEquipa = useRef(null);
 
     const searchJogos = async () => {
       console.log(torneio.terminado);
@@ -86,22 +92,41 @@ export function Torneio() {
 
       const responseMail = await fetch (`${API_URL}/users/email`, requestOptions);
 
-      if (response.status === 200) {
+      if (responseMail.status === 200) {
           const dataMail = await responseMail.json();
           setEmailUser(dataMail[0].email);
       }
     }
 
+    const getEmailsInfo = async () => {
+      const response = await fetch (`${API_URL}/torneios/${id}/emailsInscritos`);
+
+      if (response.status === 200) {
+          const data = await response.json();
+          setEmailOrganizador(data.emailOrganizador[0].email)
+          setEmailInscritos(data.emailsInscritos.map(({email})=> email))
+      }
+      else {
+        setEstaInscrito(false);
+      }
+    } 
+
     const handleTogglePopupInscricao = async (e) => {
       setAlert(false)
       setAlertMsg("")
       newNomeEquipa.current.value = null
+      newClubeEquipa.current.value = null
+      newRankingEquipa.current.value = null
 
       setPopUpInscricao(!popUpInscricao)
     }
 
     const handleEfetuaInscricao = async (e) => {
       e.preventDefault()
+
+      const newInputEmails = [...inputEmails]
+      newInputEmails[0].email = emailUser
+      setInputEmails(newInputEmails)
 
       const novoNomeEquipa = inscritos.find(inscrito => {
           return inscrito.nomeEquipa === newNomeEquipa.current.value
@@ -112,11 +137,82 @@ export function Torneio() {
         setAlertMsg("Nome de Equipa já existente")
         return;
       } else {
-        setAlert(true)
-        setAlertMsg("Equipa inscrita com sucesso")
+        setAlert(false)
+        setAlertMsg("")
       }
 
+      if(newRankingEquipa.current.value <= 0) {
+        setAlert(true)
+        setAlertMsg("Ranking de equipa tem de ser positivo")
+        return;
+      } else {
+        setAlert(false)
+        setAlertMsg("")
+      }
+
+      const hasOrganizador = inputEmails.find(input => {
+        return input.email === emailOrganizador
+      }) !== undefined
+      
+      if(hasOrganizador) {
+        setAlert(true)
+        setAlertMsg("Um elemento de equipa é o organizador")
+        return;
+      } else {
+        setAlert(false)
+        setAlertMsg("")
+      }
+
+      if (inputEmails.filter((item, index) => index === inputEmails.findIndex(i => i.email === item.email)).length !== torneio.tamEquipa) {
+        setAlert(true)
+        setAlertMsg("Elementos da equipa devem ser todos diferentes")
+        return;
+      } else {
+        setAlert(false)
+        setAlertMsg("")
+      }
+
+      if (emailInscritos.filter(item => (inputEmails.map(({email})=> email)).includes(item)).length > 0) {
+        setAlert(true)
+        setAlertMsg("Pelo menos 1 elemento já se encontra inscrito neste torneio noutra equipa")
+        return;
+      } else {
+        setAlert(false)
+        setAlertMsg("")
+      }
+
+      const headers = { "authorization": "Bearer " + localStorage.getItem("token") }
+
+      const body = { "emails": inputEmails.map(({email})=> email) ,
+                    "tamEquipa" : torneio.tamEquipa, 
+                    "escalao" :torneio.escalao,
+                    "dataTorneio" :torneio.dataTorneio,
+                    "nomeEquipa" :newNomeEquipa.current.value,
+                    "ranking" :newRankingEquipa.current.value,
+                    "clube" :newClubeEquipa.current.value}
+        
+      axios.post(`${API_URL}/torneios/${id}/inscricaoTorneio`, body, {headers: headers})
+            .then(response => {
+              console.log(response)
+              setEstaInscrito(true)
+            })
+            .catch(e => {
+              if(e.response.status === 501) {
+                setAlert(true)
+                setAlertMsg(e.response.data)
+              } else {
+                console.log(e)
+              }
+            })
     }
+
+
+    const handleChangeElemento = (e, index) => {
+      const newInputEmails = [...inputEmails]
+      newInputEmails[index].email = e.target.value
+      setInputEmails(newInputEmails)
+    };
+
 
     const searchApurados = async () => {
 
@@ -180,6 +276,7 @@ export function Torneio() {
             }
             setTorneio(data);
             setTipoTorneio(data.tipoTorneio);
+            setInputEmails(Array.from({ length: data.tamEquipa }, () => ({ email: '' })))
 
             let tipo = "/jogosPorComecar";
             if(data.terminado == 1)
@@ -219,6 +316,7 @@ export function Torneio() {
       searchCalendarioGrupos();
       searchCalendarioElim();
       verificaEstaInscrito();
+      getEmailsInfo();
     },[])
 
     if(loading1 || loading2  || loading3  || loading4 || loading5)
@@ -290,22 +388,31 @@ export function Torneio() {
 
                                   <div className={`popup ${popUpInscricao ? 'active' : ''}`}>
                                     <div className="overlay">
-                                        <form className="overlayContent">
+                                        <form className="overlayContent" onSubmit={handleEfetuaInscricao}>
                                             <label>Nova Inscricao</label>
                                             <input ref={newNomeEquipa} id="novoNomeEquipa" style={{marginBottom:"10px"}} type="text" placeholder="Nome Equipa" required/>
+                                            <input ref={newClubeEquipa} id="novoNomeEquipa" style={{marginBottom:"10px"}} type="text" placeholder="Nome Clube" required/>
+                                            <input ref={newRankingEquipa} id="novoNomeEquipa" style={{marginBottom:"10px"}} type="number" placeholder="Ranking Equipa" required/>
 
                                             <label style={{marginTop:"10px"}}>Elemento(s) Equipa</label>
-                                            <input  style={{marginBottom:"10px"}} type="mail" placeholder={emailUser} disabled="disabled"/>
+                                            <input  style={{marginBottom:"10px"}} type="email" placeholder={emailUser} disabled="disabled"/>
                                             { torneio.tamEquipa > 1 ?
-                                              ([...Array(torneio.tamEquipa-1)].map((e, i) => <input style={{marginBottom:"10px"}} id="novoElemento" type="mail" placeholder={"Email elemento nº " + (i+2)} required/>)
+                                              (inputEmails.map((input, index) => {
+                                                if (index > 0) {
+                                                  return (
+                                                  <div key={index}>
+                                                    <input style={{marginBottom:"10px"}} value={input.value} type="email" placeholder={"Email elemento nº " + (index+1)} onChange={(e) => handleChangeElemento(e, index)} required/>
+                                                  </div>
+                                                  )
+                                                }
+                                              })
                                               ) : (null)
-
                                             }
-                                            <p style={{color: "green", marginTop:(alert?"10px":"")}}>{alert ? alertMsg : ''}</p>
+                                            <p style={{color: "red", marginTop:(alert?"10px":"")}}>{alert ? alertMsg : ''}</p>
 
                                             <div className="butoesAcceptBack">
                                                 <button onClick={handleTogglePopupInscricao} type="button" className="buttonCancelar buttonBlack">Cancelar</button>
-                                                <button onClick={handleEfetuaInscricao} type="submit" className="buttonAceitar buttonBlack">Inscrever</button>
+                                                <button type="submit" className="buttonAceitar buttonBlack">Inscrever</button>
                                             </div>
                                         </form>
                                     </div>
