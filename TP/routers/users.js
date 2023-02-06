@@ -363,7 +363,7 @@ router.post("/addFavorito", isAuth, (req, res) => {
     //Filtro de Torneio
     else if(req.query.torneio != null){
         if(!isNaN(req.query.torneio)){
-            sql = `Insert into TorneiosFav values (${req.query.torneio}, ${req.userId});`      
+            sql = `Insert into TorneiosFav values (${req.userId}, ${req.query.torneio});`      
         }
     }
 

@@ -33,6 +33,9 @@ export function Torneio() {
     const [emailInscritos, setEmailInscritos] = useState([]);
     const [inputEmails, setInputEmails] = useState([{email : ''}])
     const [popUpInscricao,setPopUpInscricao] = useState(false);
+    const [isFavorito,setIsFavorito] = useState(false);
+    const [popUpAddFavorito,setPopUpAddFavorito] = useState(false);
+    const [popUpRemoveFavorito,setPopUpRemoveFavorito] = useState(false);
     const [alert, setAlert] = useState(false);
     const [alertMsg, setAlertMsg] = useState("");
     const newNomeEquipa = useRef(null);
@@ -302,6 +305,55 @@ export function Torneio() {
 
     }
 
+    const verificaTorneioFavorito = async () => {
+
+      const headers = { "authorization": "Bearer " + localStorage.getItem("token") }
+        
+      axios.get(`${API_URL}/torneios/${id}/possuiTorneioFavorito`, {headers: headers})
+            .then(response => {
+              setIsFavorito(response.data)
+            })
+            .catch(e => {
+                console.log(e)
+            })
+    }
+
+    const handleAddFavorito = async (e) => {
+
+      e.preventDefault()
+
+      const headers = { "authorization": "Bearer " + localStorage.getItem("token") }
+  
+      axios.post(`${API_URL}/users/addFavorito?torneio=${id}`, null, {headers: headers})
+              .then(response => {                  
+                setIsFavorito(true)
+                setPopUpAddFavorito(!popUpAddFavorito)
+              })
+              .catch(e => console.log(e))
+  }
+
+  const handleTogglePopupAddFavorito = async (e) => {
+      setPopUpAddFavorito(!popUpAddFavorito)
+  }
+
+  const handleRemoveFavorito = async (e) => {
+      e.preventDefault()
+
+      const headers = { "authorization": "Bearer " + localStorage.getItem("token") }
+      
+      axios.delete(`${API_URL}/users/removeFavorito?torneio=${id}`, {headers: headers})
+              .then(response => {
+                setIsFavorito(false)
+                setPopUpRemoveFavorito(!popUpRemoveFavorito)
+              })
+              .catch(e => console.log(e))
+
+  }
+
+  const handleTogglePopupRemoveFavorito = async (e, localidade) => {
+      setPopUpRemoveFavorito(!popUpRemoveFavorito)
+  }
+
 
     //Search inicial do torneio
     useEffect(() => {
@@ -317,6 +369,7 @@ export function Torneio() {
       searchCalendarioElim();
       verificaEstaInscrito();
       getEmailsInfo();
+      verificaTorneioFavorito();
     },[])
 
     if(loading1 || loading2  || loading3  || loading4 || loading5)
@@ -355,6 +408,10 @@ export function Torneio() {
               }
 
 
+              {
+                ((localStorage.getItem("token")) !== 'null') ?
+                (
+                <>
                 <div class="w-full lg:w-1/2 px-3">
                   <div class="h-full px-6 pt-6 pb-8 bg-white rounded-xl">
                     <div class="w-full mt-6 pb-4 overflow-x-auto">
@@ -428,6 +485,59 @@ export function Torneio() {
                     </div>
                   </div>
                 </div>
+
+                <div class="w-full lg:w-1/2 px-3">
+                  <div class="h-full px-6 pt-6 pb-8 bg-white rounded-xl">
+                    <div class="w-full mt-6 pb-4 overflow-x-auto">
+                      <section class="py-20 md:py-28 bg-white">
+                        <div class="container px-4 mx-auto">
+                          <div class="max-w-4xl mx-auto text-center">
+                            <h2 class="mb-4 text-3xl md:text-4xl font-heading font-bold">
+                            {isFavorito ? "Remover Favorito" : "Adicionar Favorito"}
+                            </h2>
+                            { isFavorito ? (
+                            <>
+                            <p class="mb-6 text-lg md:text-xl font-heading font-medium text-coolGray-500">Remova este torneio dos Favoritos!</p>
+                            <a class="inline-block py-3 px-7 w-full md:w-auto text-lg leading-7 text-green-50 bg-orange-500 hover:bg-orange-600 font-medium text-center focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50 border border-transparent rounded-md shadow-sm" onClick={handleTogglePopupRemoveFavorito} style={{cursor:"pointer"}}>Remover Favorito</a>
+                            <div className={`popup ${popUpRemoveFavorito ? 'active' : ''}`}>
+                              <div className="overlay">
+                                  <div className="overlayContent">
+                                      <h1>Deseja eliminar este torneio dos Favoritos?</h1>
+                                      <div className="butoesAcceptBack">
+                                          <button onClick={(event) => handleTogglePopupRemoveFavorito(event)} className="buttonCancelar buttonBlack" type="button">Não</button>
+                                          <button onClick={(event) => handleRemoveFavorito(event)} className="buttonAceitar buttonBlack">Sim</button>
+                                      </div>
+                                  </div>
+                                </div>	
+                            </div>
+                            </>
+                            ) : (
+                            <>
+                            <p class="mb-6 text-lg md:text-xl font-heading font-medium text-coolGray-500">Adicione este torneio aos Favoritos!</p>
+                            <a class="inline-block py-3 px-7 w-full md:w-auto text-lg leading-7 text-green-50 bg-orange-500 hover:bg-orange-600 font-medium text-center focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50 border border-transparent rounded-md shadow-sm" onClick={handleTogglePopupAddFavorito} style={{cursor:"pointer"}}>Adicionar Favorito</a>
+                            <div className={`popup ${popUpAddFavorito ? 'active' : ''}`}>
+                              <div className="overlay">
+                                  <div className="overlayContent">
+                                      <h1>Deseja adicionar este torneio aos Favoritos?</h1>
+                                      <div className="butoesAcceptBack">
+                                          <button onClick={(event) => handleTogglePopupAddFavorito(event)} className="buttonCancelar buttonBlack" type="button">Não</button>
+                                          <button onClick={(event) => handleAddFavorito(event)} className="buttonAceitar buttonBlack">Sim</button>
+                                      </div>
+                                  </div>
+                                </div>	
+                            </div>
+                            </>
+                            )
+                            }
+                          </div>
+                        </div>
+                      </section>
+                    </div>
+                  </div>
+                </div>
+                </>
+                ) : (null)
+              }
 
               </div>
               </div>

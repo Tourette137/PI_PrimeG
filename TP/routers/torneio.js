@@ -685,6 +685,24 @@ router.get("/:idTorneio/estaInscrito", isAuth, (req,res) => {
         })
 })
 
+router.get("/:idTorneio/possuiTorneioFavorito", isAuth, (req, res) => {
+    var idTorneio = req.params.idTorneio
+
+    let sql =  `Select * from TorneiosFav as TF Where TF.Utilizador_idUtilizador = "${req.userId}" AND TF.Torneio_idTorneio = "${idTorneio}";`
+
+    data.query(sql)
+        .then( async re => {
+            if(re.length > 0) {
+                res.send(true)
+            } else {
+                res.send(false);
+            }
+        })
+        .catch(e => { res.status(502).jsonp({ error: e }) })
+    
+})
+
+
 router.get("/:idTorneio/emailsInscritos",(req,res) => {
     var idTorneio = req.params.idTorneio
     const response = {}
