@@ -1142,7 +1142,22 @@ router.post("/:id/gestao/fecharInscricoes",isAuth,(req,res) => {
                         " where idTorneio = " + idTorneio +";"
                 data.query(sql1).then(re => {
                     if(re != 0){
-                        res.send("Inscrições fechadas");
+                        if(tipo == 0) {
+                          let sql2 = "select E.idEquipa from Equipa as E " +
+                                      "join Torneio_has_Equipa as TE on TE.Equipa_idEquipa = E.idEquipa where TE.Torneio_idTorneio = " + idTorneio +
+                                      " order by E.ranking;"
+                          data.query(sql2).then(equipas => {
+                            var sql3 = "";
+                            for(var i = 0; i < equipas.length;i++){
+                              sql3 += "update equipa set ranking = " + (i+1) + " where idEquipa = " + equipas[i].idEquipa + ";"
+                            }
+                            data.query(sql3).then(r => {
+                              res.send("Inscrições fechadas");
+                            });
+                          });
+                        } else {
+                          res.send("Inscrições fechadas");
+                        }
                     }
                     else {
                         res.status(404).send("Erro");
