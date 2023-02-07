@@ -18,7 +18,6 @@ const JogoCard = ({jogo,isGroup,nomeEquipa1,nomeEquipa2}) => {
       geral = [parseInt(sp[0]),parseInt(sp[1])]
     }
 
-    console.log(list);
     return (
       <div className= "w-auto my-2 bg-white shadow-2xl shadow-gray-300 hover:bg-gray-200 rounded-xl p-2 text-black">
 

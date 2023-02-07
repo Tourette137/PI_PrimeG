@@ -6,9 +6,9 @@ export function Home() {
     return(
         <>
             <NavbarDynamic/>
-            <section class="relative bg-white overflow-hidden">
+            <section class="relative bg-white overflow-hidden min-h-screen">
 
-              <div class="py-20 md:py-52">
+              <div class="my-auto place-content-center">
                 <div class="container px-4 mx-auto">
                   <div class="flex flex-wrap xl:items-center -mx-4">
                     <div class="w-full md:w-1/2 px-4 mb-16 md:mb-0">
@@ -32,7 +32,7 @@ export function Home() {
             </section>
 
 
-            <section id="product" class="py-24 overflow-hidden">
+            <section id="product" class="py-24 overflow-hidden min-h-screen">
               <div class="container px-4 mx-auto">
                 <div class="flex flex-wrap -mx-4">
                   <div class="w-full md:w-1/2 px-4 mb-60 md:mb-0">

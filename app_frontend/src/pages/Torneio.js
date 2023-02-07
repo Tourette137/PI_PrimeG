@@ -8,6 +8,8 @@ import InscritosDisplay from "../components/ListaInscritos.js";
 import '../components/titulo.css';
 import {NavbarDynamic} from '../components/NavbarDynamic.js';
 import axios from 'axios';
+import EspacoCard from '../components/EspacoCard.js';
+import profileIcon from '../images/profileIcon.png'
 
 const API_URL="http://localhost:3000"
 
@@ -26,6 +28,7 @@ export function Torneio() {
     const [loading4,setLoading4] = useState(false);
     const [loading5,setLoading5] = useState(false);
     const [jogos,setJogos] = useState([]);
+    const [espaco,setEspaco] = useState();
 
     const [estaInscrito,setEstaInscrito] = useState(false);
     const [emailUser, setEmailUser] = useState("");
@@ -41,29 +44,6 @@ export function Torneio() {
     const newNomeEquipa = useRef(null);
     const newRankingEquipa = useRef(null);
     const newClubeEquipa = useRef(null);
-
-    const searchJogos = async () => {
-      console.log(torneio.terminado);
-        let tipo = "/jogosPorComecar";
-        if(torneio.terminado == 1)
-          tipo = "/jogosaDecorrer";
-        else if (torneio.terminado == 2)
-          tipo = "/jogosEncerrados";
-
-        let pedido = API_URL + "/torneios/" + id + tipo;
-
-        const response = await fetch (pedido);
-        if (response.status === 200) {
-            const data = await response.json();
-            setJogos(data);
-            console.log(data);
-            console.log(pedido);
-        }
-        else {
-          setJogos([]);
-        }
-        setLoading1(false);
-    }
 
     const searchInscritos = async () => {
       const response = await fetch (`${API_URL}/torneios/${id}/inscritos`);
@@ -112,7 +92,7 @@ export function Torneio() {
       else {
         setEstaInscrito(false);
       }
-    } 
+    }
 
     const handleTogglePopupInscricao = async (e) => {
       setAlert(false)
@@ -156,7 +136,7 @@ export function Torneio() {
       const hasOrganizador = inputEmails.find(input => {
         return input.email === emailOrganizador
       }) !== undefined
-      
+
       if(hasOrganizador) {
         setAlert(true)
         setAlertMsg("Um elemento de equipa é o organizador")
@@ -187,13 +167,13 @@ export function Torneio() {
       const headers = { "authorization": "Bearer " + localStorage.getItem("token") }
 
       const body = { "emails": inputEmails.map(({email})=> email) ,
-                    "tamEquipa" : torneio.tamEquipa, 
+                    "tamEquipa" : torneio.tamEquipa,
                     "escalao" :torneio.escalao,
                     "dataTorneio" :torneio.dataTorneio,
                     "nomeEquipa" :newNomeEquipa.current.value,
                     "ranking" :newRankingEquipa.current.value,
                     "clube" :newClubeEquipa.current.value}
-        
+
       axios.post(`${API_URL}/torneios/${id}/inscricaoTorneio`, body, {headers: headers})
             .then(response => {
               console.log(response)
@@ -277,7 +257,7 @@ export function Torneio() {
             if(data.isOrganizador) {
                 setGestao(1);
             }
-            setTorneio(data);
+            setTorneio(data);console.log(data);
             setTipoTorneio(data.tipoTorneio);
             setInputEmails(Array.from({ length: data.tamEquipa }, () => ({ email: '' })))
 
@@ -297,6 +277,15 @@ export function Torneio() {
             else {
               setJogos([]);
             }
+
+            response = await fetch (`${API_URL}/espacos/${id}`);
+            if (response.status === 200) {
+                const data = await response.json();
+                setEspaco(data[0]);console.log(data[0]);
+            }
+            else {
+                setEspaco([]);
+            }
         }
         else {
             setTorneio([]);
@@ -308,7 +297,7 @@ export function Torneio() {
     const verificaTorneioFavorito = async () => {
 
       const headers = { "authorization": "Bearer " + localStorage.getItem("token") }
-        
+
       axios.get(`${API_URL}/torneios/${id}/possuiTorneioFavorito`, {headers: headers})
             .then(response => {
               setIsFavorito(response.data)
@@ -323,9 +312,9 @@ export function Torneio() {
       e.preventDefault()
 
       const headers = { "authorization": "Bearer " + localStorage.getItem("token") }
-  
+
       axios.post(`${API_URL}/users/addFavorito?torneio=${id}`, null, {headers: headers})
-              .then(response => {                  
+              .then(response => {
                 setIsFavorito(true)
                 setPopUpAddFavorito(!popUpAddFavorito)
               })
@@ -340,7 +329,7 @@ export function Torneio() {
       e.preventDefault()
 
       const headers = { "authorization": "Bearer " + localStorage.getItem("token") }
-      
+
       axios.delete(`${API_URL}/users/removeFavorito?torneio=${id}`, {headers: headers})
               .then(response => {
                 setIsFavorito(false)
@@ -388,17 +377,42 @@ export function Torneio() {
             ? (
               <TorneioDisplay torneio = {torneio} inscritos = {inscritos} calendario={calendarioGrupos.slice(0,5)} tipo = "1" jogos = {jogos}/>
               )
-            : (<TorneioDisplay torneio = {torneio} inscritos = {inscritos} calendario={calendarioElim.slice(0,5)} tipo = "2" jogos = {jogos}/>
+            : (<TorneioDisplay torneio = {torneio} inscritos = {inscritos} calendario={calendarioElim.slice(0,5)} tipo = "2" jogos = {jogos} espaco = {espaco}/>
             )
             }
 
             <section class="py-3">
               <div class="container px-4 mx-auto">
-              <div class="flex flex-wrap my-6 -mx-3">
+
+
+              <div class="flex flex-wrap -mx-3">
+
+              <div class="w-full lg:w-1/2 px-3 mb-6">
+                <div class="h-full px-6 pt-6 pb-8 bg-white rounded-xl">
+
+                  <div class="w-full mt-6 pb-4 overflow-x-auto">
+                  <section class="py-2">
+                    <div class="container px-4 mx-auto">
+                      <div class="max-w-4xl mx-auto text-center">
+                        <div className="mx-auto w-[320px] h-[250px] bg-transparent">
+                        {(espaco.imageUrl == null || espaco.imageUrl == undefined) ?
+                              (<img className="w-[320px] h-[250px] object-contain" src={profileIcon} alt="Espaco Picture"></img>)
+                          :   (<img className="w-[320px] h-[250px] object-contain" src={espaco.imageUrl} alt="Espaco Picture2"></img>)
+                          }
+                        </div>
+                        <h2 class="my-4 text-3xl md:text-4xl font-heading font-bold">{espaco.nome}</h2>
+                        <p class="mb-6 text-lg md:text-xl font-heading font-medium text-coolGray-500">{espaco.rua}</p>
+                      </div>
+                    </div>
+                  </section>
+                  </div>
+
+                </div>
+              </div>
 
               {apurados?.length > 0
               ? (
-                <div class="w-full lg:w-1/2 px-3 mb-6 lg:mb-0">
+                <div class="w-full lg:w-1/2 px-3 mb-6">
                   <div class="h-full p-6 bg-gray-100 rounded-xl">
                       <InscritosDisplay inscritos = {apurados} titulo = "Apurados"/>
                   </div>
@@ -412,7 +426,7 @@ export function Torneio() {
                 ((localStorage.getItem("token")) !== 'null') ?
                 (
                 <>
-                <div class="w-full lg:w-1/2 px-3">
+                <div class="w-full lg:w-1/2 px-3 mb-6">
                   <div class="h-full px-6 pt-6 pb-8 bg-white rounded-xl">
                     <div class="w-full mt-6 pb-4 overflow-x-auto">
                       <section class="py-20 md:py-28 bg-white">
@@ -486,7 +500,7 @@ export function Torneio() {
                   </div>
                 </div>
 
-                <div class="w-full lg:w-1/2 px-3">
+                <div class="w-full lg:w-1/2 px-3 mb-6">
                   <div class="h-full px-6 pt-6 pb-8 bg-white rounded-xl">
                     <div class="w-full mt-6 pb-4 overflow-x-auto">
                       <section class="py-20 md:py-28 bg-white">
@@ -508,7 +522,7 @@ export function Torneio() {
                                           <button onClick={(event) => handleRemoveFavorito(event)} className="buttonAceitar buttonBlack">Sim</button>
                                       </div>
                                   </div>
-                                </div>	
+                                </div>
                             </div>
                             </>
                             ) : (
@@ -524,7 +538,7 @@ export function Torneio() {
                                           <button onClick={(event) => handleAddFavorito(event)} className="buttonAceitar buttonBlack">Sim</button>
                                       </div>
                                   </div>
-                                </div>	
+                                </div>
                             </div>
                             </>
                             )

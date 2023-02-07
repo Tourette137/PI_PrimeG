@@ -699,7 +699,7 @@ router.get("/:idTorneio/possuiTorneioFavorito", isAuth, (req, res) => {
             }
         })
         .catch(e => { res.status(502).jsonp({ error: e }) })
-    
+
 })
 
 
@@ -712,7 +712,7 @@ router.get("/:idTorneio/emailsInscritos",(req,res) => {
                 Join Torneio_has_Equipa as TE on TE.Equipa_idEquipa =  EU.Equipa_idEquipa
                 Join Torneio as T on T.idTorneio = TE.Torneio_idTorneio
                 Where T.idTorneio = ${idTorneio}`;
-    
+
     data.query(sql)
         .then(re => {
 
@@ -734,11 +734,11 @@ router.post("/:idTorneio/inscricaoTorneio", isAuth, (req,res) => {
     const listString = req.body.emails.join("','")
 
     let sql = `SELECT U.email, U.idUtilizador, U.dataNascimento FROM Utilizador as U WHERE U.email IN ('${listString}')`;
-    
+
     data.query(sql)
         .then(re => {
             if (re.length === req.body.tamEquipa) {
-                
+
                 const escalao = (req.body.escalao == 0) ? 0 :
                                 (req.body.escalao == 1) ? 21 :
                                 (req.body.escalao == 2) ? 20 :
@@ -757,20 +757,20 @@ router.post("/:idTorneio/inscricaoTorneio", isAuth, (req,res) => {
                                 (req.body.escalao == 15) ? 7 :
                                 (req.body.escalao == 16) ? 6 :
                                 5
-                
+
                 if (escalao > 0) {
 
                     const mappedData = re.map(row => ({ dataNascimento: row.dataNascimento.getFullYear()}));
                     const idElementos = re.map(row => ({ idUtilizador: row.idUtilizador}));
-                    
+
                     const minYear = mappedData.reduce((min, obj) => {
                         return obj.dataNascimento < min ? obj.dataNascimento : min;
                     }, Infinity);
 
                     const anoTorneio = parseInt(req.body.dataTorneio.split("/")[2])
-                    
+
                     if ((anoTorneio - minYear) >= 0) {
-                    
+
                         let sql = `Insert into Equipa (ranking, nomeEquipa, escalao, clube) values ("${req.body.ranking}", "${req.body.nomeEquipa}", "${req.body.escalao}", "${req.body.clube}"); `
 
                         data.query(sql)
@@ -1141,7 +1141,7 @@ function getClassificacaoElim(idTorneio,res) {
 //Get de um torneio
 router.get("/:id",isOrganizador,(req,res) => {
     const idTorneio = req.params.id;
-    let sql = "select T.imageName,T.idTorneio,T.nomeTorneio,T.terminado,T.isFederado,T.dataTorneio,T.escalao,T.tipoTorneio,T.tamEquipa,D.nomeDesporto,L.Nome, T.idOrganizador,T.inscricoesAbertas from torneio as T " +
+    let sql = "select T.imageName,T.idTorneio,T.nomeTorneio,T.terminado,T.isFederado,T.dataTorneio,T.escalao,T.tipoTorneio,T.tamEquipa,D.nomeDesporto,L.Nome, T.idOrganizador,T.inscricoesAbertas,E.idEspaco from torneio as T " +
               "join Espaco as E on T.Espaco_idEspaco = E.idEspaco " +
               "join Localidade as L on E.Localidade_idLocalidade = L.idLocalidade " +
               "join Desporto as D on T.idDesporto = D.idDesporto " +

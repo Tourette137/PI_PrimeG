@@ -3,7 +3,7 @@ import React from 'react'
 export function Pricing () {
   return (
 
-    <section id="pricing" class="py-20 xl:pt-24 xl:pb-28">
+    <section id="pricing" class="min-h-screen">
       <div class="container px-4 mx-auto">
         <span class="inline-block py-px px-2 mb-4 text-xs leading-5 text-orange-500 bg-orange-100 font-medium uppercase rounded-9xl">Pricing</span>
         <h3 class="mb-4 text-3xl md:text-5xl text-gray-900 font-bold tracking-tighter">Pricing</h3>

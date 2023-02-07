@@ -35,6 +35,7 @@ function App() {
 
   return (
     <QueryClientProvider client = {queryClient}>
+      <div className="min-h-screen">
       <Routes>
           <Route path="/" element= {<Home/>}/>
           <Route path="/login" element= {<Login/>}/>
@@ -67,7 +68,7 @@ function App() {
                 <Route element = {<RegistoEspaco/>} path="/espacos/registo" exact/>
           </Route>
       </Routes>
-
+      </div>
       <Footer/>
     </QueryClientProvider>
 
