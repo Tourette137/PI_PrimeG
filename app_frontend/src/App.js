@@ -6,7 +6,6 @@ import queryClient from './requests'
 import {Torneios} from './pages/Torneios.js';
 import {Gestao} from './pages/Gestao.js';
 import {Espacos} from './pages/Espacos.js';
-import {Espaco} from './pages/Espaco.js';
 import {Home} from './pages/Home.js';
 import {Login} from './pages/Login.js';
 import {Registo} from './pages/Registo.js';
@@ -46,7 +45,6 @@ function App() {
           </Route>
           <Route path="/espacos">
             <Route index element= {<Espacos/>}/>
-            <Route path=":id" element = {<Espaco/>}/>
           </Route>
           <Route path = "/:id/jogos" element = {<Jogos/>}/>
           <Route path = "/:id/classificacao" element = {<Classificacao/>}/>
