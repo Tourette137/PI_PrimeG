@@ -151,17 +151,39 @@ router.post("/login", (req, res) => {
 // Listar torneios em que o user esta inscrito 
 router.get("/torneiosInscrito", isAuth, (req, res) => {
 
-    let sql =  `Select * from Torneio as T
+    let sql =  `Select T.*, D.nomeDesporto, L.Nome from Torneio as T
                 Join Torneio_has_Equipa as TE on TE.Torneio_idTorneio = T.idTorneio
                 Join Equipa_has_Utilizador as EU on TE.Equipa_idEquipa = EU.Equipa_idEquipa
+                join Desporto as D on T.idDesporto = D.idDesporto
+                join Espaco as E on T.Espaco_idEspaco = E.idEspaco
+                join Localidade as L on E.Localidade_idLocalidade = L.idLocalidade
                 Where EU.Utilizador_idUtilizador = "${req.userId}"
-                AND T.terminado = 0;`
+                AND T.terminado = 0 OR T.terminado = 1;`
 
     data.query(sql)
         .then( async re => {
             if(re.length == 0) {
                 res.status(503).jsonp("Não está inscrito em nenhum torneio")
             } else {
+                for (let i= 0; i<re.length; i++) {
+                    let r = re[i];
+                    r.dataTorneio = r.dataTorneio.toLocaleDateString();
+                    
+                    if (!(r.imageName === null)) {
+    
+                        const params = {
+                            Bucket: bucketName,
+                            Key: r.imageName
+                        }
+    
+                        const command = new GetObjectCommand(params);
+                        const url = await getSignedUrl(s3Client, command, {expiresIn: 60});
+                        r.imageUrl = url
+                    } else {
+                        r.imageUrl = null
+                    }
+                }
+
                 res.send(re);
             }
         })
@@ -223,15 +245,37 @@ router.get("/email", isAuth, (req, res) => {
 // Listar favoritos
 router.get("/torneiosFavoritos", isAuth, (req, res) => {
 
-    let sql =  `Select * from Torneio as T
+    let sql =  `Select T.*, D.nomeDesporto, L.Nome from Torneio as T
                 Join TorneiosFav as TF on TF.Torneio_idTorneio = T.idTorneio
+                join Desporto as D on T.idDesporto = D.idDesporto
+                join Espaco as E on T.Espaco_idEspaco = E.idEspaco
+                join Localidade as L on E.Localidade_idLocalidade = L.idLocalidade
                 Where TF.Utilizador_idUtilizador = "${req.userId}";`
 
     data.query(sql)
         .then( async re => {
             if(re.length == 0) {
-                res.status(503).jsonp("Não tem nenhum torneio Favorito")
+                res.status(503).jsonp("Não tem nenhum torneio marcado como favorito")
             } else {
+                for (let i= 0; i<re.length; i++) {
+                    let r = re[i];
+                    r.dataTorneio = r.dataTorneio.toLocaleDateString();
+                    
+                    if (!(r.imageName === null)) {
+
+                        const params = {
+                            Bucket: bucketName,
+                            Key: r.imageName
+                        }
+
+                        const command = new GetObjectCommand(params);
+                        const url = await getSignedUrl(s3Client, command, {expiresIn: 60});
+                        r.imageUrl = url
+                    } else {
+                        r.imageUrl = null
+                    }
+                }
+
                 res.send(re);
             }
         })
@@ -243,17 +287,39 @@ router.get("/torneiosFavoritos", isAuth, (req, res) => {
 // Listar histórico Torneios Utilizador
 router.get("/torneiosHistorico", isAuth, (req, res) => {
 
-    let sql =  `Select * from Torneio as T
+    let sql =  `Select T.*, D.nomeDesporto, L.Nome from Torneio as T
                 Join Torneio_has_Equipa as TE on TE.Torneio_idTorneio = T.idTorneio
                 Join Equipa_has_Utilizador as EU on TE.Equipa_idEquipa = EU.Equipa_idEquipa
+                join Desporto as D on T.idDesporto = D.idDesporto
+                join Espaco as E on T.Espaco_idEspaco = E.idEspaco
+                join Localidade as L on E.Localidade_idLocalidade = L.idLocalidade
                 Where EU.Utilizador_idUtilizador = "${req.userId}"
-                AND T.terminado = 1;`
+                AND T.terminado = 2;`
 
     data.query(sql)
         .then( async re => {
             if(re.length == 0) {
                 res.status(503).jsonp("Não esteve inscrito em nenhum torneio")
             } else {
+                for (let i= 0; i<re.length; i++) {
+                    let r = re[i];
+                    r.dataTorneio = r.dataTorneio.toLocaleDateString();
+                    
+                    if (!(r.imageName === null)) {
+    
+                        const params = {
+                            Bucket: bucketName,
+                            Key: r.imageName
+                        }
+    
+                        const command = new GetObjectCommand(params);
+                        const url = await getSignedUrl(s3Client, command, {expiresIn: 60});
+                        r.imageUrl = url
+                    } else {
+                        r.imageUrl = null
+                    }
+                }
+
                 res.send(re);
             }
         })

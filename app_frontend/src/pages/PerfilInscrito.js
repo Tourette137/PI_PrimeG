@@ -1,8 +1,10 @@
-import TorneioDisplay from "./TorneioDisplay.jsx";
+import TorneioCard from "../components/TorneioCard.js";
 import {useNavigate, Link,Route,Routes} from 'react-router-dom';
 import {useState,useEffect} from 'react';
 import axios from 'axios';
 import {NavbarDynamic} from '../components/NavbarDynamic.js';
+import '../components/Buttons.css';
+import '../components/titulo.css';
 
 const API_URL="http://localhost:3000"
 
@@ -38,23 +40,26 @@ export function PerfilInscrito() {
     return(
         <>
         <NavbarDynamic/>
-            <h1>Só entra aqui se tiver o token / estiver logado.</h1>
-            <h1>TORNEIOS INSCRITO</h1>
+        <div className='titulo pt-8 pb-3'>
+          <h1>Torneios Inscrito</h1>
+        </div>
 
             {
                 torneios?.length > 0 ?
                 (
-                <div className="container">
-                    {torneios.map((torneio) => <li><Link to={"/torneios/" + torneio.idTorneio}><TorneioDisplay torneio = {torneio}/></Link></li>) }
+                <div className="container mx-auto" style={{marginTop:"40px"}}>
+                    {torneios.map((torneio) => <div style={{marginLeft:"-25px"}}><Link to={"/torneios/" + torneio.idTorneio}><TorneioCard torneio = {torneio}/></Link></div>) }
                 </div>
                 ) : (
-                <div className="empty">
-                    <h2>Nao Tem Torneios</h2>
+                <div className="empty mt-10 text-center text-xl">
+                    <h2>Não está inscrito em nenhum Torneio</h2>
                 </div>
                 )
             }
 
-            <button onClick={handlebackToProfile}>Voltar ao Perfil</button>
+        <div className="butoesAcceptBack" style={{marginBottom: "50px", textAlign:"center"}}>
+            <button className="buttonBlack" onClick={handlebackToProfile}>Voltar ao Perfil</button>
+        </div>
         </>
     )
 }

@@ -143,15 +143,15 @@ export function Perfil() {
                 </div>	
             </div>
 
-
-            <div className="butoesAcceptBack gridButtons containerDiv" style={{ margin: "0 0 20px 0" }}>
-            <Link to="/perfil/localidadesFavoritas"><button className="buttonBlack">Localidades Favoritas</button></Link>
-                <Link to="/perfil/desportosFavoritos"><button className="buttonBlack">Desportos Favoritos</button></Link>
-                <Link to="/perfil/inscrito"><button className="buttonBlack">Torneios Inscrito</button></Link>
-                <Link to="/perfil/favoritos"><button className="buttonBlack">Torneios Favoritos</button></Link>
-                <Link to="/perfil/historico"><button className="buttonBlack">Historico Torneios</button></Link>
-                <Link to="/perfil/historicoJogos"><button className="buttonBlack">Historico Jogos</button></Link>
-                <Link to="/perfil/notificacoes"><button className="buttonBlack">Notificacoes</button></Link>
+            <div style={{background:"transparent", margin: "50px 0 40px 0", boxShadow: "10px 10px 5px lightgray", borderRadius: "16px", paddingBottom:"20px"}}>
+                <div className="butoesAcceptBack gridButtons containerDiv" style={{ margin: "0 0 20px 0"}}>
+                    <Link to="/perfil/notificacoes"><button className="buttonBlack">Notificações</button></Link>
+                    <Link to="/perfil/localidadesFavoritas"><button className="buttonBlack">Localidades Favoritas</button></Link>
+                    <Link to="/perfil/desportosFavoritos"><button className="buttonBlack">Desportos Favoritos</button></Link>
+                    <Link to="/perfil/inscrito"><button className="buttonBlack">Torneios Inscrito</button></Link>
+                    <Link to="/perfil/favoritos"><button className="buttonBlack">Torneios Favoritos</button></Link>
+                    <Link to="/perfil/historico"><button className="buttonBlack">Histórico Torneios</button></Link>
+                </div>
             </div>
         </section>
 
