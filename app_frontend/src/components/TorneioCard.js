@@ -24,7 +24,7 @@ const TorneioCard = ({torneio}) => {
                   (torneio.escalao == 16) ? "Sub-6" :
                   "Sub-5"
     return (
-      <div className= "w-full m-4">
+      <div className= "w-full mt-4 mb-4 ml-5 mr-5">
         <div className="flex-wrap p-4 md:flex mx-auto hover:bg-gray-200 hover:scale-105 transition duration-500 shadow-2xl shadow-gray-300 rounded-2xl md:h-[200px] md:w-[700px] w-[350px] h-[400px] bg-white">
             <div className="mx-auto w-[170px] h-[170px] bg-transparent">
                 {(torneio.imageUrl === null) ?

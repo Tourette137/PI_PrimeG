@@ -19,7 +19,6 @@ select {
     opacity: 0.9;
     overflow: hidden;
     border-radius: .25em;
-    margin-left: 170px;
     margin-bottom: 10px;
 }
  
@@ -58,15 +57,13 @@ select::-ms-expand {
 }
 
 .label {
-    margin-left: 170px;
     font-size: 1.2rem;
     font-weight: bold;
-    
     text-transform: uppercase;
-  }
+}
 
 .filtros {
-    margin-top: 50px;
+    margin-top: 20px;
 }
   
 .botaoregistoTorneio {
@@ -92,7 +89,6 @@ select::-ms-expand {
     border-image: initial;
     border-radius: .25em;
     border: 1px solid black;
-    margin-left: 170px;
     margin-top: 30px;
 }
 
@@ -120,7 +116,6 @@ select::-ms-expand {
     border-image: initial;
     border-radius: .25em;
     border: 1px solid black;
-    margin-left: 150px;
     margin-top: 30px;
 }
 
@@ -130,10 +125,64 @@ select::-ms-expand {
     grid-gap: 1rem;
 }
 
+.butoesRegistoEspacoTorneio button {
+    background: none;
+    padding: 10px 20px;
+    width: 19em;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.8s;
+    position: relative;
+    overflow: hidden;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-radius: 16px;
+    border: 1px solid var( --title-color-dark);
+    color: var( --title-color-dark);
+}
 
-@media only screen and (max-width: 1300px) {
+.butoesRegistoEspacoTorneio button:hover {
+    color: #fff;
+}
+
+.butoesRegistoEspacoTorneio button::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 0%;
+    z-index: -1;
+    transition: 0.8s;
+    bottom: 0;
+    border-radius: 50% 50% 0 0;
+    background: var( --title-color-dark);
+}
+
+.butoesRegistoEspacoTorneio button:hover::before{
+    height: 180%;
+}
+
+
+@media only screen and (max-width: 1150px) {
     .espaco-cards-container {
       grid-template-columns: 1fr;
     }
 }
   
+@media screen and (max-width: 1150px) {
+    .filtros {
+        align-items: center;
+        justify-content: center;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+@media screen and (max-width: 992px) {
+    .butoesRegistoEspacoTorneio button {
+        width: 18em;
+        padding: 10px 15px;
+    }
+  }

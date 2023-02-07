@@ -6,6 +6,7 @@ import {useNavigate } from 'react-router-dom';
 import {NavbarDynamic} from '../components/NavbarDynamic.js';
 import '../components/RadioForm.css';
 import '../components/selectForm.css';
+import '../components/containerTorneios.css';
 import '../components/titulo.css';
 
 const API_URL="http://localhost:3000"
@@ -106,13 +107,12 @@ console.log(pedido);
     return(
         <>
         <NavbarDynamic/>
-        <div className="text-center">
        {/*Aqui seleciona o tipo de espaco que quer mostrar.*/}
         <div className='titulo pt-8 pb-3'>
           <h1>Espaços</h1>
         </div>
 
-        <div className="viagem-form w3-mobile radio-list" onChange={handleTipo}>
+        <div className="viagem-form w3-mobile" onChange={handleTipo}>
             <form>
               <div className="w3-row-padding w3-mobile">
                 <div className = "w3-half w3-center w3-mobile radio-item">
@@ -124,40 +124,40 @@ console.log(pedido);
                   <input type="radio" id="favoritos" value="favoritos" name="espacos" checked={("favoritos"===tipo) ? "checked" : ""}/>
                   <label for="favoritos" style={{justifyContent:"center"}}>Favoritos</label><br/>
                 </div>
-
               </div>
             </form>
         </div>
 
-        <div className="flex flex-wrap w-full">
+        <div className="flex flex-wrap containerDiv">
           <div className='filtros lg:w-1/3'>
             <form>
-            <label className='w-auto text-xl font-bold'>Localidade:</label>
-              <div className = "select">
-                <select className="pl-4 text-black" onChange={handleLocalidade}>
-                    <option defaultValue="Todas">Indiferente</option>
-                    {localidades.map((localidade) => (
-                      <option value ={localidade.idLocalidade}>{localidade.Nome}</option>
+              <label className='label'>Localidade:</label>
+                <div className = "select">
+                  <select className="pl-4 text-black" onChange={handleLocalidade}>
+                      <option defaultValue="Todas">Indiferente</option>
+                      {localidades.map((localidade) => (
+                        <option value ={localidade.idLocalidade}>{localidade.Nome}</option>
                       ))}
-                </select>
-              </div>
-            <label className='w-auto text-xl font-bold'>Desporto: </label>
-              <div className = "select">
-                <select  className="pl-4 text-black" onChange={handleDesporto}>
-                    <option defaultValue="Todos">Indiferente</option>
-                    {desportos.map((desporto) => (
-                      <option value ={desporto.idDesporto}>{desporto.nomeDesporto}</option>
+                  </select>
+                </div>
+              <label className='label'>Desporto:</label>
+                <div className = "select">
+                  <select className="pl-4 text-black" onChange={handleDesporto}>
+                      <option defaultValue="Todos">Indiferente</option>
+                      {desportos.map((desporto) => (
+                        <option value ={desporto.idDesporto}>{desporto.nomeDesporto}</option>
                       ))}
-                </select>
-              </div>
-            </form>
-            <div className='botaoregistoEspaco bg-white hover:bg-gray-200 mt-5 mb-10'>
-              <button className="p-4 bg-white text-xl border-2 border-black hover:bg-gray-200" onClick ={handleRegisto}>Registe aqui o seu espaço</button>
+                  </select>
+                </div>
+              </form>
+            
+            <div className="butoesRegistoEspacoTorneio" style={{marginBottom: "40px", float:"left"}}>
+              <button onClick={handleRegisto}>Registe aqui o seu espaço</button>
             </div>
           </div>
 
           <div className="espacos flex flex-col place-content-center w-full lg:w-2/3 flex-grow-0">
-            <div className="espaco-cards-container">
+            <div className="espaco-cards-container" style={{marginBottom: "30px"}}>
               {espacos.length > 0
               ? espacos.map((espaco) => (
                 <EspacoCard url={espaco.imageUrl} nome={espaco.nome} rua={espaco.rua} contacto={espaco.contacto} />
@@ -167,7 +167,6 @@ console.log(pedido);
           </div>
 
         </div>
-    </div>
     </>
     )
 }
