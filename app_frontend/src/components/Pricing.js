@@ -65,7 +65,7 @@ export function Pricing () {
           <div class="w-full md:w-1/2 lg:w-1/4 p-4">
             <div class="flex flex-col items-center pt-10 px-8 pb-8 bg-gray-50 rounded-md shadow-md hover:scale-105 transition duration-500">
               <span class="inline-block py-px px-2 mb-6 text-xs leading-5 text-orange-500 bg-orange-100 font-medium uppercase rounded-9xl">Pricing</span>
-              <h3 class="mb-4 text-lg md:text-xl text-orange-500 font-medium">Professional</h3>
+              <h3 class="mb-4 text-lg md:text-xl text-orange-500 font-medium">Profissional</h3>
               <div class="mb-4">
                 <span class="relative -top-6 right-1 text-2xl text-gray-900 font-medium">€</span>
                 <span class="text-5xl text-gray-900 font-medium">40</span>

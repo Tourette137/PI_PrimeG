@@ -439,7 +439,7 @@ export function Torneio() {
                             {gestao == 1
                             ?
                             "Gestão"
-                            : "Incrições"
+                            : "Inscrições"
                             }
                             </h2>
 

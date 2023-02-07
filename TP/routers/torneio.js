@@ -672,6 +672,7 @@ router.get("/:idTorneio/inscritos",(req,res) => {
 })
 
 router.get("/:idTorneio/estaInscrito", isAuth, (req,res) => {
+    console.log(req.userId)
     var idTorneio = req.params.idTorneio
 
     let sql = `Select EU.Utilizador_idUtilizador from Equipa_has_Utilizador as EU
@@ -1281,7 +1282,7 @@ router.post("/:id/gestao/fecharInscricoes",isAuth,(req,res) => {
         if (re.length != 0) {
             if (re[0].idOrganizador == req.userId) {
                 let sql1 = "update torneio " +
-                        "set inscricoesAbertas = " + tipo
+                        "set inscricoesAbertas = " + tipo +
                         " where idTorneio = " + idTorneio +";"
                 data.query(sql1).then(re => {
                     if(re != 0){
