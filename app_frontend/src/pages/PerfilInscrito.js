@@ -33,6 +33,7 @@ export function PerfilInscrito() {
 
     // Use Effect inicial
     useEffect(() => {
+        window.scrollTo(0, 0);
         torneiosInscrito();
       },[])
 

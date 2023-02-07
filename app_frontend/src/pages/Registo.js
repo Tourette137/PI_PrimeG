@@ -1,4 +1,4 @@
-import {useRef, useState} from 'react';
+import {useRef, useState, useEffect} from 'react';
 import {useNavigate, Link} from 'react-router-dom'
 import axios from 'axios';
 import {NavbarDynamic} from '../components/NavbarDynamic.js';
@@ -73,8 +73,10 @@ export function Registo() {
 
     }
 
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    },[])
 
-    
     return (
         <>
         <NavbarDynamic/>

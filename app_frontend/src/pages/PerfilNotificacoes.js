@@ -32,6 +32,7 @@ export function PerfilNotificacoes() {
 
     // Use Effect inicial
     useEffect(() => {
+        window.scrollTo(0, 0);
         notificacoesUser();
       },[])
 

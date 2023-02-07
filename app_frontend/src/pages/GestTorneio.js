@@ -222,6 +222,7 @@ export function GestTorneio({ id,terminado,tipoTorneio, ...props }) {
 
     // Vai buscar os grupos e as eliminatórias.
     useEffect(() => {
+      window.scrollTo(0, 0);
       setLoading1(true);
       setLoading2(true);
       setLoading3(true);

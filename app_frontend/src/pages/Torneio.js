@@ -172,7 +172,8 @@ export function Torneio() {
                     "dataTorneio" :torneio.dataTorneio,
                     "nomeEquipa" :newNomeEquipa.current.value,
                     "ranking" :newRankingEquipa.current.value,
-                    "clube" :newClubeEquipa.current.value}
+                    "clube" :newClubeEquipa.current.value,
+                    "genero":torneio.genero}
 
       axios.post(`${API_URL}/torneios/${id}/inscricaoTorneio`, body, {headers: headers})
             .then(response => {
@@ -346,6 +347,7 @@ export function Torneio() {
 
     //Search inicial do torneio
     useEffect(() => {
+      window.scrollTo(0, 0);
       setLoading1(true);
       setLoading2(true);
       setLoading3(true);

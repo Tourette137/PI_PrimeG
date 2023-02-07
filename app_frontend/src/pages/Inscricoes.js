@@ -65,6 +65,7 @@ export function Inscricoes({ id,terminado,inscricoesA, ...props }) {
     }
 
     useEffect(() => {
+      window.scrollTo(0, 0);
       searchInscritos();
     },[])
 

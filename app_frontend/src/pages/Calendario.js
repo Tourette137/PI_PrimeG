@@ -38,6 +38,7 @@ export function Calendario(props) {
     }
 
     useEffect(() => {
+        window.scrollTo(0, 0);
         searchCalendarioGrupos();
         searchCalendarioElim();
       },[])

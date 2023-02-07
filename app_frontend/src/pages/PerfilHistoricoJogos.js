@@ -31,6 +31,7 @@ export function PerfilHistoricoJogos() {
 
     // Use Effect inicial
     useEffect(() => {
+        window.scrollTo(0, 0);
         jogosHistorico();
       },[])
 

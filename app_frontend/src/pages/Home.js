@@ -1,9 +1,17 @@
 import {NavbarDynamic} from '../components/NavbarDynamic.js';
 import {Pricing} from '../components/Pricing.js';
 import logo from '../images/fans.png';
+import {useEffect} from 'react';
+
 
 export function Home() {
-    return(
+  
+  // Use Effect inicial
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  },[])
+
+  return(
         <>
             <NavbarDynamic/>
             <section class="relative bg-white overflow-hidden min-h-screen">

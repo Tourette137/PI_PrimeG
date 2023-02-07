@@ -69,6 +69,7 @@ console.log(pedido);
 
       //Search inicial das localidades e desportos
       useEffect(() => {
+        window.scrollTo(0, 0);
         searchLocalidades();
         searchDesportos();
       },[])

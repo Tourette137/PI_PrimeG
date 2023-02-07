@@ -1,4 +1,4 @@
-import {useState, useRef} from 'react';
+import {useState, useRef, useEffect} from 'react';
 import {useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import {NavbarDynamic} from '../components/NavbarDynamic.js';
@@ -50,6 +50,10 @@ export function Login() {
             <p className="alert" style="color: red">asdasdasd</p>
         ) : (null)
     }*/
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    },[])
 
     return (
         <>

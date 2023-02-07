@@ -80,6 +80,12 @@ const TorneioDisplay = ({torneio,inscritos,calendario,tipo,jogos}) => {
               ? "Individual"
               : `Equipas de ${torneio.tamEquipa} elementos`
             }
+            {torneio.genero == 0
+              ? " (Masculino)"
+              : torneio.genero == 1
+                ? " (Feminino)"
+                : " (Indiferente)"
+            }
             </p>
           </div>
         </div>

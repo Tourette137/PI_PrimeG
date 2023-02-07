@@ -126,6 +126,7 @@ export function DesportosFavoritos() {
 
     // Use Effect inicial
     useEffect(() => {
+        window.scrollTo(0, 0);
         getAllLocalidades();
         getLocalidadesFav();
      },[])

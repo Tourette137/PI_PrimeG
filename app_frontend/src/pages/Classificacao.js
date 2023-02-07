@@ -53,6 +53,7 @@ export function Classificacao() {
 
     // Vai buscar os grupos e as eliminatórias.
     useEffect(() => {
+      window.scrollTo(0, 0);
       setLoading1(true);
       setLoading2(true);
         searchGrupos();

@@ -733,82 +733,94 @@ router.post("/:idTorneio/inscricaoTorneio", isAuth, (req,res) => {
     var idTorneio = req.params.idTorneio
     const listString = req.body.emails.join("','")
 
-    let sql = `SELECT U.email, U.idUtilizador, U.dataNascimento FROM Utilizador as U WHERE U.email IN ('${listString}')`;
-
+    let sql = `SELECT U.email, U.idUtilizador, U.dataNascimento, U.genero FROM Utilizador as U WHERE U.email IN ('${listString}')`;
+    
     data.query(sql)
         .then(re => {
             if (re.length === req.body.tamEquipa) {
 
-                const escalao = (req.body.escalao == 0) ? 0 :
-                                (req.body.escalao == 1) ? 21 :
-                                (req.body.escalao == 2) ? 20 :
-                                (req.body.escalao == 3) ? 19 :
-                                (req.body.escalao == 4) ? 18 :
-                                (req.body.escalao == 5) ? 17 :
-                                (req.body.escalao == 6) ? 16 :
-                                (req.body.escalao == 7) ? 15 :
-                                (req.body.escalao == 8) ? 14 :
-                                (req.body.escalao == 9) ? 13 :
-                                (req.body.escalao == 10) ? 12 :
-                                (req.body.escalao == 11) ? 11 :
-                                (req.body.escalao == 12) ? 10 :
-                                (req.body.escalao == 13) ? 9 :
-                                (req.body.escalao == 14) ? 8 :
-                                (req.body.escalao == 15) ? 7 :
-                                (req.body.escalao == 16) ? 6 :
-                                5
+                if (req.body.genero !== 2) {
 
-                if (escalao > 0) {
+                    const generoElementos = re.map(row => row.genero);
+                    const generoTorneio = req.body.genero ? "Feminino" : "Masculino"
 
-                    const mappedData = re.map(row => ({ dataNascimento: row.dataNascimento.getFullYear()}));
-                    const idElementos = re.map(row => ({ idUtilizador: row.idUtilizador}));
-
-                    const minYear = mappedData.reduce((min, obj) => {
-                        return obj.dataNascimento < min ? obj.dataNascimento : min;
-                    }, Infinity);
-
-                    const anoTorneio = parseInt(req.body.dataTorneio.split("/")[2])
-
-                    if ((anoTorneio - minYear) >= 0) {
-
-                        let sql = `Insert into Equipa (ranking, nomeEquipa, escalao, clube) values ("${req.body.ranking}", "${req.body.nomeEquipa}", "${req.body.escalao}", "${req.body.clube}"); `
-
-                        data.query(sql)
-                            .then(re => {
-                                let sql = `Insert into Torneio_has_equipa (Torneio_idTorneio, Equipa_idEquipa, pendente) values ("${req.params.idTorneio}", "${re.insertId}", 0); `
-
-                                for (let i = 0; i<idElementos.length; i++) {
-                                    sql += `Insert into Equipa_has_Utilizador values ("${re.insertId}", "${idElementos[i].idUtilizador}"); `
-                                }
-
-                                data.query(sql)
-                                .then(re => {
-                                    res.send("Inscrição feita com sucesso")
-                                })
-                            })
-
+                    if ([...new Set(generoElementos)].length > 1) {
+                        res.status(501).send(`Elementos têm de ser todos do sexo ${generoTorneio}`)
                     } else {
-                        res.status(501).send("Pelo menos 1 possui um escalão maior do que o deste torneio")
-                    }
 
-                } else {
-
-                    let sql = `Insert into Equipa (ranking, nomeEquipa, escalao, clube) values ("${req.body.ranking}", "${req.body.nomeEquipa}", "${req.body.escalao}", "${req.body.clube}"); `
-
-                        data.query(sql)
-                            .then(re => {
-                                let sql = `Insert into Torneio_has_equipa (Torneio_idTorneio, Equipa_idEquipa, pendente) values ("${req.params.idTorneio}", "${re.insertId}", 0); `
-
-                                for (let i = 0; i<idElementos.length; i++) {
-                                    sql += `Insert into Equipa_has_Utilizador values ("${re.insertId}", "${idElementos[i].idUtilizador}"); `
-                                }
-
+                        const escalao = (req.body.escalao == 0) ? 0 :
+                                        (req.body.escalao == 1) ? 21 :
+                                        (req.body.escalao == 2) ? 20 :
+                                        (req.body.escalao == 3) ? 19 :
+                                        (req.body.escalao == 4) ? 18 :
+                                        (req.body.escalao == 5) ? 17 :
+                                        (req.body.escalao == 6) ? 16 :
+                                        (req.body.escalao == 7) ? 15 :
+                                        (req.body.escalao == 8) ? 14 :
+                                        (req.body.escalao == 9) ? 13 :
+                                        (req.body.escalao == 10) ? 12 :
+                                        (req.body.escalao == 11) ? 11 :
+                                        (req.body.escalao == 12) ? 10 :
+                                        (req.body.escalao == 13) ? 9 :
+                                        (req.body.escalao == 14) ? 8 :
+                                        (req.body.escalao == 15) ? 7 :
+                                        (req.body.escalao == 16) ? 6 :
+                                        5
+        
+                        if (escalao > 0) {
+        
+                            const mappedData = re.map(row => ({ dataNascimento: row.dataNascimento.getFullYear()}));
+                            const idElementos = re.map(row => ({ idUtilizador: row.idUtilizador}));
+        
+                            const minYear = mappedData.reduce((min, obj) => {
+                                return obj.dataNascimento < min ? obj.dataNascimento : min;
+                            }, Infinity);
+        
+                            const anoTorneio = parseInt(req.body.dataTorneio.split("/")[2])
+        
+                            if ((anoTorneio - minYear) >= 0) {
+        
+                                let sql = `Insert into Equipa (ranking, nomeEquipa, escalao, clube) values ("${req.body.ranking}", "${req.body.nomeEquipa}", "${req.body.escalao}", "${req.body.clube}"); `
+        
                                 data.query(sql)
-                                .then(re => {
-                                    res.send("Inscrição feita com sucesso")
-                                })
-                            })
+                                    .then(re => {
+                                        let sql = `Insert into Torneio_has_equipa (Torneio_idTorneio, Equipa_idEquipa, pendente) values ("${req.params.idTorneio}", "${re.insertId}", 0); `
+        
+                                        for (let i = 0; i<idElementos.length; i++) {
+                                            sql += `Insert into Equipa_has_Utilizador values ("${re.insertId}", "${idElementos[i].idUtilizador}"); `
+                                        }
+        
+                                        data.query(sql)
+                                        .then(re => {
+                                            res.send("Inscrição feita com sucesso")
+                                        })
+                                    })
+        
+                            } else {
+                                res.status(501).send("Pelo menos 1 possui um escalão maior do que o deste torneio")
+                            }
+        
+                        } else {
+        
+                            let sql = `Insert into Equipa (ranking, nomeEquipa, escalao, clube) values ("${req.body.ranking}", "${req.body.nomeEquipa}", "${req.body.escalao}", "${req.body.clube}"); `
+        
+                                data.query(sql)
+                                    .then(re => {
+                                        let sql = `Insert into Torneio_has_equipa (Torneio_idTorneio, Equipa_idEquipa, pendente) values ("${req.params.idTorneio}", "${re.insertId}", 0); `
+        
+                                        for (let i = 0; i<idElementos.length; i++) {
+                                            sql += `Insert into Equipa_has_Utilizador values ("${re.insertId}", "${idElementos[i].idUtilizador}"); `
+                                        }
+        
+                                        data.query(sql)
+                                        .then(re => {
+                                            res.send("Inscrição feita com sucesso")
+                                        })
+                                    })
+                        }
+                    }
                 }
+                
             } else {
                 res.status(501).send("Pelo menos 1 elemento não existe")
             }
@@ -1141,7 +1153,7 @@ function getClassificacaoElim(idTorneio,res) {
 //Get de um torneio
 router.get("/:id",isOrganizador,(req,res) => {
     const idTorneio = req.params.id;
-    let sql = "select T.imageName,T.idTorneio,T.nomeTorneio,T.terminado,T.isFederado,T.dataTorneio,T.escalao,T.tipoTorneio,T.tamEquipa,D.nomeDesporto,L.Nome, T.idOrganizador,T.inscricoesAbertas,E.idEspaco from torneio as T " +
+    let sql = "select T.imageName,T.idTorneio,T.nomeTorneio,T.terminado,T.isFederado,T.dataTorneio,T.escalao,T.tipoTorneio,T.tamEquipa,D.nomeDesporto,L.Nome, T.idOrganizador,T.inscricoesAbertas, E.idEspaco, T.genero from torneio as T " +
               "join Espaco as E on T.Espaco_idEspaco = E.idEspaco " +
               "join Localidade as L on E.Localidade_idLocalidade = L.idLocalidade " +
               "join Desporto as D on T.idDesporto = D.idDesporto " +

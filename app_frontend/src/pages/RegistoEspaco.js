@@ -58,6 +58,7 @@ export function RegistoEspaco() {
 
     //Procura inicial de desportos para ele registar um torneio por desporto, procura também as localidades para caso ele queira adicionar o espaço
     useEffect(() => {
+        window.scrollTo(0, 0);
         searchLocalidades();
         searchDesportos();
     },[])

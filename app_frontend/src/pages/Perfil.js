@@ -115,7 +115,8 @@ export function Perfil() {
     
     // Use Effect inicial
     useEffect(() => {
-       getDadosUser();
+        window.scrollTo(0, 0);
+        getDadosUser();
     },[])
       
 

@@ -17,6 +17,7 @@ export function CalendarioPage() {
       }
 
       useEffect(() => {
+        window.scrollTo(0, 0);
         searchTorneio();
       }, []);
 
