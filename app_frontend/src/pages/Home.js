@@ -16,7 +16,7 @@ export function Home() {
             <NavbarDynamic/>
             <section class="relative bg-white overflow-hidden min-h-screen">
 
-              <div class="my-auto place-content-center">
+              <div class="my-auto place-content-center mt-12">
                 <div class="container px-4 mx-auto">
                   <div class="flex flex-wrap xl:items-center -mx-4">
                     <div class="w-full md:w-1/2 px-4 mb-16 md:mb-0">
