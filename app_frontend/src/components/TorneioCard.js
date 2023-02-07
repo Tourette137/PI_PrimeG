@@ -1,6 +1,6 @@
 import React from 'react'
 
-import profileIcon from '../images/profileIcon.png'
+import profileIcon from '../images/torneio.png'
 
 const TorneioCard = ({torneio}) => {
   console.log(torneio)

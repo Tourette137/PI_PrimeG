@@ -1,6 +1,6 @@
 import React from 'react'
 
-import profileIcon from '../images/profileIcon.png'
+import profileIcon from '../images/espaco.png'
 
 const EspacoCardAux = ({url,nome,rua,contacto}) => {
     return (

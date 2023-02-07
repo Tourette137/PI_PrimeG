@@ -9,7 +9,7 @@ import '../components/titulo.css';
 import {NavbarDynamic} from '../components/NavbarDynamic.js';
 import axios from 'axios';
 import EspacoCard from '../components/EspacoCard.js';
-import profileIcon from '../images/profileIcon.png'
+import profileIcon from '../images/espaco.png'
 
 const API_URL="http://localhost:3000"
 
