@@ -258,7 +258,8 @@ export function Torneio() {
             if(data.isOrganizador) {
                 setGestao(1);
             }
-            setTorneio(data);console.log(data);
+            setTorneio(data);
+            console.log(data);
             setTipoTorneio(data.tipoTorneio);
             setInputEmails(Array.from({ length: data.tamEquipa }, () => ({ email: '' })))
 
@@ -279,10 +280,10 @@ export function Torneio() {
               setJogos([]);
             }
 
-            response = await fetch (`${API_URL}/espacos/${id}`);
+            response = await fetch (`${API_URL}/espacos/${data.idEspaco}`);
             if (response.status === 200) {
                 const data = await response.json();
-                setEspaco(data[0]);console.log(data[0]);
+                setEspaco(data[0]);
             }
             else {
                 setEspaco([]);
